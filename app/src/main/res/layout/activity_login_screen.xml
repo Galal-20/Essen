@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Auth.Login_Screen">
+    tools:context=".view.Auth.Login_Screen">
 
     <ImageView
         android:layout_width="match_parent"
@@ -29,7 +29,7 @@
         app:layout_constraintStart_toStartOf="@id/image_reg"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias=".25"
+        app:layout_constraintVertical_bias=".15"
         />
 
     <TextView
@@ -133,7 +133,7 @@
         android:id="@+id/button_google"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="40dp"
         android:onClick="LoginGoogle"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintEnd_toStartOf="@id/button_facebook"
@@ -146,7 +146,7 @@
         android:id="@+id/button_facebook"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="40dp"
         android:layout_marginStart="60dp"
         android:onClick="LoginFacebook"
         app:layout_constraintHorizontal_bias="0.5"

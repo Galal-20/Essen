@@ -15,11 +15,13 @@
         android:theme="@style/Theme.Essen"
         tools:targetApi="31">
         <activity
-            android:name=".Auth.ForgetPassword"
+            android:name=".view.Auth.ForgetPassword"
             android:exported="false" />
         <activity
             android:name=".Welcome_Screen"
-            android:exported="true">
+            android:exported="true"
+
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,10 +29,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Auth.SignUp_Screen"
+            android:name=".view.Auth.SignUp_Screen"
             android:exported="false" />
         <activity
-            android:name=".Auth.Login_Screen"
+            android:name=".view.Auth.Login_Screen"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

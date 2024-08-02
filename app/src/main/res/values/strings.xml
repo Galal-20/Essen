@@ -17,4 +17,5 @@
     <string name="text_forget_screen">Enter your Email, and we will send you a link to reset your password</string>
     <string name="send">Send</string>
     <string name="confirm_password">Confirm password</string>
+    <string name="default_web_client_id">949273495788-kp66fgl7tullnu1479331losrusmgt9p.apps.googleusercontent.com</string>
 </resources>

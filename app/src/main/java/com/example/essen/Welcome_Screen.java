@@ -10,8 +10,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.essen.Auth.Login_Screen;
-import com.example.essen.Auth.SignUp_Screen;
+import com.example.essen.view.Auth.Login_Screen;
+import com.example.essen.view.Auth.SignUp_Screen;
 
 public class Welcome_Screen extends AppCompatActivity {
 
