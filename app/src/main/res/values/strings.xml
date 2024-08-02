@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">Essen</string>
+    <string name="welcome_text">Choose the best healthy food and avoid harmful ones.</string>
+    <string name="register">Register</string>
+    <string name="login">Login</string>
+    <string name="happy">We are very happy to join us</string>
+    <string name="full_name">Full name</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="welcome_back">Welcome back!</string>
+    <string name="forget_password">Forget Password</string>
+    <string name="do_you_have_an_account">Do you have an account?</string>
+    <string name="or">or</string>
+    <string name="coming_soon">Coming soon</string>
+    <string name="image">Image</string>
+    <string name="text_forget_screen">Enter your Email, and we will send you a link to reset your password</string>
+    <string name="send">Send</string>
+    <string name="confirm_password">Confirm password</string>
 </resources>
