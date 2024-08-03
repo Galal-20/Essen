@@ -3,14 +3,14 @@ package com.example.essen.presenter;
 import android.app.Activity;
 
 import com.example.essen.model.AuthService;
-import com.example.essen.view.AuthView;
+import com.example.essen.view.Auth.AuthViewSiginUp;
 import com.google.firebase.auth.FirebaseUser;
 
 public class SignUpPresenter {
-    private AuthView view;
+    private AuthViewSiginUp view;
     private AuthService authService;
 
-    public SignUpPresenter(AuthView view, Activity activity) {
+    public SignUpPresenter(AuthViewSiginUp view, Activity activity) {
         this.view = view;
         this.authService = new AuthService(activity);
     }
@@ -26,6 +26,7 @@ public class SignUpPresenter {
             public void onFailure(String message) {
                 view.showSignUpError("Sign Up Failed: " + message);
             }
+
         });
     }
 }

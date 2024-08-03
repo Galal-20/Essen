@@ -2,8 +2,7 @@ package com.example.essen.model;
 
 import android.app.Activity;
 import android.content.Intent;
-
-import androidx.annotation.NonNull;
+import android.content.SharedPreferences;
 
 import com.example.essen.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -21,6 +20,8 @@ public class AuthService {
     private FirebaseAuth firebaseAuth;
     private GoogleSignInClient googleSignInClient;
     private static final int RC_SIGN_IN = 9001;
+    private static final String PREFS_NAME = "MyPrefsFile";
+
 
     public AuthService(Activity activity){
         firebaseAuth = FirebaseAuth.getInstance();
@@ -99,5 +100,23 @@ public class AuthService {
                         callback.onFailure(task.getException().getMessage());
                     }
                 });
+    }
+
+    public void signOut(Activity activity, final AuthCallback callback) {
+        firebaseAuth.signOut();
+
+        // Sign out from Google
+        googleSignInClient.signOut().addOnCompleteListener(activity, task -> {
+            if (task.isSuccessful()) {
+                // Clear login state from Shared Preferences
+                SharedPreferences sharedPreferences = activity.getSharedPreferences(PREFS_NAME, Activity.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean("isLoggedIn", false);
+                editor.apply();
+                callback.onSuccess(null);
+            } else {
+                callback.onFailure("Sign out failed");
+            }
+        });
     }
 }

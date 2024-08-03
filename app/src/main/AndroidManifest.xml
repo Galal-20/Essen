@@ -3,6 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission
+        android:name="android.permission.LOCATION_HARDWARE"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission
+        android:name="android.permission.CONTROL_LOCATION_UPDATES"
+        tools:ignore="ProtectedPermissions" />
 
     <application
         android:allowBackup="true"
@@ -18,10 +24,8 @@
             android:name=".view.Auth.ForgetPassword"
             android:exported="false" />
         <activity
-            android:name=".Welcome_Screen"
-            android:exported="true"
-
-            >
+            android:name=".view.Auth.Welcome_Screen"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -36,7 +40,7 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="true"></activity>
+            android:exported="false" />
 
         <meta-data
             android:name="preloaded_fonts"

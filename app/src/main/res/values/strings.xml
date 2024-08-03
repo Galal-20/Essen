@@ -18,4 +18,5 @@
     <string name="send">Send</string>
     <string name="confirm_password">Confirm password</string>
     <string name="default_web_client_id">949273495788-kp66fgl7tullnu1479331losrusmgt9p.apps.googleusercontent.com</string>
+    <string name="log_out">Log Out</string>
 </resources>

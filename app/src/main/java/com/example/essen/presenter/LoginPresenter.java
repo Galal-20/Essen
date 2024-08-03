@@ -4,14 +4,14 @@ import android.app.Activity;
 import android.content.Intent;
 
 import com.example.essen.model.AuthService;
-import com.example.essen.view.AuthView;
+import com.example.essen.view.Auth.AuthViewLogin;
 import com.google.firebase.auth.FirebaseUser;
 
 public class LoginPresenter {
-    private AuthView view;
+    private AuthViewLogin view;
     private AuthService authService;
 
-    public LoginPresenter(AuthView view, Activity activity) {
+    public LoginPresenter(AuthViewLogin view, Activity activity) {
         this.view = view;
         this.authService = new AuthService(activity);
     }
@@ -27,6 +27,7 @@ public class LoginPresenter {
             public void onFailure(String message) {
                 view.showLoginError("Login Failed: " + message);
             }
+
         });
     }
 
@@ -45,6 +46,7 @@ public class LoginPresenter {
             public void onFailure(String message) {
                 view.showLoginError("Google Login Failed: " + message);
             }
+
         });
     }
 }

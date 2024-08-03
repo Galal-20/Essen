@@ -110,7 +110,9 @@
         android:layout_marginEnd="20dp"
         android:layout_marginTop="30dp"
         android:paddingStart="5dp"
+        android:drawableEnd="@drawable/hidden"
         android:drawableStart="@drawable/key"
+        android:paddingEnd="5dp"
         android:hint="@string/password"
         android:textColorHint="@color/cardview_dark_background"
         android:drawablePadding="13dp"
@@ -133,7 +135,9 @@
         android:layout_marginEnd="20dp"
         android:layout_marginTop="30dp"
         android:drawableStart="@drawable/key"
+        android:drawableEnd="@drawable/hidden"
         android:paddingStart="5dp"
+        android:paddingEnd="5dp"
         android:hint="@string/confirm_password"
         android:textColorHint="@color/cardview_dark_background"
         android:drawablePadding="13dp"
@@ -196,6 +200,17 @@
         app:layout_constraintTop_toBottomOf="@id/button_register"
         app:layout_constraintVertical_bias="0.01"
         android:onClick="login_text"/>
+
+    <ProgressBar
+        android:id="@+id/progress_cir"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="@color/white"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

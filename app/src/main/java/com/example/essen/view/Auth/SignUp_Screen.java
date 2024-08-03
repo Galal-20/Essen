@@ -1,33 +1,61 @@
 package com.example.essen.view.Auth;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.essen.R;
 import com.example.essen.presenter.SignUpPresenter;
-import com.example.essen.view.AuthView;
 
-public class SignUp_Screen extends AppCompatActivity implements AuthView {
+public class SignUp_Screen extends AppCompatActivity implements AuthViewSiginUp {
     private EditText FullName;
     private EditText emailInput;
     private EditText passwordInput;
     private EditText confirmPassword;
     private SignUpPresenter presenter;
+    private static final String PREFS_NAME = "MyPrefsFile";
+    private ProgressBar progressBar;
+    private boolean isPasswordVisible = false;
+    private boolean isConfirmPasswordVisible = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Hide_status_Bar();
         setContentView(R.layout.activity_sign_up_screen);
         FullName = findViewById(R.id.full_name);
         emailInput = findViewById(R.id.Email);
         passwordInput = findViewById(R.id.password_toggle);
         confirmPassword = findViewById(R.id.password_Confirm);
+        progressBar = findViewById(R.id.progress_cir);
         presenter = new SignUpPresenter(this, this);
+        HidePassword();
+        HideConfirmPassword();
+
+
+    }
+
+    public void Hide_status_Bar() {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN
+        );
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
     }
 
     public void register_button(View view) {
@@ -35,23 +63,28 @@ public class SignUp_Screen extends AppCompatActivity implements AuthView {
         String email = emailInput.getText().toString();
         String password = passwordInput.getText().toString();
         String confirmP = confirmPassword.getText().toString();
-        presenter.signUp(fullName , email, password);
+        if (fullName.isEmpty() || email.isEmpty() || password.isEmpty() || confirmP.isEmpty()) {
+            FullName.setError("Full name is required");
+            emailInput.setError("Email is required");
+            passwordInput.setError("password is required");
+            confirmPassword.setError("Confirm Password is required");
+            Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+        } else {
+            progressBar.setVisibility(View.VISIBLE);
+            presenter.signUp(fullName, email, password);
+        }
+
     }
-
-    @Override
-    public void showLoginSuccess(String message) {
-
-    }
-
-    @Override
-    public void showLoginError(String message) {
-
-    }
-
     @Override
     public void showSignUpSuccess(String message) {
+        progressBar.setVisibility(View.GONE);
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-        // Navigate to login or main activity
+
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("isLoggedIn", true);
+        editor.apply();
+        navigateToLoginScreen();
     }
 
     @Override
@@ -59,17 +92,58 @@ public class SignUp_Screen extends AppCompatActivity implements AuthView {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void showForgetPasswordSuccess(String message) {
-
-    }
-
-    @Override
-    public void showForgetPasswordError(String message) {
-
-    }
-
     public void login_text(View view) {
         startActivity(new Intent(this, Login_Screen.class));
+        finish();
+    }
+
+    private void navigateToLoginScreen() {
+        Intent intent = new Intent(this, Login_Screen.class);
+        startActivity(intent);
+        finish();
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    public void HidePassword() {
+        passwordInput.setOnTouchListener((v, event) -> {
+            final int DRAWABLE_END = 2;
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                if (event.getRawX() >= (passwordInput.getRight() - passwordInput.getCompoundDrawables()[DRAWABLE_END].getBounds().width())) {
+                    if (isPasswordVisible) {
+                        passwordInput.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                        passwordInput.setCompoundDrawablesWithIntrinsicBounds(R.drawable.key, 0, R.drawable.hidden, 0);
+                        isPasswordVisible = false;
+                    } else {
+                        passwordInput.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                        passwordInput.setCompoundDrawablesWithIntrinsicBounds(R.drawable.key, 0, R.drawable.eye_icon, 0);
+                        isPasswordVisible = true;
+                    }
+                    return true;
+                }
+            }
+            return false;
+        });
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    public void HideConfirmPassword() {
+        confirmPassword.setOnTouchListener((v, event) -> {
+            final int DRAWABLE_END = 2;
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                if (event.getRawX() >= (confirmPassword.getRight() - confirmPassword.getCompoundDrawables()[DRAWABLE_END].getBounds().width())) {
+                    if (isConfirmPasswordVisible) {
+                        confirmPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                        confirmPassword.setCompoundDrawablesWithIntrinsicBounds(R.drawable.key, 0, R.drawable.hidden, 0);
+                        isConfirmPasswordVisible = false;
+                    } else {
+                        confirmPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                        confirmPassword.setCompoundDrawablesWithIntrinsicBounds(R.drawable.key, 0, R.drawable.eye_icon, 0);
+                        isConfirmPasswordVisible = true;
+                    }
+                    return true;
+                }
+            }
+            return false;
+        });
     }
 }

@@ -3,14 +3,14 @@ package com.example.essen.presenter;
 import android.app.Activity;
 
 import com.example.essen.model.AuthService;
-import com.example.essen.view.AuthView;
+import com.example.essen.view.Auth.AuthViewForgetPassword;
 import com.google.firebase.auth.FirebaseUser;
 
 public class ForgetPasswordPresenter {
-    private AuthView view;
+    private AuthViewForgetPassword view;
     private AuthService authService;
 
-    public ForgetPasswordPresenter(AuthView view, Activity activity) {
+    public ForgetPasswordPresenter(AuthViewForgetPassword view, Activity activity) {
         this.view = view;
         this.authService = new AuthService(activity);
     }
@@ -26,6 +26,7 @@ public class ForgetPasswordPresenter {
             public void onFailure(String message) {
                 view.showForgetPasswordError("Error sending reset link: " + message);
             }
+
         });
     }
 }
