@@ -13,7 +13,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.essen.MainActivity;
+import com.example.essen.MainActivity.MainActivity;
 import com.example.essen.R;
 
 public class Welcome_Screen extends AppCompatActivity {

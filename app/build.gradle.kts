@@ -30,6 +30,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -39,9 +42,24 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.firebase.auth)
+    implementation(libs.navigation.fragment)
+    implementation(libs.navigation.ui)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-    implementation("com.google.firebase:firebase-auth:21.0.1")
-    implementation("com.google.android.gms:play-services-auth:20.3.0")
+    implementation(libs.firebase.auth.v2101)
+    implementation(libs.play.services.auth)
+    //intuit
+    implementation(libs.sdp.android)
+    implementation(libs.ssp.android)
+
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.glide)
+
+    implementation(libs.navigation.fragment)
+    implementation(libs.navigation.ui)
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 }

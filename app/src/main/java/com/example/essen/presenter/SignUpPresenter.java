@@ -25,6 +25,7 @@ public class SignUpPresenter {
             @Override
             public void onFailure(String message) {
                 view.showSignUpError("Sign Up Failed: " + message);
+                view.checkNetworkStatus("No Internet connection");
             }
 
         });

@@ -22,10 +22,10 @@ public class LoginPresenter {
             public void onSuccess(FirebaseUser user) {
                 view.showLoginSuccess("Login Successful");
             }
-
             @Override
             public void onFailure(String message) {
                 view.showLoginError("Login Failed: " + message);
+                view.checkNetworkStatus("No Internet connection");
             }
 
         });
@@ -34,7 +34,6 @@ public class LoginPresenter {
     public void loginWithGoogle(Activity activity) {
         authService.signInWithGoogle(activity);
     }
-
     public void handleGoogleSignInResult(Intent data) {
         authService.handleGoogleSignInResult(data, new AuthService.AuthCallback() {
             @Override
@@ -49,4 +48,6 @@ public class LoginPresenter {
 
         });
     }
+
+
 }

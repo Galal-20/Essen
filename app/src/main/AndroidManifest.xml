@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <uses-permission
         android:name="android.permission.LOCATION_HARDWARE"
         tools:ignore="ProtectedPermissions" />
@@ -20,6 +22,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Essen"
         tools:targetApi="31">
+        <activity
+            android:name=".PopularActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MealActivity.MealActivity"
+            android:exported="false" />
         <activity
             android:name=".view.Auth.ForgetPassword"
             android:exported="false" />
@@ -39,7 +47,7 @@
             android:name=".view.Auth.Login_Screen"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".MainActivity.MainActivity"
             android:exported="false" />
 
         <meta-data

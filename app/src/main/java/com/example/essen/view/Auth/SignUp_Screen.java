@@ -6,18 +6,23 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.essen.R;
+import com.example.essen.Util.NetworkChangeReceiver;
 import com.example.essen.presenter.SignUpPresenter;
+import com.google.android.material.snackbar.Snackbar;
 
 public class SignUp_Screen extends AppCompatActivity implements AuthViewSiginUp {
     private EditText FullName;
@@ -35,11 +40,7 @@ public class SignUp_Screen extends AppCompatActivity implements AuthViewSiginUp 
         super.onCreate(savedInstanceState);
         Hide_status_Bar();
         setContentView(R.layout.activity_sign_up_screen);
-        FullName = findViewById(R.id.full_name);
-        emailInput = findViewById(R.id.Email);
-        passwordInput = findViewById(R.id.password_toggle);
-        confirmPassword = findViewById(R.id.password_Confirm);
-        progressBar = findViewById(R.id.progress_cir);
+        findViewsById();
         presenter = new SignUpPresenter(this, this);
         HidePassword();
         HideConfirmPassword();
@@ -58,17 +59,21 @@ public class SignUp_Screen extends AppCompatActivity implements AuthViewSiginUp 
         }
     }
 
+    public void findViewsById() {
+        FullName = findViewById(R.id.full_name);
+        emailInput = findViewById(R.id.Email);
+        passwordInput = findViewById(R.id.password_toggle);
+        confirmPassword = findViewById(R.id.password_Confirm);
+        progressBar = findViewById(R.id.progress_cir);
+    }
+
     public void register_button(View view) {
         String fullName = FullName.getText().toString();
         String email = emailInput.getText().toString();
         String password = passwordInput.getText().toString();
         String confirmP = confirmPassword.getText().toString();
         if (fullName.isEmpty() || email.isEmpty() || password.isEmpty() || confirmP.isEmpty()) {
-            FullName.setError("Full name is required");
-            emailInput.setError("Email is required");
-            passwordInput.setError("password is required");
-            confirmPassword.setError("Confirm Password is required");
-            Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+            Snackbar.make(view, "Please fill all fields", Snackbar.LENGTH_SHORT).show();
         } else {
             progressBar.setVisibility(View.VISIBLE);
             presenter.signUp(fullName, email, password);
@@ -89,7 +94,45 @@ public class SignUp_Screen extends AppCompatActivity implements AuthViewSiginUp 
 
     @Override
     public void showSignUpError(String message) {
+        progressBar.setVisibility(View.GONE);
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void checkNetworkStatus(String message) {
+        boolean isConnected = NetworkChangeReceiver.isConnectedToInternet(this);
+        if (!isConnected) {
+            showCustomSnackbar(message, Snackbar.LENGTH_SHORT);
+        }
+    }
+
+    private void showCustomSnackbar(String message, int duration) {
+        // Use the root view of your Activity or Fragment to show the Snackbar
+        View rootView = findViewById(android.R.id.content);
+
+        Snackbar snackbar = Snackbar.make(rootView, "", duration);
+
+        // Inflate the custom layout
+        @SuppressLint("RestrictedApi") Snackbar.SnackbarLayout snackbarLayout = (Snackbar.SnackbarLayout) snackbar.getView();
+        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        View customSnackbarView = inflater.inflate(R.layout.snackbar_custom, null);
+
+        // Set the custom layout to the Snackbar
+        snackbarLayout.addView(customSnackbarView, 0);
+
+        // Set the message text
+        TextView textView = customSnackbarView.findViewById(R.id.snackbar_text);
+        textView.setText(message);
+
+        // Optionally set an icon based on network status
+        ImageView iconView = customSnackbarView.findViewById(R.id.snackbar_icon);
+        if (message.contains("No Internet")) {
+            iconView.setImageResource(R.drawable.ic_no_internet); // Replace with actual no-internet icon
+        } else {
+            iconView.setImageResource(R.drawable.ic_wifi); // Replace with actual Wi-Fi icon
+        }
+
+        snackbar.show();
     }
 
     public void login_text(View view) {
@@ -123,6 +166,8 @@ public class SignUp_Screen extends AppCompatActivity implements AuthViewSiginUp 
             }
             return false;
         });
+
+
     }
 
     @SuppressLint("ClickableViewAccessibility")

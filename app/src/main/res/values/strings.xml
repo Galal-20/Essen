@@ -19,4 +19,19 @@
     <string name="confirm_password">Confirm password</string>
     <string name="default_web_client_id">949273495788-kp66fgl7tullnu1479331losrusmgt9p.apps.googleusercontent.com</string>
     <string name="log_out">Log Out</string>
+    <string name="home">Home</string>
+    <string name="search">Search</string>
+    <string name="favorite">Favorite</string>
+    <string name="profile">Profile</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="accoutn_details">Account Details:</string>
+    <string name="username">User Name:</string>
+    <string name="examle_gmail_com">examle@gmail.com</string>
+    <string name="galal_ahmed">Galal Ahmed</string>
+    <string name="email_profile">Email:</string>
+    <string name="popualr_meals">Popualr Meals</string>
+    <string name="Category">Category: </string>
+    <string name="Area">Area: </string>
+    <string name="meal_name">Meal Name</string>
+    <string name="add_to_favorites">Add to Favorites</string>
 </resources>

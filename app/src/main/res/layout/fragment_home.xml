@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipeRefreshLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".HomeFragment.HomeFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraint1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <!-- Top Section: Title -->
+                <LinearLayout
+                    android:id="@+id/lin1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_weight="3"
+                        android:text="@string/home"
+                        android:textColor="#D81B60"
+                        android:textSize="30sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- Subtitle -->
+                <TextView
+                    android:id="@+id/text1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:text="Choose your favourites food"
+                    android:textAlignment="textStart"
+                    android:textColor="#D81B60"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="@id/lin1"
+                    app:layout_constraintStart_toStartOf="@id/lin1"
+                    app:layout_constraintTop_toBottomOf="@id/lin1" />
+
+                <!-- Random Meal Card -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardF"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_margin="16dp"
+                    android:background="@color/white"
+                    android:backgroundTint="@color/white"
+                    android:elevation="@dimen/_5sdp"
+                    app:cardCornerRadius="15dp"
+                    app:layout_constraintEnd_toEndOf="@id/text1"
+                    app:layout_constraintStart_toStartOf="@id/text1"
+                    app:layout_constraintTop_toBottomOf="@id/text1">
+
+                    <ImageView
+                        android:id="@+id/imageView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        tools:ignore="ContentDescription" />
+                </androidx.cardview.widget.CardView>
+
+                <!-- Popular Meals Section -->
+                <TextView
+                    android:id="@+id/textP"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:text="Popular"
+                    android:textColor="#D81B60"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@id/recycleP"
+                    app:layout_constraintEnd_toEndOf="@id/cardF"
+                    app:layout_constraintStart_toStartOf="@id/cardF"
+                    app:layout_constraintTop_toBottomOf="@id/cardF" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycleP"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    app:layout_constraintStart_toStartOf="@id/textP"
+                    app:layout_constraintTop_toBottomOf="@id/textP" />
+
+                <!-- Categories Section in CardView -->
+                <TextView
+                    android:id="@+id/textC"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Categories"
+                    android:textColor="#D81B60"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@id/cardC"
+                    app:layout_constraintStart_toStartOf="@id/recycleP"
+                    app:layout_constraintTop_toBottomOf="@id/recycleP" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardC"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:backgroundTint="@color/white"
+                    android:elevation="@dimen/_5sdp"
+                    app:cardCornerRadius="15dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/textC"
+                    app:layout_constraintTop_toBottomOf="@id/textC">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycleC"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible" />
+                </androidx.cardview.widget.CardView>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
