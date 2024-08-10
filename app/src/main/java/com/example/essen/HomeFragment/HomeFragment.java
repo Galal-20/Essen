@@ -16,13 +16,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
+import com.example.essen.CategoryMealActivity.CategoryMeal;
 import com.example.essen.MealActivity.MealActivity;
 import com.example.essen.R;
 import com.example.essen.pojo.Category;
-import com.example.essen.pojo.Meal;
+import com.example.essen.pojo.MainMeal;
 
 import java.util.List;
-
 
 public class HomeFragment extends Fragment implements HomeContract.View {
 
@@ -32,6 +32,9 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     public static final String LOCATION = "com.example.essen.HomeFragment.location";
     public static final String INSTRUCTIONS = "com.example.essen.HomeFragment.Instructions";
     public static final String YOUTUBE = "com.example.essen.HomeFragment.youtube";
+    public static final String CATEGORY_NAME = "com.example.essen.HomeFragment.categoryName";
+
+
     RecyclerView categoryRecyclerView;
     private ImageView imageView;
     private HomeContract.Presenter presenter;
@@ -39,7 +42,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     private RecyclerView recyclerView;
     private PopularFoodAdapter popularFoodAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private Meal randomMeal;
+    private MainMeal randomMeal;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -88,14 +91,12 @@ public class HomeFragment extends Fragment implements HomeContract.View {
 
 
     @Override
-    public void showRandomMeal(Meal meal) {
+    public void showRandomMeal(MainMeal meal) {
         randomMeal = meal;
         Glide.with(getContext())
                 .load(meal.getStrMealThumb())
                 .into(imageView);
-
         swipeRefreshLayout.setRefreshing(false);
-
     }
 
     @Override
@@ -105,14 +106,12 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     }
 
     @Override
-    public void showPopularMeals(List<Meal> meal) {
-
+    public void showPopularMeals(List<MainMeal> meal) {
         if (popularFoodAdapter == null) {
             popularFoodAdapter = new PopularFoodAdapter(getContext(), meal);
             recyclerView.setAdapter(popularFoodAdapter);
-
         } else {
-            popularFoodAdapter.notifyDataSetChanged();
+            popularFoodAdapter.setMealsList(meal);
         }
         swipeRefreshLayout.setRefreshing(false);
 
@@ -122,15 +121,14 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     public void showCategories(List<Category> categories) {
         if (categories != null && !categories.isEmpty()) {
             categoryRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3)); // 3 columns, vertical
-            // orientation
             CategoryAdapter categoryAdapter = new CategoryAdapter();
             categoryAdapter.setCategoriesList(categories);
             categoryRecyclerView.setAdapter(categoryAdapter);
 
-            // Set a click listener if needed
             categoryAdapter.setOnItemClicked(category -> {
-                // Handle the category click event here
-                Toast.makeText(getContext(), "Clicked: " + category.getStrCategory(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getContext(), CategoryMeal.class);
+                intent.putExtra(CATEGORY_NAME, category.getStrCategory());
+                startActivity(intent);
             });
         } else {
             showError("No categories available");

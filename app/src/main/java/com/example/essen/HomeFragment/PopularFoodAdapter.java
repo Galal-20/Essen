@@ -14,18 +14,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.essen.MealActivity.MealActivity;
 import com.example.essen.R;
-import com.example.essen.pojo.Meal;
+import com.example.essen.pojo.MainMeal;
 
 import java.util.List;
 
 public class PopularFoodAdapter extends RecyclerView.Adapter<PopularFoodAdapter.PopularFoodViewHolder> {
 
     private final Context context;
-    private final List<Meal> popularMeals;
+    private List<MainMeal> popularMeals;
 
-    public PopularFoodAdapter(Context context, List<Meal> popularMeals) {
+    public PopularFoodAdapter(Context context, List<MainMeal> popularMeals) {
         this.context = context;
         this.popularMeals = popularMeals;
+    }
+
+    public void setMealsList(List<MainMeal> popularMeals) {
+        this.popularMeals = popularMeals;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -37,7 +42,7 @@ public class PopularFoodAdapter extends RecyclerView.Adapter<PopularFoodAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull PopularFoodViewHolder holder, int position) {
-        Meal meal = popularMeals.get(position);
+        MainMeal meal = popularMeals.get(position);
         Glide.with(context)
                 .load(meal.getStrMealThumb())
                 .into(holder.imagePopular);
@@ -57,6 +62,7 @@ public class PopularFoodAdapter extends RecyclerView.Adapter<PopularFoodAdapter.
     public int getItemCount() {
         return popularMeals.size();
     }
+
 
     public static class PopularFoodViewHolder extends RecyclerView.ViewHolder {
 

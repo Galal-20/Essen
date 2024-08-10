@@ -7,9 +7,9 @@ package com.example.essen.pojo;
 import java.util.List;
 
 public class MealList {
-    public List<Meal> meals;
+    public List<MainMeal> meals;
 
-    public List<Meal> getMeals() {
+    public List<MainMeal> getMeals() {
         return meals;
     }
 }

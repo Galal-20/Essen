@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="languages_array">
-        <item>System</item>
+        <item>Select Language</item>
         <item>English</item>
         <item>Arabic</item>
     </string-array>

@@ -3,7 +3,7 @@ package com.example.essen.HomeFragment;
 import android.util.Log;
 
 import com.example.essen.pojo.CategoryList;
-import com.example.essen.pojo.Meal;
+import com.example.essen.pojo.MainMeal;
 import com.example.essen.pojo.MealList;
 import com.example.essen.retrofit.RetrofitInstance;
 
@@ -44,7 +44,7 @@ public class HomePresenter implements HomeContract.Presenter {
 
     @Override
     public void getPopularMeals() {
-        List<Meal> mealList = new ArrayList<>();
+        List<MainMeal> mealList = new ArrayList<>();
 
         int mealCount = 30;
         for (int i = 0; i < mealCount; i++) {
@@ -85,6 +85,8 @@ public class HomePresenter implements HomeContract.Presenter {
             }
         });
     }
+
+
 
 
 

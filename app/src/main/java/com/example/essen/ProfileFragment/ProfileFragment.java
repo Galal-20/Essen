@@ -31,6 +31,7 @@ public class ProfileFragment extends Fragment {
     SwipeRefreshLayout swipeRefreshLayout;
     private AuthService authService;
     private Spinner languageSpinner;
+    String savedLanguage;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,14 +66,10 @@ public class ProfileFragment extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         languageSpinner.setAdapter(adapter);
 
-       /* ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                requireContext(), android.R.layout.simple_spinner_item, languages);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        languageSpinner.setAdapter(adapter);*/
 
         // Set the spinner to show the saved language choice
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        String savedLanguage = sharedPreferences.getString("selectedLanguage", "Select Language");
+        savedLanguage = sharedPreferences.getString("selectedLanguage", "Select Language");
 
         if (savedLanguage.equals("English")) {
             languageSpinner.setSelection(adapter.getPosition("English"));
@@ -88,8 +85,10 @@ public class ProfileFragment extends Fragment {
                 String selectedLanguage = (String) parent.getItemAtPosition(position);
                 if (selectedLanguage.equals("English")) {
                     setLocale("en");
+                    languageSpinner.getSelectedItem();
                 } else if (selectedLanguage.equals("Arabic")) {
                     setLocale("ar");
+                    languageSpinner.getSelectedItem();
                 }
             }
 
@@ -137,7 +136,13 @@ public class ProfileFragment extends Fragment {
         getActivity().finish();
     }
 
+
     private void showMessage(String message) {
         Snackbar.make(requireView(), message, Snackbar.LENGTH_SHORT).show();
     }
 }
+
+/* ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                requireContext(), android.R.layout.simple_spinner_item, languages);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        languageSpinner.setAdapter(adapter);*/

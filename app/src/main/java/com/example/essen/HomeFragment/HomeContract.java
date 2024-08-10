@@ -1,19 +1,20 @@
 package com.example.essen.HomeFragment;
 
 import com.example.essen.pojo.Category;
-import com.example.essen.pojo.Meal;
+import com.example.essen.pojo.MainMeal;
 
 import java.util.List;
 
 public interface HomeContract {
     interface View {
-        void showRandomMeal(Meal meal);
+        void showRandomMeal(MainMeal meal);
 
         void showError(String message);
 
-        void showPopularMeals(List<Meal> meal);
+        void showPopularMeals(List<MainMeal> meal);
 
         void showCategories(List<Category> categories);
+
 
     }
 
@@ -23,6 +24,7 @@ public interface HomeContract {
         void getPopularMeals();
 
         void getCategories();
+
 
     }
 }
