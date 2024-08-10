@@ -37,6 +37,7 @@ public class CategoryMealsAdapter extends RecyclerView.Adapter<CategoryMealsAdap
         Meal meal = mealList.get(position);
         Glide.with(holder.itemView.getContext()).load(meal.getStrMealThumb()).into(holder.imageMeal);
         holder.tvMeal.setText(meal.getStrMeal());
+
     }
 
     @Override
@@ -52,6 +53,8 @@ public class CategoryMealsAdapter extends RecyclerView.Adapter<CategoryMealsAdap
             super(itemView);
             imageMeal = itemView.findViewById(R.id.image_meal);
             tvMeal = itemView.findViewById(R.id.tv_meal);
+
+
         }
     }
 }

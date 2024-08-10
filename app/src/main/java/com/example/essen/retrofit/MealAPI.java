@@ -20,20 +20,7 @@ public interface MealAPI {
     @GET("filter.php?")
     Call<CatygoryByMeal> getMealByCategory(@Query("c") String categoryName);
 
-   /* @GET("lookup.php?")
-    Call<CatygoryList> getDetailsMeal(@Query("i") String id);
+    @GET("search.php?")
+    Call<MealList> getSearchMeal(@Query("s") String searchQuery);
 
-    @GET("filter.php?")
-    Call<CatygoryList> getPopularMeal(@Query("c") String categoryName);*/
-
-
-   /*
-   @GET("filter.php?")
-    Call<MealsByCategoryList> getFilterMeal(@Query("c") String categoryName);
-
-    @GET("categories.php")
-    Call<CategoryList> getCategories();
-
-    @GET("filter.php")
-    Call<MealsByCategoryList> getMealsByCategory(@Query("c") String categoryName);*/
 }

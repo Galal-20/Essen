@@ -19,10 +19,10 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.essen.FavoritFragment.FavoritFragment;
-import com.example.essen.Fragments.SearchFragment;
 import com.example.essen.HomeFragment.HomeFragment;
 import com.example.essen.ProfileFragment.ProfileFragment;
 import com.example.essen.R;
+import com.example.essen.SearchFragment.SearchFragment;
 import com.example.essen.Util.NetworkChangeReceiver;
 import com.example.essen.databinding.ActivityMainBinding;
 import com.google.android.material.snackbar.Snackbar;
