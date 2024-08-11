@@ -5,7 +5,7 @@
     android:id="@+id/swipeRefreshLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeFragment.HomeFragment">
+    tools:context=".Fragments.HomeFragment.HomeFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -53,7 +53,7 @@
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginEnd="20dp"
-                    android:text="Choose your favourites food"
+                    android:text="@string/indulge_in_your_culinary_cravings"
                     android:textAlignment="textStart"
                     android:textColor="#D81B60"
                     android:textSize="24sp"
@@ -92,7 +92,7 @@
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginEnd="20dp"
-                    android:text="Popular"
+                    android:text="@string/popualr_meals"
                     android:textColor="#D81B60"
                     android:textSize="24sp"
                     android:textStyle="bold"

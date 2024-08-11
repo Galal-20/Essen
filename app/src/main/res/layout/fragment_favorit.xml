@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    tools:context=".FavoritFragment.FavoritFragment">
+    tools:context=".Fragments.FavoritFragment.FavoritFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -44,7 +44,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginStart="@dimen/_85sdp"
-                    android:text="@string/Category"
+                    android:text="Favorites"
                     android:textSize="24sp"
                     android:textStyle="bold" />
 

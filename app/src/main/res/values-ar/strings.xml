@@ -30,11 +30,12 @@
     <string name="examle_gmail_com">example@gmail.com</string>
     <string name="galal_ahmed">جلال أحمد</string>
     <string name="email_profile">البريد الإلكتروني:</string>
-    <string name="popualr_meals">وجبات مشهورة</string>
+    <string name="popualr_meals">متعة الذواقة</string>
     <string name="Category">الفئة</string>
     <string name="meal_name">اسم الوجبة</string>
     <string name="add_to_favorites">أضف إلى المفضلة</string>
     <string name="Area">المنطقة: </string>
+    <string name="indulge_in_your_culinary_cravings">استمتع بتلبية رغباتك الذواقة</string>
 
 
 </resources>
