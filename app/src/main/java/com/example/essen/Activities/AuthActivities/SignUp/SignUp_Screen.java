@@ -11,6 +11,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -29,11 +32,18 @@ public class SignUp_Screen extends AppCompatActivity implements AuthViewSiginUp 
     private EditText emailInput;
     private EditText passwordInput;
     private EditText confirmPassword;
+    private TextView titleTextView;
+    private TextView registerTextView;
+    private TextView doYouTextView;
+    private TextView loginTextView;
+    private Button regButton;
     private SignUpPresenter presenter;
     private static final String PREFS_NAME = "MyPrefsFile";
     private ProgressBar progressBar;
     private boolean isPasswordVisible = false;
     private boolean isConfirmPasswordVisible = false;
+    private boolean isGuest; // Flag to check if the user is a guest
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,9 +51,13 @@ public class SignUp_Screen extends AppCompatActivity implements AuthViewSiginUp 
         Hide_status_Bar();
         setContentView(R.layout.activity_sign_up_screen);
         findViewsById();
+        applyFadeInAnimation();
         presenter = new SignUpPresenter(this, this);
         HidePassword();
         HideConfirmPassword();
+
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefsFile", MODE_PRIVATE);
+        isGuest = sharedPreferences.getBoolean("isGuest", true);
 
 
     }
@@ -59,12 +73,33 @@ public class SignUp_Screen extends AppCompatActivity implements AuthViewSiginUp 
         }
     }
 
+    private void applyFadeInAnimation() {
+        Animation fadeIn = new AlphaAnimation(0, 1);
+        fadeIn.setDuration(2000);
+
+
+        emailInput.startAnimation(fadeIn);
+        passwordInput.startAnimation(fadeIn);
+        confirmPassword.startAnimation(fadeIn);
+        titleTextView.startAnimation(fadeIn);
+        registerTextView.startAnimation(fadeIn);
+        doYouTextView.startAnimation(fadeIn);
+        loginTextView.startAnimation(fadeIn);
+        FullName.startAnimation(fadeIn);
+        regButton.startAnimation(fadeIn);
+    }
+
     public void findViewsById() {
         FullName = findViewById(R.id.full_name);
         emailInput = findViewById(R.id.Email);
         passwordInput = findViewById(R.id.password_toggle);
         confirmPassword = findViewById(R.id.password_Confirm);
         progressBar = findViewById(R.id.progress_cir);
+        titleTextView = findViewById(R.id.text_reg);
+        registerTextView = findViewById(R.id.Register);
+        doYouTextView = findViewById(R.id.Login_a);
+        loginTextView = findViewById(R.id.Text_Login);
+        regButton = findViewById(R.id.button_register);
     }
 
     public void register_button(View view) {
@@ -88,6 +123,7 @@ public class SignUp_Screen extends AppCompatActivity implements AuthViewSiginUp 
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("isLoggedIn", true);
+        editor.putBoolean("isGuest", false);
         editor.apply();
         navigateToLoginScreen();
     }
@@ -107,29 +143,24 @@ public class SignUp_Screen extends AppCompatActivity implements AuthViewSiginUp 
     }
 
     private void showCustomSnackbar(String message, int duration) {
-        // Use the root view of your Activity or Fragment to show the Snackbar
         View rootView = findViewById(android.R.id.content);
 
         Snackbar snackbar = Snackbar.make(rootView, "", duration);
 
-        // Inflate the custom layout
         @SuppressLint("RestrictedApi") Snackbar.SnackbarLayout snackbarLayout = (Snackbar.SnackbarLayout) snackbar.getView();
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         View customSnackbarView = inflater.inflate(R.layout.snackbar_custom, null);
 
-        // Set the custom layout to the Snackbar
         snackbarLayout.addView(customSnackbarView, 0);
 
-        // Set the message text
         TextView textView = customSnackbarView.findViewById(R.id.snackbar_text);
         textView.setText(message);
 
-        // Optionally set an icon based on network status
         ImageView iconView = customSnackbarView.findViewById(R.id.snackbar_icon);
         if (message.contains("No Internet")) {
-            iconView.setImageResource(R.drawable.ic_no_internet); // Replace with actual no-internet icon
+            iconView.setImageResource(R.drawable.ic_no_internet);
         } else {
-            iconView.setImageResource(R.drawable.ic_wifi); // Replace with actual Wi-Fi icon
+            iconView.setImageResource(R.drawable.ic_wifi);
         }
 
         snackbar.show();

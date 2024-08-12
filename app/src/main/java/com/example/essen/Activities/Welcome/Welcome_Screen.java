@@ -6,12 +6,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.widget.Button;
+import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.essen.Activities.AuthActivities.Login.Login_Screen;
 import com.example.essen.Activities.AuthActivities.SignUp.SignUp_Screen;
@@ -24,19 +24,29 @@ public class Welcome_Screen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         Hide_status_Bar();
         setContentView(R.layout.activity_welcome_screen);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        applyFadeInAnimation();
 
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         if (sharedPreferences.getBoolean("isLoggedIn", false)) {
             navigateToMainActivity();
         }
+    }
+
+    private void applyFadeInAnimation() {
+        Animation fadeIn = new AlphaAnimation(0, 1);
+        fadeIn.setDuration(4000);
+
+        TextView textWelcome = findViewById(R.id.Text_welcome);
+        Button buttonRegWelcome = findViewById(R.id.button_reg_Welcome);
+        Button buttonLoginWelcome = findViewById(R.id.login_button_welcome);
+        Button buttonGustWelcome = findViewById(R.id.gust_button_welcome);
+
+        textWelcome.startAnimation(fadeIn);
+        buttonRegWelcome.startAnimation(fadeIn);
+        buttonLoginWelcome.startAnimation(fadeIn);
+        buttonGustWelcome.startAnimation(fadeIn);
     }
 
     public void Hide_status_Bar() {
@@ -65,4 +75,20 @@ public class Welcome_Screen extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+    private void navToMain() {
+        startActivity(new Intent(this, MainActivity.class));
+    }
+
+    public void Guest(View view) {
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        //editor.putBoolean("isLoggedIn", true);
+        editor.putBoolean("isGuest", true);
+        editor.apply();
+
+        navToMain();
+    }
 }
+
+

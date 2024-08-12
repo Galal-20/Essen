@@ -54,6 +54,7 @@ public class PopularFoodAdapter extends RecyclerView.Adapter<PopularFoodAdapter.
             intent.putExtra(HomeFragment.Cat, meal.getStrCategory());
             intent.putExtra(HomeFragment.LOCATION, meal.getStrArea());
             intent.putExtra(HomeFragment.INSTRUCTIONS, meal.getStrInstructions());
+            intent.putExtra(HomeFragment.YOUTUBE, meal.getStrYoutube());
             context.startActivity(intent);
         });
     }

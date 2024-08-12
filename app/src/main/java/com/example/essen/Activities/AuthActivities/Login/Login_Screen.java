@@ -11,6 +11,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -31,6 +34,18 @@ import com.google.android.material.snackbar.Snackbar;
 public class Login_Screen extends AppCompatActivity implements AuthViewLogin {
     private EditText emailInput;
     private EditText passwordInput;
+    private Button loginButton;
+    private TextView titleTextView;
+    ;
+    private TextView loginTextView;
+    ;
+    private TextView forgetPasswordTextView;
+    private TextView orTextView;
+    private TextView byWithTextView;
+    private TextView doYouHaveTextView;
+    private TextView regTextView;
+    private ImageView googleButton;
+    private ImageView facebookButton;
     private LoginPresenter presenter;
     private static final String PREFS_NAME = "MyPrefsFile";
     private static final String SERURE_KEY = "password_key_09@0";
@@ -44,11 +59,32 @@ public class Login_Screen extends AppCompatActivity implements AuthViewLogin {
         Hide_status_Bar();
         setContentView(R.layout.activity_login_screen);
         findViewsById();
+        applyFadeInAnimation();
         presenter = new LoginPresenter(this, this);
         HidePassword();
         SharedPreferences();
 
 
+    }
+
+
+    private void applyFadeInAnimation() {
+        Animation fadeIn = new AlphaAnimation(0, 1);
+        fadeIn.setDuration(2000);
+
+
+        emailInput.startAnimation(fadeIn);
+        passwordInput.startAnimation(fadeIn);
+        titleTextView.startAnimation(fadeIn);
+        loginTextView.startAnimation(fadeIn);
+        forgetPasswordTextView.startAnimation(fadeIn);
+        orTextView.startAnimation(fadeIn);
+        byWithTextView.startAnimation(fadeIn);
+        googleButton.startAnimation(fadeIn);
+        facebookButton.startAnimation(fadeIn);
+        doYouHaveTextView.startAnimation(fadeIn);
+        regTextView.startAnimation(fadeIn);
+        loginButton.startAnimation(fadeIn);
     }
 
     public void Hide_status_Bar() {
@@ -66,6 +102,16 @@ public class Login_Screen extends AppCompatActivity implements AuthViewLogin {
         emailInput = findViewById(R.id.email);
         passwordInput = findViewById(R.id.password);
         progressBar = findViewById(R.id.progress);
+        titleTextView = findViewById(R.id.text_reg);
+        loginTextView = findViewById(R.id.Register);
+        forgetPasswordTextView = findViewById(R.id.forgetPassword);
+        orTextView = findViewById(R.id.text_or);
+        byWithTextView = findViewById(R.id.text_continue);
+        googleButton = findViewById(R.id.button_google);
+        facebookButton = findViewById(R.id.button_facebook);
+        doYouHaveTextView = findViewById(R.id.Login_a);
+        regTextView = findViewById(R.id.Text_Login);
+        loginButton = findViewById(R.id.button_log);
     }
 
     public void Login_button(View view) {
@@ -102,6 +148,7 @@ public class Login_Screen extends AppCompatActivity implements AuthViewLogin {
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("isLoggedIn", true);
+        editor.putBoolean("isGuest", false);
         editor.apply();
         securePreferences.put("isLoggedIn", "true");
 

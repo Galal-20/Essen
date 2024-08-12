@@ -62,7 +62,7 @@ public class HomePresenter implements HomeContract.Presenter {
 
                 @Override
                 public void onFailure(Call<MealList> call, Throwable t) {
-                    view.showError("Check network");
+                    //view.showError("Check network");
                 }
             });
         }

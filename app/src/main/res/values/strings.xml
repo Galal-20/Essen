@@ -35,4 +35,5 @@
     <string name="meal_name">Meal Name</string>
     <string name="add_to_favorites">Add to Favorites</string>
     <string name="indulge_in_your_culinary_cravings">Indulge in Your Culinary Cravings</string>
+    <string name="guest">Guest</string>
 </resources>

@@ -41,10 +41,10 @@
         android:text="@string/register"
         android:padding="19dp"
         android:textAllCaps="false"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/Text_welcome"
+        app:layout_constraintBottom_toTopOf="@id/login_button_welcome"
         app:layout_constraintVertical_bias="0.6"
         android:textStyle="bold"
         android:textColor="@color/white"
@@ -56,18 +56,40 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintWidth_percent=".8"
+        android:id="@+id/login_button_welcome"
         android:text="@string/login"
         android:padding="19dp"
         android:textAllCaps="false"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/gust_button_welcome"
         app:layout_constraintTop_toBottomOf="@id/button_reg_Welcome"
+
         app:layout_constraintVertical_bias="0.5"
         android:textStyle="bold"
         android:textColor="@color/white"
         android:onClick="Login_screen"
         android:backgroundTint="@color/cardview_dark_background"
+
+        />
+
+    <Button
+        android:id="@+id/gust_button_welcome"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/cardview_dark_background"
+        android:onClick="Guest"
+        android:padding="19dp"
+        android:text="@string/guest"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/login_button_welcome"
+        app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintWidth_percent=".8"
 
         />
 

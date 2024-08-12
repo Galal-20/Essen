@@ -1,5 +1,7 @@
 package com.example.essen.Activities.MealActivity;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -8,9 +10,11 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.example.essen.Activities.AuthActivities.Login.Login_Screen;
 import com.example.essen.Fragments.HomeFragment.HomeFragment;
 import com.example.essen.R;
 import com.example.essen.room.AppDatabase;
@@ -46,6 +50,8 @@ public class MealActivity extends AppCompatActivity implements MealView {
     String youtubeLink;
     private MealPresenter presenter;
     private AppDatabase appDatabase;
+    private boolean isGuest; // Flag to check if the user is a guest
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,12 +60,35 @@ public class MealActivity extends AppCompatActivity implements MealView {
         setContentView(R.layout.activity_meal);
         findView();
         presenter = new MealPresenter(this);
-        appDatabase = AppDatabase.getDatabase(this); // Initialize Room Database
+        appDatabase = AppDatabase.getDatabase(this);
         getDataFromIntent();
         setYoutubeLinkClickListener();
 
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefsFile", MODE_PRIVATE);
+        isGuest = sharedPreferences.getBoolean("isGuest", true);
+
         favoriteButton.setOnClickListener(v -> {
-            saveMealToFavorites();
+            if (isGuest) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Please login to save your mael.");
+                builder.setMessage("Are you want to join with us?");
+
+                builder.setPositiveButton("Go to login", (dialog, which) -> {
+                    startActivity(new Intent(getApplicationContext(), Login_Screen.class));
+                    finish();
+                    dialog.dismiss();
+                });
+
+                builder.setNegativeButton("Still Guest", (dialog, which) -> {
+                    dialog.dismiss();
+                });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+
+            } else {
+                saveMealToFavorites();
+            }
+
         });
 
         getLifecycle().addObserver(youTubePlayerView);
@@ -72,13 +101,14 @@ public class MealActivity extends AppCompatActivity implements MealView {
                 String videoId = youtubeLink.split("v=")[1];
                 youTubePlayer.loadVideo(videoId, 0);*/
                 /* youTubePlayer.loadVideo(getVideoIdFromUrl(youtubeLink), 0);*/
+
                 String videoId = getVideoIdFromUrl(youtubeLink);
                 if (videoId != null) {
                     //youTubePlayer.loadVideo(videoId, 0);
                     youTubePlayer.cueVideo(videoId, 0);
 
                 } else {
-                    showMessage("Invalid YouTube URL");
+                    showMessage("Video not available");
                 }
 
             }

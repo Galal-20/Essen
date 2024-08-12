@@ -24,7 +24,7 @@
         android:layout_marginEnd="8dp"
         android:gravity="start"
         android:text="Text Coonectivity"
-        android:textColor="@android:color/black"
+        android:textColor="@color/white"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/snackbar_icon"

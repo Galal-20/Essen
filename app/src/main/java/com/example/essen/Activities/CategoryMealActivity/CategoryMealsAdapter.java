@@ -1,5 +1,6 @@
 package com.example.essen.Activities.CategoryMealActivity;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import java.util.List;
 
 public class CategoryMealsAdapter extends RecyclerView.Adapter<CategoryMealsAdapter.CategoryMealsViewHolder> {
     private ArrayList<Meal> mealList = new ArrayList<>();
+    static Context context;
 
     public void setMealsList(List<Meal> mealList) {
         this.mealList = (ArrayList<Meal>) mealList;
@@ -37,6 +39,17 @@ public class CategoryMealsAdapter extends RecyclerView.Adapter<CategoryMealsAdap
         Meal meal = mealList.get(position);
         Glide.with(holder.itemView.getContext()).load(meal.getStrMealThumb()).into(holder.imageMeal);
         holder.tvMeal.setText(meal.getStrMeal());
+
+       /* holder.itemView.setOnClickListener(v ->{
+            Intent intent = new Intent(context, MealActivity.class);
+            intent.putExtra(HomeFragment.NAME_MEAL, meal.getidMeal());
+            intent.putExtra(HomeFragment.THUMB_MEAL, meal.getStrMealThumb());
+            intent.putExtra(HomeFragment.Cat, meal.getStrCategory());
+            intent.putExtra(HomeFragment.LOCATION, meal.getStrArea());
+            intent.putExtra(HomeFragment.INSTRUCTIONS, meal.getStrInstructions());
+            intent.putExtra(HomeFragment.YOUTUBE,meal.getStrYoutube());
+            context.startActivity(intent);
+        });*/
 
     }
 

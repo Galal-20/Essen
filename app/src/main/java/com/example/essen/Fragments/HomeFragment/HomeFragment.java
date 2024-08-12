@@ -2,10 +2,12 @@ package com.example.essen.Fragments.HomeFragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
@@ -43,6 +45,8 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     private PopularFoodAdapter popularFoodAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private MainMeal randomMeal;
+    private ProgressBar progressBar;  // Add ProgressBar
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,13 +63,17 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         recyclerView = view.findViewById(R.id.recycleP);
         categoryRecyclerView = view.findViewById(R.id.recycleC);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
+        progressBar = view.findViewById(R.id.progressBar);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        showLoading(true);
+
         presenter.getRandomMeal();
         presenter.getPopularMeals();
         presenter.getCategories();
 
         swipeRefreshLayout.setOnRefreshListener(() -> {
+            showLoading(true);
             presenter.getRandomMeal();
             presenter.getPopularMeals();
             presenter.getCategories();
@@ -89,20 +97,34 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         return view;
     }
 
+    private void showLoading(boolean isLoading) {
+        if (isLoading) {
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            progressBar.setVisibility(View.GONE);
+        }
+    }
+
 
     @Override
     public void showRandomMeal(MainMeal meal) {
-        randomMeal = meal;
-        Glide.with(getContext())
-                .load(meal.getStrMealThumb())
-                .into(imageView);
-        swipeRefreshLayout.setRefreshing(false);
+        if (isAdded() && getView() != null && imageView != null) {
+            randomMeal = meal;
+            Glide.with(requireContext())
+                    .load(meal.getStrMealThumb())
+                    .into(imageView);
+            swipeRefreshLayout.setRefreshing(false);
+            showLoading(false);
+        } else {
+            Log.w("HomeFragment", "Fragment not attached or view not ready. Cannot load image.");
+        }
     }
 
     @Override
     public void showError(String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
         swipeRefreshLayout.setRefreshing(false);
+        showLoading(false);
     }
 
     @Override
@@ -114,6 +136,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
             popularFoodAdapter.setMealsList(meal);
         }
         swipeRefreshLayout.setRefreshing(false);
+        showLoading(false);
 
     }
 
@@ -133,6 +156,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         } else {
             showError("No categories available");
         }
+        showLoading(false);
     }
 
 

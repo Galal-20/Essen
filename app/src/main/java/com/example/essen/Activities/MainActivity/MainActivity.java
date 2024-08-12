@@ -1,7 +1,10 @@
 package com.example.essen.Activities.MainActivity;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,12 +15,14 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.essen.Activities.AuthActivities.Login.Login_Screen;
 import com.example.essen.Fragments.FavoritFragment.FavoritFragment;
 import com.example.essen.Fragments.HomeFragment.HomeFragment;
 import com.example.essen.Fragments.ProfileFragment.ProfileFragment;
@@ -35,6 +40,9 @@ public class MainActivity extends AppCompatActivity implements NetworkChangeRece
     boolean isConnected;
     private NetworkChangeReceiver networkChangeReceiver;
     private boolean wasDisconnected = false;  // Track the previous connection state
+    private boolean isGuest; // Flag to check if the user is a guest
+    private boolean isLoggedIn;
+
 
 
     @SuppressLint("NonConstantResourceId")
@@ -47,6 +55,12 @@ public class MainActivity extends AppCompatActivity implements NetworkChangeRece
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         isConnected = NetworkChangeReceiver.isConnectedToInternet(this);
         checkNetworkStatus();
+
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefsFile", MODE_PRIVATE);
+        isGuest = sharedPreferences.getBoolean("isGuest", true);
+        //isLoggedIn = getIntent().getBooleanExtra("isLoggedIn", true);
+
+
 
         if (swipeRefreshLayout != null) {
             swipeRefreshLayout.setOnRefreshListener(() -> {
@@ -73,9 +87,52 @@ public class MainActivity extends AppCompatActivity implements NetworkChangeRece
             } else if (itemId == R.id.searchMenu) {
                 replaceFragment(new SearchFragment());
             } else if (itemId == R.id.favMenu) {
-                replaceFragment(new FavoritFragment());
+                if (isGuest) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("Please login to access your favorites.");
+                    builder.setMessage("Are you want to join with us?");
+
+                    builder.setPositiveButton("Go to login", (dialog, which) -> {
+                        startActivity(new Intent(getApplicationContext(), Login_Screen.class));
+                        finish();
+                        dialog.dismiss();
+                    });
+
+                    builder.setNegativeButton("Still Guest", (dialog, which) -> {
+                        dialog.dismiss();
+                        replaceFragment(new HomeFragment());
+                    });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+
+                } else {
+                    replaceFragment(new FavoritFragment());
+                }
+
             } else if (itemId == R.id.profileMenu) {
-                replaceFragment(new ProfileFragment());
+                if (isGuest) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("Please login to show profile.");
+                    builder.setMessage("Are you want to join with us?");
+
+                    builder.setPositiveButton("Go to login", (dialog, which) -> {
+                        startActivity(new Intent(getApplicationContext(), Login_Screen.class));
+                        finish();
+                        dialog.dismiss();
+                    });
+
+                    builder.setNegativeButton("Still Guest", (dialog, which) -> {
+                        dialog.dismiss();
+                        startActivity(new Intent(this, MainActivity.class));
+                        finish();
+                    });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+
+                } else {
+                    replaceFragment(new ProfileFragment());
+                }
+
             }
             return true;
         });
@@ -157,6 +214,34 @@ public class MainActivity extends AppCompatActivity implements NetworkChangeRece
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
+    }
+
+    private void showAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Confirm Action");
+        builder.setMessage("Are you sure you want to proceed?");
+
+        // Set up the Yes button
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                // Action to perform when Yes is clicked
+                dialog.dismiss();
+                // Add your code here for what should happen when Yes is clicked
+            }
+        });
+
+        // Set up the No button
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                // Action to perform when No is clicked
+                dialog.dismiss();
+                // Add your code here for what should happen when No is clicked
+            }
+        });
+
+        // Show the alert dialog
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 }
 
