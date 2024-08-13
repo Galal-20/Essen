@@ -1,31 +1,13 @@
 package com.example.essen.pojo;
 
 public class Meal {
-    private String strMealThumb;
-    private String idMeal;
-    private String strMeal;
+    private String strArea;
 
-    public String getStrMealThumb() {
-        return strMealThumb;
+    public String getStrArea() {
+        return strArea;
     }
 
-    public void setStrMealThumb(String value) {
-        this.strMealThumb = value;
-    }
-
-    public String getidMeal() {
-        return idMeal;
-    }
-
-    public void setidMeal(String value) {
-        this.idMeal = value;
-    }
-
-    public String getStrMeal() {
-        return strMeal;
-    }
-
-    public void setStrMeal(String value) {
-        this.strMeal = value;
+    public void setStrArea(String value) {
+        this.strArea = value;
     }
 }

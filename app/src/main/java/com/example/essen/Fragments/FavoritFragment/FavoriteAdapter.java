@@ -90,6 +90,7 @@ public class FavoriteAdapter extends ListAdapter<MealEntity, FavoriteAdapter.Mea
                 intent.putExtra(HomeFragment.LOCATION, meal.getStrArea());
                 intent.putExtra(HomeFragment.INSTRUCTIONS, meal.getStrInstructions());
                 intent.putExtra(HomeFragment.YOUTUBE, meal.getStrYoutube());
+                intent.putExtra(HomeFragment.INGREDIENTS, meal.getIngredients());
                 context.startActivity(intent);
             });
 

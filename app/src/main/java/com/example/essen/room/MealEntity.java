@@ -15,14 +15,23 @@ public class MealEntity {
     private String strCategory;
     private String strArea;
     private String strInstructions;
+    private String ingredients;
     private String strYoutube;
 
     public int getId() {
         return id;
     }
 
+    public String getIngredients() {
+        return ingredients;
+    }
+
     public void setId(int id) {
         this.id = id;
+    }
+
+    public void setIngredients(String ingredients) {
+        this.ingredients = ingredients;
     }
 
     public String getStrMeal() {

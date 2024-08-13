@@ -17,6 +17,11 @@
         android:title="@string/favorite" />
 
     <item
+        android:id="@+id/countries"
+        android:icon="@drawable/country"
+        android:title="@string/countries" />
+
+    <item
         android:id="@+id/profileMenu"
         android:icon="@drawable/user"
         android:title="@string/profile" />

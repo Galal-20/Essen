@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.essen.R;
-import com.example.essen.pojo.Meal;
+import com.example.essen.pojo.MealX;
 
 import java.util.List;
 
@@ -52,7 +52,7 @@ public class CategoryMeal extends AppCompatActivity implements CategoryContract.
     }
 
     @Override
-    public void showCategoryMeal(List<Meal> mealList) {
+    public void showCategoryMeal(List<MealX> mealList) {
         categoryMealsAdapter.setMealsList(mealList);
         text_title.setText(name_of_title);
 

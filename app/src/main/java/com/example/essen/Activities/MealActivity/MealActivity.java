@@ -40,6 +40,7 @@ public class MealActivity extends AppCompatActivity implements MealView {
     TextView locationTextView;
     TextView mealInstructions;
     ImageView imageLinkYoutube;
+    TextView textIngredients;
     FloatingActionButton favoriteButton;
     LinearProgressIndicator progressBar;
     String mealCat;
@@ -48,6 +49,7 @@ public class MealActivity extends AppCompatActivity implements MealView {
     String location;
     String instructions;
     String youtubeLink;
+    String textIngredient;
     private MealPresenter presenter;
     private AppDatabase appDatabase;
     private boolean isGuest; // Flag to check if the user is a guest
@@ -164,6 +166,7 @@ public class MealActivity extends AppCompatActivity implements MealView {
         progressBar = findViewById(R.id.proBar);
         favoriteButton = findViewById(R.id.float_button);
         youTubePlayerView = findViewById(R.id.youtube_player_view);
+        textIngredients = findViewById(R.id.textIngredients);
     }
 
     public void getDataFromIntent() {
@@ -173,7 +176,10 @@ public class MealActivity extends AppCompatActivity implements MealView {
         location = getIntent().getStringExtra(HomeFragment.LOCATION);
         instructions = getIntent().getStringExtra(HomeFragment.INSTRUCTIONS);
         youtubeLink = getIntent().getStringExtra(HomeFragment.YOUTUBE);
-        presenter.loadMealData(mealCat, mealName, mealThumb, location, instructions, youtubeLink);
+        textIngredient = getIntent().getStringExtra(HomeFragment.INGREDIENTS);
+        presenter.loadMealData(mealCat, mealName, mealThumb, location, instructions, youtubeLink,
+                textIngredient
+        );
     }
 
     public void setYoutubeLinkClickListener() {
@@ -203,6 +209,11 @@ public class MealActivity extends AppCompatActivity implements MealView {
     @Override
     public void showMealInstructions(String instructions) {
         mealInstructions.setText(instructions);
+    }
+
+    @Override
+    public void showMeaIngredients(String ingredients) {
+        textIngredients.setText(ingredients);
     }
 
     @Override
@@ -255,6 +266,7 @@ public class MealActivity extends AppCompatActivity implements MealView {
                     mealEntity.setStrArea(location);
                     mealEntity.setStrInstructions(instructions);
                     mealEntity.setStrYoutube(youtubeLink);
+                    mealEntity.setIngredients(textIngredient);
 
                     appDatabase.mealDao().insert(mealEntity);
 

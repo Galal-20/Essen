@@ -1,7 +1,5 @@
-package com.example.essen.Fragments.HomeFragment;
-
-
-import static com.example.essen.Fragments.HomeFragment.HomeFragment.INGREDIENTS;
+// MealAdapter.java
+package com.example.essen.Activities.MealCountry;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,55 +7,53 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.essen.Activities.MealActivity.MealActivity;
+import com.example.essen.Fragments.HomeFragment.HomeFragment;
 import com.example.essen.R;
 import com.example.essen.pojo.MainMeal;
 
 import java.util.List;
 
-public class PopularFoodAdapter extends RecyclerView.Adapter<PopularFoodAdapter.PopularFoodViewHolder> {
+public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> {
 
-    private final Context context;
-    private List<MainMeal> popularMeals;
+    private List<MainMeal> meals;
+    private Context context;
 
-    public PopularFoodAdapter(Context context, List<MainMeal> popularMeals) {
+    public MealAdapter(Context context, List<MainMeal> meals) {
         this.context = context;
-        this.popularMeals = popularMeals;
-    }
-
-    public void setMealsList(List<MainMeal> popularMeals) {
-        this.popularMeals = popularMeals;
-        notifyDataSetChanged();
+        this.meals = meals;
     }
 
     @NonNull
     @Override
-    public PopularFoodViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.popular_item, parent, false);
-        return new PopularFoodViewHolder(view);
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_meal, parent, false);
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PopularFoodViewHolder holder, int position) {
-        MainMeal meal = popularMeals.get(position);
-        Glide.with(context)
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        MainMeal meal = meals.get(position);
+        holder.mealName.setText(meal.getStrMeal());
+
+        Glide.with(holder.imageView.getContext())
                 .load(meal.getStrMealThumb())
-                .into(holder.imagePopular);
+                .into(holder.imageView);
 
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, MealActivity.class);
+            intent.putExtra(HomeFragment.Cat, meal.getStrCategory());
             intent.putExtra(HomeFragment.NAME_MEAL, meal.getStrMeal());
             intent.putExtra(HomeFragment.THUMB_MEAL, meal.getStrMealThumb());
-            intent.putExtra(HomeFragment.Cat, meal.getStrCategory());
             intent.putExtra(HomeFragment.LOCATION, meal.getStrArea());
             intent.putExtra(HomeFragment.INSTRUCTIONS, meal.getStrInstructions());
-            intent.putExtra(HomeFragment.YOUTUBE, meal.getStrYoutube());
-            intent.putExtra(INGREDIENTS,
+            intent.putExtra(HomeFragment.INGREDIENTS,
                     meal.getStrIngredient1() + "\n" + meal.getStrIngredient2() +
                             meal.getStrIngredient3() + "\n" + meal.getStrIngredient4() +
                             meal.getStrIngredient5() + "\n" + meal.getStrIngredient6() +
@@ -68,25 +64,30 @@ public class PopularFoodAdapter extends RecyclerView.Adapter<PopularFoodAdapter.
                             meal.getStrIngredient15() + "\n" + meal.getStrIngredient16() +
                             meal.getStrIngredient17() + "\n" + meal.getStrIngredient18() +
                             meal.getStrIngredient19() + "\n" + meal.getStrIngredient20()
-
             );
+            intent.putExtra(HomeFragment.YOUTUBE, meal.getStrYoutube());
             context.startActivity(intent);
         });
     }
 
     @Override
     public int getItemCount() {
-        return popularMeals.size();
+        return meals != null ? meals.size() : 0;
     }
 
+    public void updateMeals(List<MainMeal> meals) {
+        this.meals = meals;
+        notifyDataSetChanged();
+    }
 
-    public static class PopularFoodViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView mealName;
+        ImageView imageView;
 
-        ImageView imagePopular;
-
-        public PopularFoodViewHolder(@NonNull View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
-            imagePopular = itemView.findViewById(R.id.imagePopular);
+            mealName = itemView.findViewById(R.id.meal_name);
+            imageView = itemView.findViewById(R.id.image_meal_c);
         }
     }
 }

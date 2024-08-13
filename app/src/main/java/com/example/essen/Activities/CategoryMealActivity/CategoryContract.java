@@ -1,13 +1,13 @@
 package com.example.essen.Activities.CategoryMealActivity;
 
-import com.example.essen.pojo.Meal;
+import com.example.essen.pojo.MealX;
 
 import java.util.List;
 
 public interface CategoryContract {
 
     interface View {
-        void showCategoryMeal(List<Meal> meal);
+        void showCategoryMeal(List<MealX> meal);
 
         void showError(String message);
 

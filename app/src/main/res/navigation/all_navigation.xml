@@ -26,6 +26,11 @@
         android:name="com.example.essen.Fragments.ProfileFragment.ProfileFragment"
         android:label="fragment_categories"
         tools:layout="@layout/fragment_favorit" />
+    <fragment
+        android:id="@+id/countriesFragment"
+        android:name="com.example.essen.Fragments.CountriesFragment.CountriesFragment"
+        android:label="fragment_countries"
+        tools:layout="@layout/fragment_countries" />
 
 
 </navigation>

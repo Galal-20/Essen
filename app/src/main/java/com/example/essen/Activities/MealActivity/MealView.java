@@ -11,6 +11,8 @@ public interface MealView {
 
     void showMealInstructions(String instructions);
 
+    void showMeaIngredients(String ingredients);
+
     void showMessage(String message);
 
     void showLoading();

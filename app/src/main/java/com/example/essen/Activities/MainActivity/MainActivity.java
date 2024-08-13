@@ -23,6 +23,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.essen.Activities.AuthActivities.Login.Login_Screen;
+import com.example.essen.Fragments.CountriesFragment.CountriesFragment;
 import com.example.essen.Fragments.FavoritFragment.FavoritFragment;
 import com.example.essen.Fragments.HomeFragment.HomeFragment;
 import com.example.essen.Fragments.ProfileFragment.ProfileFragment;
@@ -108,6 +109,10 @@ public class MainActivity extends AppCompatActivity implements NetworkChangeRece
                 } else {
                     replaceFragment(new FavoritFragment());
                 }
+
+
+            } else if (itemId == R.id.countries) {
+                replaceFragment(new CountriesFragment());
 
             } else if (itemId == R.id.profileMenu) {
                 if (isGuest) {

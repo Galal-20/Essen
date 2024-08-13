@@ -12,17 +12,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.essen.R;
-import com.example.essen.pojo.Meal;
+import com.example.essen.pojo.MealX;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryMealsAdapter extends RecyclerView.Adapter<CategoryMealsAdapter.CategoryMealsViewHolder> {
-    private ArrayList<Meal> mealList = new ArrayList<>();
+    private ArrayList<MealX> mealList = new ArrayList<>();
     static Context context;
 
-    public void setMealsList(List<Meal> mealList) {
-        this.mealList = (ArrayList<Meal>) mealList;
+    public void setMealsList(List<MealX> mealList) {
+        this.mealList = (ArrayList<MealX>) mealList;
         notifyDataSetChanged();
     }
 
@@ -36,7 +36,7 @@ public class CategoryMealsAdapter extends RecyclerView.Adapter<CategoryMealsAdap
 
     @Override
     public void onBindViewHolder(@NonNull CategoryMealsViewHolder holder, int position) {
-        Meal meal = mealList.get(position);
+        MealX meal = mealList.get(position);
         Glide.with(holder.itemView.getContext()).load(meal.getStrMealThumb()).into(holder.imageMeal);
         holder.tvMeal.setText(meal.getStrMeal());
 

@@ -104,15 +104,19 @@
 
             <TextView
                 android:id="@+id/textInst"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="20dp"
                 android:text="Steps:"
                 android:textColor="@color/black"
                 android:textSize="24sp"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@id/linearCA"
-                app:layout_constraintTop_toBottomOf="@id/linearCA" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/linearCA"
+
+                />
 
             <TextView
                 android:id="@+id/tvInst"
@@ -125,6 +129,31 @@
                 app:layout_constraintTop_toBottomOf="@id/textInst"
                 tools:ignore="RtlSymmetry" />
 
+            <TextView
+                android:id="@+id/tvIngredients"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="20dp"
+                android:text="@string/ingredients"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@id/tvInst"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvInst" />
+
+            <TextView
+                android:id="@+id/textIngredients"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:paddingStart="15dp"
+                android:textColor="@color/black"
+                app:layout_constraintStart_toStartOf="@id/tvIngredients"
+                app:layout_constraintTop_toBottomOf="@id/tvIngredients"
+
+                />
+
             <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
                 android:id="@+id/youtube_player_view"
                 android:layout_width="match_parent"
@@ -134,7 +163,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvInst"
+                app:layout_constraintTop_toBottomOf="@id/textIngredients"
 
                 />
 

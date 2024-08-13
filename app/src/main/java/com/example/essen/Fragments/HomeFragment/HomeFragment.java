@@ -35,6 +35,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     public static final String INSTRUCTIONS = "com.example.essen.HomeFragment.Instructions";
     public static final String YOUTUBE = "com.example.essen.HomeFragment.youtube";
     public static final String CATEGORY_NAME = "com.example.essen.HomeFragment.categoryName";
+    public static final String INGREDIENTS = "com.example.essen.HomeFragment.ingredients";
 
 
     RecyclerView categoryRecyclerView;
@@ -45,7 +46,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     private PopularFoodAdapter popularFoodAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private MainMeal randomMeal;
-    private ProgressBar progressBar;  // Add ProgressBar
+    private ProgressBar progressBar;
 
 
     @Override
@@ -87,6 +88,19 @@ public class HomeFragment extends Fragment implements HomeContract.View {
                 intent.putExtra(THUMB_MEAL, randomMeal.getStrMealThumb());
                 intent.putExtra(LOCATION, randomMeal.getStrArea());
                 intent.putExtra(INSTRUCTIONS, randomMeal.getStrInstructions());
+                intent.putExtra(INGREDIENTS,
+                        randomMeal.getStrIngredient1() + "\n" + randomMeal.getStrIngredient2() +
+                                randomMeal.getStrIngredient3() + "\n" + randomMeal.getStrIngredient4() +
+                                randomMeal.getStrIngredient5() + "\n" + randomMeal.getStrIngredient6() +
+                                randomMeal.getStrIngredient7() + "\n" + randomMeal.getStrIngredient8() +
+                                randomMeal.getStrIngredient9() + "\n" + randomMeal.getStrIngredient10() +
+                                randomMeal.getStrIngredient11() + "\n" + randomMeal.getStrIngredient12() +
+                                randomMeal.getStrIngredient13() + "\n" + randomMeal.getStrIngredient14() +
+                                randomMeal.getStrIngredient15() + "\n" + randomMeal.getStrIngredient16() +
+                                randomMeal.getStrIngredient17() + "\n" + randomMeal.getStrIngredient18() +
+                                randomMeal.getStrIngredient19() + "\n" + randomMeal.getStrIngredient20()
+
+                );
                 intent.putExtra(YOUTUBE, randomMeal.getStrYoutube());
                 startActivity(intent);
             } else {

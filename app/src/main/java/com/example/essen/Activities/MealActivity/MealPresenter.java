@@ -7,7 +7,8 @@ public class MealPresenter {
         this.view = view;
     }
 
-    public void loadMealData(String mealCat, String mealName, String mealThumb, String location, String instructions, String youtubeLink) {
+    public void loadMealData(String mealCat, String mealName, String mealThumb, String location,
+                             String instructions, String youtubeLink, String textIngredient) {
         view.showLoading();
 
         if (mealName != null) {
@@ -38,6 +39,11 @@ public class MealPresenter {
             view.showMealInstructions(instructions);
         } else {
             view.showMessage("Meal instructions not available");
+        }
+        if (textIngredient != null) {
+            view.showMeaIngredients(textIngredient);
+        } else {
+            view.showMessage("Meal Ingredients not available");
         }
 
         view.hideLoading();

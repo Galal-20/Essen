@@ -4,19 +4,37 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.essen.R;
+import com.example.essen.pojo.MainMeal;
+import com.example.essen.pojo.Meal;
+import com.example.essen.retrofit.MealAPI;
+import com.example.essen.retrofit.RetrofitInstance;
 
-public class CountriesFragment extends Fragment {
+import java.util.List;
 
+public class CountriesFragment extends Fragment implements CountriesContract.View {
+
+    private CountriesPresenter presenter;
+    private RecyclerView recyclerView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Initialize MealAPI instance using RetrofitInstance
+        MealAPI mealAPI = RetrofitInstance.getApi();
+
+        // Pass the MealAPI instance to the presenter
+        presenter = new CountriesPresenter(this, mealAPI);
+        presenter.getCountries();
     }
 
     @Override
@@ -28,5 +46,24 @@ public class CountriesFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+    }
+
+    @Override
+    public void showCountries(List<Meal> countries) {
+        CountriesAdapter adapter = new CountriesAdapter(getContext(), countries);
+        recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void showMeals(List<MainMeal> meals) {
+        // This method might not be used here if you're using Activity to show meals.
+        // You may handle this method if you use Fragment to show meals.
+    }
+
+    @Override
+    public void showError(String message) {
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 }
