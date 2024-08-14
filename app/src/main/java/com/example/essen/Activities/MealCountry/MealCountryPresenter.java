@@ -32,7 +32,6 @@ public class MealCountryPresenter implements CountryContract.Presenter {
                     assert response.body() != null;
                     List<MainMeal> meals = response.body().getMeals();
                     Log.d("API Response", meals.toString());
-
                     view.showMeals(meals);
                 } else {
                     view.showError("Failed to load meals");

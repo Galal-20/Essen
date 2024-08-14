@@ -81,7 +81,6 @@ public class FavoritFragment extends Fragment implements FavoriteAdapter.OnDelet
     public void onDeleteClick(String mealName) {
         requireActivity().runOnUiThread(() -> showCustomDialog(mealName));
 
-
     }
 
 

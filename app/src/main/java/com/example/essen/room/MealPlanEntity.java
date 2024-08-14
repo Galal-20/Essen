@@ -1,89 +1,39 @@
 package com.example.essen.room;
 
-
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "meal_table")
-public class MealEntity {
+import java.text.DateFormatSymbols;
+
+@Entity(tableName = "meal_plans")
+public class MealPlanEntity {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
-
     private String strMeal;
     private String strMealThumb;
     private String strCategory;
     private String strArea;
     private String strInstructions;
-    private String ingredients;
     private String strYoutube;
+    private String ingredients;
 
-    /*// New fields for meal plan
     private String mealType;
     private String dayName;
     private int dayNumber;
-    private int month;*/
+    private int month;
+    private int year;
 
-
-
-   /* public String getMealType() {
-        return mealType;
+    public String getMonthName() {
+        return new DateFormatSymbols().getMonths()[month];
     }
-
-    public void setMealType(String mealType) {
-        this.mealType = mealType;
-    }
-
-    public String getDayName() {
-        return dayName;
-    }
-
-    public void setDayName(String dayName) {
-        this.dayName = dayName;
-    }
-
-    public int getDayNumber() {
-        return dayNumber;
-    }
-
-    public void setDayNumber(int dayNumber) {
-        this.dayNumber = dayNumber;
-    }
-
-    public int getMonth() {
-        return month;
-    }
-
-    public void setMonth(int  month) {
-        this.month = month;
-    }*/
-
-   /* public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
-    }
-
-    private int year;*/
-
-
 
     public int getId() {
         return id;
     }
 
-    public String getIngredients() {
-        return ingredients;
-    }
-
     public void setId(int id) {
         this.id = id;
-    }
-
-    public void setIngredients(String ingredients) {
-        this.ingredients = ingredients;
     }
 
     public String getStrMeal() {
@@ -133,5 +83,52 @@ public class MealEntity {
     public void setStrYoutube(String strYoutube) {
         this.strYoutube = strYoutube;
     }
-}
 
+    public String getIngredients() {
+        return ingredients;
+    }
+
+    public void setIngredients(String ingredients) {
+        this.ingredients = ingredients;
+    }
+
+    public String getMealType() {
+        return mealType;
+    }
+
+    public void setMealType(String mealType) {
+        this.mealType = mealType;
+    }
+
+    public String getDayName() {
+        return dayName;
+    }
+
+    public void setDayName(String dayName) {
+        this.dayName = dayName;
+    }
+
+    public int getDayNumber() {
+        return dayNumber;
+    }
+
+    public void setDayNumber(int dayNumber) {
+        this.dayNumber = dayNumber;
+    }
+
+    public int getMonth() {
+        return month;
+    }
+
+    public void setMonth(int month) {
+        this.month = month;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+}

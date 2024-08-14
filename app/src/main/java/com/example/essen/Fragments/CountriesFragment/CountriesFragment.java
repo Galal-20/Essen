@@ -28,10 +28,8 @@ public class CountriesFragment extends Fragment implements CountriesContract.Vie
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Initialize MealAPI instance using RetrofitInstance
         MealAPI mealAPI = RetrofitInstance.getApi();
 
-        // Pass the MealAPI instance to the presenter
         presenter = new CountriesPresenter(this, mealAPI);
         presenter.getCountries();
     }
@@ -55,16 +53,6 @@ public class CountriesFragment extends Fragment implements CountriesContract.Vie
         recyclerView.setAdapter(adapter);
     }
 
-    /*@Override
-    public void showMeals(List<MainMeal> meals) {
-        MainMeal meal = new MainMeal();
-        meal.getStrMeal();
-        meal.getStrMealThumb();
-        meal.getStrCategory();
-        meal.getStrArea();
-        meal.getStrYoutube();
-        meals.add(meal);
-    }*/
 
     @Override
     public void showError(String message) {

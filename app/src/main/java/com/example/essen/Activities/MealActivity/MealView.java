@@ -1,11 +1,11 @@
 package com.example.essen.Activities.MealActivity;
 
-import com.example.essen.pojo.MainMeal;
+import com.example.essen.pojo.AllDetailsMeal;
 
 public interface MealView {
     void showMealName(String name);
 
-    void showMeals(MainMeal meal);
+    void showMeals(AllDetailsMeal meal);
 
     void showMealImage(String imageUrl);
 

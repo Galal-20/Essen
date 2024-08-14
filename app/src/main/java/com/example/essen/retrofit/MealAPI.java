@@ -3,6 +3,7 @@ package com.example.essen.retrofit;
 import com.example.essen.pojo.CategoryList;
 import com.example.essen.pojo.CatygoryByMeal;
 import com.example.essen.pojo.Countries;
+import com.example.essen.pojo.MealId;
 import com.example.essen.pojo.MealList;
 
 import retrofit2.Call;
@@ -33,7 +34,7 @@ public interface MealAPI {
 
 
     @GET("lookup.php")
-    Call<MealList> getMealDetails(@Query("i") String mealId);
+    Call<MealId> getMealDetails(@Query("i") String mealId);
 
 
 }

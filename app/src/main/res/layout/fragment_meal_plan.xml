@@ -3,132 +3,60 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
+    android:background="@color/white"
     tools:context=".Fragments.MealPlanFragment.MealPlanFragment">
 
-    <!-- Date picker or horizontal date selector -->
-    <HorizontalScrollView
-        android:id="@+id/date_selector"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:scrollbars="none"
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_country"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_50sdp"
+        app:cardElevation="@dimen/_10sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:id="@+id/linearCountry"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <!-- Days - For simplicity, hardcoded here. Use RecyclerView for dynamic content. -->
+            <ImageView
+                android:layout_width="@dimen/_30sdp"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/_20sdp"
+                android:src="@drawable/cat" />
+
             <TextView
+                android:id="@+id/text_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:padding="10dp"
-                android:text="SUN\n24"
-                android:textAlignment="center"
-                android:textColor="@android:color/white"
-                android:textSize="16sp" />
-
-            <!-- Add more TextViews here for other days -->
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/_85sdp"
+                android:text="@string/meal_plan"
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
-    </HorizontalScrollView>
 
-    <!-- Selected date -->
-    <TextView
-        android:id="@+id/selected_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:text="Sunday, 24 May"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/date_selector" />
 
-    <!-- Meal sections -->
-    <TextView
-        android:id="@+id/breakfast_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="16dp"
-        android:paddingBottom="8dp"
-        android:text="BREAKFAST"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/selected_date" />
+    </androidx.cardview.widget.CardView>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/breakfast_recycler_view"
-        android:layout_width="0dp"
+        android:id="@+id/food_recycler_view"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/breakfast_label" />
+        android:layout_margin="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/card_country"
+        app:layout_constraintStart_toStartOf="@id/card_country"
+        app:layout_constraintTop_toBottomOf="@id/card_country"
+        tools:listitem="@layout/meal_plan_item" />
 
-    <!-- Lunch Section -->
-    <TextView
-        android:id="@+id/lunch_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="16dp"
-        android:paddingBottom="8dp"
-        android:text="LUNCH"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/breakfast_recycler_view" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/lunch_recycler_view"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/lunch_label" />
-
-    <!-- Dinner Section -->
-    <TextView
-        android:id="@+id/dinner_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="16dp"
-        android:paddingBottom="8dp"
-        android:text="DINNER"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/lunch_recycler_view" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/dinner_recycler_view"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/dinner_label" />
-
-    <!-- &lt;!&ndash; Floating Action Button &ndash;&gt;
-     <com.google.android.material.floatingactionbutton.FloatingActionButton
-         android:id="@+id/fab_add_meal"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_margin="16dp"
-         android:src="@drawable/ic_add"
-         android:contentDescription="Add Meal"
-         android:tint="@android:color/white"
-         app:layout_constraintBottom_toBottomOf="parent"
-         app:layout_constraintEnd_toEndOf="parent"/>-->
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,13 @@
 package com.example.essen.Activities.MealActivity;
 
+import static com.example.essen.Fragments.HomeFragment.HomeFragment.Cat;
+import static com.example.essen.Fragments.HomeFragment.HomeFragment.INGREDIENTS;
+import static com.example.essen.Fragments.HomeFragment.HomeFragment.INSTRUCTIONS;
+import static com.example.essen.Fragments.HomeFragment.HomeFragment.LOCATION;
+import static com.example.essen.Fragments.HomeFragment.HomeFragment.NAME_MEAL;
+import static com.example.essen.Fragments.HomeFragment.HomeFragment.THUMB_MEAL;
+import static com.example.essen.Fragments.HomeFragment.HomeFragment.YOUTUBE;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -22,9 +30,10 @@ import com.bumptech.glide.Glide;
 import com.example.essen.Activities.AuthActivities.Login.Login_Screen;
 import com.example.essen.Fragments.HomeFragment.HomeFragment;
 import com.example.essen.R;
-import com.example.essen.pojo.MainMeal;
+import com.example.essen.pojo.AllDetailsMeal;
 import com.example.essen.room.AppDatabase;
 import com.example.essen.room.MealEntity;
+import com.example.essen.room.MealPlanEntity;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -34,6 +43,8 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 
+import java.util.Calendar;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -61,6 +72,15 @@ public class MealActivity extends AppCompatActivity implements MealView {
     private AppDatabase appDatabase;
     Button makePlanButton;
     private boolean isGuest;
+
+    DatePicker datePicker;
+    RadioGroup mealTypeGroup;
+    Button saveButton;
+    int day;
+    int month;
+    int year;
+    String dayName;
+    String mealType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +127,31 @@ public class MealActivity extends AppCompatActivity implements MealView {
         });
 
         makePlanButton = findViewById(R.id.make_plane);
-        makePlanButton.setOnClickListener(v -> showBottomSheetDialog());
+
+        makePlanButton.setOnClickListener(v -> {
+            if (isGuest) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Please login to Make plan.");
+                builder.setMessage("Are you want to join with us?");
+
+                builder.setPositiveButton("Go to login", (dialog, which) -> {
+                    startActivity(new Intent(getApplicationContext(), Login_Screen.class));
+                    finish();
+                    dialog.dismiss();
+                });
+
+                builder.setNegativeButton("Still Guest", (dialog, which) -> {
+                    dialog.dismiss();
+                });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+
+            } else {
+
+                showBottomSheetDialog();
+            }
+
+        });
 
         getLifecycle().addObserver(youTubePlayerView);
 
@@ -121,7 +165,7 @@ public class MealActivity extends AppCompatActivity implements MealView {
                     youTubePlayer.cueVideo(videoId, 0);
 
                 } else {
-                    //showMessage("Video not available");
+                    showMessage("Video not available");
                 }
 
             }
@@ -132,26 +176,54 @@ public class MealActivity extends AppCompatActivity implements MealView {
     private void showBottomSheetDialog() {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         View bottomSheetView = LayoutInflater.from(getApplicationContext())
-                .inflate(R.layout.buttom_sheet, null);  // Removed the parent view reference
+                .inflate(R.layout.buttom_sheet, null);
 
-        DatePicker datePicker = bottomSheetView.findViewById(R.id.date_picker);
-        RadioGroup mealTypeGroup = bottomSheetView.findViewById(R.id.meal_type_group);
-        Button saveButton = bottomSheetView.findViewById(R.id.btn_save);
+        datePicker = bottomSheetView.findViewById(R.id.date_picker);
+        mealTypeGroup = bottomSheetView.findViewById(R.id.meal_type_group);
+        saveButton = bottomSheetView.findViewById(R.id.btn_save);
 
         saveButton.setOnClickListener(v -> {
-            // Get selected date
-            int day = datePicker.getDayOfMonth();
-            int month = datePicker.getMonth();
-            int year = datePicker.getYear();
+            day = datePicker.getDayOfMonth();
+            month = datePicker.getMonth();
+            year = datePicker.getYear();
 
-            // Get selected meal type
             int selectedMealId = mealTypeGroup.getCheckedRadioButtonId();
             RadioButton selectedMealType = bottomSheetView.findViewById(selectedMealId);
-            String mealType = selectedMealType.getText().toString();
+            mealType = selectedMealType.getText().toString();
 
-            // Save the plan (You can add your save logic here)
-            Toast.makeText(MealActivity.this, "Plan saved successfully!", Toast.LENGTH_SHORT).show();
+            dayName = getDayName(year, month, day);
+            new Thread(() -> {
+                int count = appDatabase.mealPlanDao().isMealInMealPlan(mealName);
+                if (count > 0) {
+                    runOnUiThread(() -> showMessage("Meal is already in Meal plan!"));
+                } else {
+                    try {
+                        MealPlanEntity mealPlanEntity = new MealPlanEntity();
+                        mealPlanEntity.setStrMeal(mealName);
+                        mealPlanEntity.setStrMealThumb(mealThumb);
+                        mealPlanEntity.setStrCategory(mealCat);
+                        mealPlanEntity.setStrArea(location);
+                        mealPlanEntity.setStrInstructions(instructions);
+                        mealPlanEntity.setIngredients(textIngredient);
+                        mealPlanEntity.setStrYoutube(youtubeLink);
 
+                        mealPlanEntity.setMealType(mealType);
+                        mealPlanEntity.setDayName(dayName);
+                        mealPlanEntity.setDayNumber(day);
+                        mealPlanEntity.setMonth(month);
+                        mealPlanEntity.setYear(year);
+
+                        appDatabase.mealPlanDao().insert(mealPlanEntity);
+
+                        runOnUiThread(() -> {
+                            Toast.makeText(MealActivity.this, "Plan saved successfully!", Toast.LENGTH_SHORT).show();
+                        });
+                    } catch (Exception e) {
+                        runOnUiThread(() -> Toast.makeText(MealActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
+                    }
+                }
+
+            }).start();
 
             bottomSheetDialog.dismiss();
         });
@@ -159,6 +231,13 @@ public class MealActivity extends AppCompatActivity implements MealView {
         bottomSheetDialog.setContentView(bottomSheetView);
         bottomSheetDialog.show();
     }
+
+    private String getDayName(int year, int month, int day) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, day);
+        return calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
+    }
+
 
     public String getVideoIdFromUrl(String url) {
         String videoId = null;
@@ -180,28 +259,7 @@ public class MealActivity extends AppCompatActivity implements MealView {
         }
 
         return videoId;
-       /* String videoId = null;
 
-        String[] patterns = {
-                "https?://www.youtube.com/watch\\?v=([^&]+)",
-                "https?://youtu.be/([^?]+)",
-                "https?://www.youtube.com/embed/([^?]+)",
-        };
-
-        for (String pattern : patterns) {
-            Pattern compiledPattern = Pattern.compile(pattern);
-
-            if (url != null && !url.isEmpty()) {
-                Matcher matcher = compiledPattern.matcher(url);
-                if (matcher.find()) {
-                    return matcher.group(1); // Assuming you're capturing the first group
-                }
-            } else {
-                Log.e("MealActivity", "The provided URL is null or empty");
-            }
-        }
-
-        return videoId;*/
     }
 
 
@@ -230,13 +288,13 @@ public class MealActivity extends AppCompatActivity implements MealView {
     }
 
     public void getDataFromIntent() {
-        mealCat = getIntent().getStringExtra(HomeFragment.Cat);
-        mealName = getIntent().getStringExtra(HomeFragment.NAME_MEAL);
+        mealCat = getIntent().getStringExtra(Cat);
+        mealName = getIntent().getStringExtra(NAME_MEAL);
         mealThumb = getIntent().getStringExtra(HomeFragment.THUMB_MEAL);
         location = getIntent().getStringExtra(HomeFragment.LOCATION);
         instructions = getIntent().getStringExtra(HomeFragment.INSTRUCTIONS);
         youtubeLink = getIntent().getStringExtra(HomeFragment.YOUTUBE);
-        textIngredient = getIntent().getStringExtra(HomeFragment.INGREDIENTS);
+        textIngredient = getIntent().getStringExtra(INGREDIENTS);
         presenter.loadMealData(mealCat, mealName, mealThumb, location, instructions, youtubeLink,
                 textIngredient
         );
@@ -252,14 +310,35 @@ public class MealActivity extends AppCompatActivity implements MealView {
     }
 
     @Override
-    public void showMeals(MainMeal meal) {
-        collapsingToolbar.setTitle(meal.getStrMeal());
-        Glide.with(this).load(meal.getStrMealThumb()).into(mealImageView);
-        mealIdTextView.setText("Category: " + meal.getStrCategory());
-        locationTextView.setText("Area: " + meal.getStrArea());
-        mealInstructions.setText(meal.getStrInstructions());
-        textIngredients.setText(meal.getStrIngredient1() + meal.getStrIngredient2());
-        openYoutubeLink(meal.getStrYoutube());
+    public void showMeals(AllDetailsMeal meal) {
+        Intent intent = new Intent(this, MealActivity.class);
+        intent.putExtra(NAME_MEAL, meal.getStrMeal());
+        intent.putExtra(THUMB_MEAL, meal.getStrMealThumb());
+        intent.putExtra(Cat, meal.getStrCategory());
+        intent.putExtra(LOCATION, meal.getStrArea());
+        intent.putExtra(INSTRUCTIONS, meal.getStrInstructions());
+        intent.putExtra(YOUTUBE, meal.getStrYoutube());
+        intent.putExtra(INGREDIENTS,
+                meal.getStrIngredient1() + "\n" +
+                        meal.getStrIngredient2() + "\n" +
+                        meal.getStrIngredient3() + "\n" +
+                        meal.getStrIngredient4() + "\n" +
+                        meal.getStrIngredient5() + "\n" +
+                        meal.getStrIngredient6() + "\n" +
+                        meal.getStrIngredient7() + "\n" +
+                        meal.getStrIngredient8() + "\n" +
+                        meal.getStrIngredient9() + "\n" +
+                        meal.getStrIngredient10() + "\n" +
+                        meal.getStrIngredient11() + "\n" +
+                        meal.getStrIngredient12() + "\n" +
+                        meal.getStrIngredient13() + "\n" +
+                        meal.getStrIngredient14() + "\n" +
+                        meal.getStrIngredient15() + "\n"
+        )
+
+        ;
+        startActivity(intent);
+        finish();
 
     }
 
@@ -344,29 +423,34 @@ public class MealActivity extends AppCompatActivity implements MealView {
                 if (count > 0) {
                     runOnUiThread(() -> showMessage("Meal is already in favorites!"));
                 } else {
-                    MealEntity mealEntity = new MealEntity();
-                    mealEntity.setStrMeal(mealName);
-                    mealEntity.setStrMealThumb(mealThumb);
-                    mealEntity.setStrCategory(mealCat);
-                    mealEntity.setStrArea(location);
-                    mealEntity.setStrInstructions(instructions);
-                    mealEntity.setStrYoutube(youtubeLink);
-                    mealEntity.setIngredients(textIngredient);
+                    try {
+                        MealEntity mealEntity = new MealEntity();
+                        mealEntity.setStrMeal(mealName);
+                        mealEntity.setStrMealThumb(mealThumb);
+                        mealEntity.setStrCategory(mealCat);
+                        mealEntity.setStrArea(location);
+                        mealEntity.setStrInstructions(instructions);
+                        mealEntity.setStrYoutube(youtubeLink);
+                        mealEntity.setIngredients(textIngredient);
 
-                    appDatabase.mealDao().insert(mealEntity);
+                        appDatabase.mealDao().insert(mealEntity);
 
-                    runOnUiThread(() -> showMessage("Meal added to favorites!"));
+                        runOnUiThread(() -> showMessage("Meal added to favorites!"));
+                    } catch (Exception e) {
+                        runOnUiThread(() -> Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show());
+                    }
                 }
             }).start();
         } else {
-            showMessage("Meal data Not saved.");
+            showMessage("Meal data not saved.");
         }
     }
 
 }
 
+/*
 
- /*private void saveMealToFavorites() {
+ private void saveMealToFavorites() {
         if (mealName != null) {
             MealEntity mealEntity = new MealEntity();
             mealEntity.setStrMeal(mealName);
@@ -383,9 +467,9 @@ public class MealActivity extends AppCompatActivity implements MealView {
         } else {
             showMessage("Meal data is incomplete.");
         }
-    }*/
+    }
 
-    /* webView.getSettings().setJavaScriptEnabled(true);
+     webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebChromeClient(new WebChromeClient());
 
         // Convert YouTube URL to embed format if necessary
@@ -396,8 +480,8 @@ public class MealActivity extends AppCompatActivity implements MealView {
         String html = "<html><body style=\"margin:0;padding:0;\"><iframe width=\"100%\" height=\"100%\" src=\"" + url + "\" frameborder=\"0\" allowfullscreen></iframe></body></html>";
 
         // Load the HTML content in WebView
-        webView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);*/
-       /* webView.getSettings().setJavaScriptEnabled(true);
+        webView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);
+        webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebChromeClient(new WebChromeClient());
 
         // Convert YouTube URL to embed format if necessary
@@ -407,7 +491,38 @@ public class MealActivity extends AppCompatActivity implements MealView {
 
         String html = "<html><body style=\"margin:0;padding:0;\"><iframe width=\"100%\" height=\"100%\" src=\"" + url + "\" frameborder=\"0\" allowfullscreen></iframe></body></html>";
 
-        webView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);*/
-       /* webView.loadData(url, "text/html", "utf-8");
+        webView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);
+        webView.loadData(url, "text/html", "utf-8");
         webView.getSettings().setJavaScriptEnabled(true);
-        webView.setWebChromeClient(new WebChromeClient());*/
+        webView.setWebChromeClient(new WebChromeClient());
+
+collapsingToolbar.setTitle(meal.getStrMeal());
+        Glide.with(this).load(meal.getStrMealThumb()).into(mealImageView);
+        mealIdTextView.setText("Category: " + meal.getStrCategory());
+        locationTextView.setText("Area: " + meal.getStrArea());
+        mealInstructions.setText(meal.getStrInstructions());
+        textIngredients.setText(meal.getStrIngredient1() + meal.getStrIngredient2());
+        openYoutubeLink(meal.getStrYoutube());
+
+ String videoId = null;
+
+        String[] patterns = {
+                "https?://www.youtube.com/watch\\?v=([^&]+)",
+                "https?://youtu.be/([^?]+)",
+                "https?://www.youtube.com/embed/([^?]+)",
+        };
+
+        for (String pattern : patterns) {
+            Pattern compiledPattern = Pattern.compile(pattern);
+
+            if (url != null && !url.isEmpty()) {
+                Matcher matcher = compiledPattern.matcher(url);
+                if (matcher.find()) {
+                    return matcher.group(1); // Assuming you're capturing the first group
+                }
+            } else {
+                Log.e("MealActivity", "The provided URL is null or empty");
+            }
+        }
+
+        return videoId;*/

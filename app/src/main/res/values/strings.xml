@@ -84,4 +84,6 @@
     <string name="ingredient">Ingredient</string>
     <string name="make_plan">Make Plan</string>
     <string name="meal_plan">Meal Plan</string>
+    <string name="sunday_24_may">Sunday, 24 May</string>
+    <string name="kind_of_time">kind of time</string>
 </resources>
