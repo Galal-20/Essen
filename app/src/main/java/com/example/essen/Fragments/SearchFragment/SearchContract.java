@@ -7,6 +7,12 @@ import java.util.List;
 public interface SearchContract {
     interface Presenter {
         void searchMeals(String query);
+
+        void searchMealsByCountry(String country);
+
+        void searchMealsByIngredient(String ingredient);
+
+        void searchMealsByCategory(String category);
     }
 
     interface View {

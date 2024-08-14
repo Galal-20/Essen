@@ -1,5 +1,7 @@
 package com.example.essen.Fragments.SearchFragment;
 
+import static com.example.essen.Fragments.HomeFragment.HomeFragment.INGREDIENTS;
+
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -76,10 +78,22 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
                     intent.putExtra(HomeFragment.THUMB_MEAL, meal.getStrMealThumb());
                     intent.putExtra(HomeFragment.LOCATION, meal.getStrArea());
                     intent.putExtra(HomeFragment.INSTRUCTIONS, meal.getStrInstructions());
+                    intent.putExtra(INGREDIENTS,
+                            meal.getStrIngredient1() + "\n" + meal.getStrIngredient2() +
+                                    meal.getStrIngredient3() + "\n" + meal.getStrIngredient4() +
+                                    meal.getStrIngredient5() + "\n" + meal.getStrIngredient6() +
+                                    meal.getStrIngredient7() + "\n" + meal.getStrIngredient8() +
+                                    meal.getStrIngredient9() + "\n" + meal.getStrIngredient10() +
+                                    meal.getStrIngredient11() + "\n" + meal.getStrIngredient12() +
+                                    meal.getStrIngredient13() + "\n" + meal.getStrIngredient14() +
+                                    meal.getStrIngredient15() + "\n" + meal.getStrIngredient16() +
+                                    meal.getStrIngredient17() + "\n" + meal.getStrIngredient18() +
+                                    meal.getStrIngredient19() + "\n" + meal.getStrIngredient20()
+
+                    );
                     intent.putExtra(HomeFragment.YOUTUBE, meal.getStrYoutube());
                     context.startActivity(intent);
                 }
-
             });
         }
 

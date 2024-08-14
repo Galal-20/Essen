@@ -35,9 +35,8 @@ public class CategoryMeal extends AppCompatActivity implements CategoryContract.
         categoryMealsRecyclerView = findViewById(R.id.rvMeals);
         text_title = findViewById(R.id.text_title);
         categoryMealsRecyclerView.setLayoutManager(new GridLayoutManager(this, 1)); // 2 columns
-        // for meals
 
-        categoryMealsAdapter = new CategoryMealsAdapter();
+        categoryMealsAdapter = new CategoryMealsAdapter(this);
         categoryMealsRecyclerView.setAdapter(categoryMealsAdapter);
 
         presenter = new CategoryPresenter(this);

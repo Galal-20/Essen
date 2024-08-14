@@ -12,16 +12,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.essen.Activities.MealCountry.MealCountryActivity;
 import com.example.essen.R;
-import com.example.essen.pojo.Meal;
+import com.example.essen.pojo.MainMeal;
 
 import java.util.List;
 
 public class CountriesAdapter extends RecyclerView.Adapter<CountriesAdapter.ViewHolder> {
 
-    private List<Meal> countries;
+    private List<MainMeal> countries;
     private Context context;
 
-    public CountriesAdapter(Context context, List<Meal> countries) {
+    public CountriesAdapter(Context context, List<MainMeal> countries) {
         this.context = context;
         this.countries = countries;
     }
@@ -35,7 +35,7 @@ public class CountriesAdapter extends RecyclerView.Adapter<CountriesAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Meal country = countries.get(position);
+        MainMeal country = countries.get(position);
         holder.textView.setText(country.getStrArea());
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, MealCountryActivity.class);

@@ -1,5 +1,11 @@
-// MealAdapter.java
 package com.example.essen.Activities.MealCountry;
+
+import static com.example.essen.Fragments.HomeFragment.HomeFragment.Cat;
+import static com.example.essen.Fragments.HomeFragment.HomeFragment.INGREDIENTS;
+import static com.example.essen.Fragments.HomeFragment.HomeFragment.INSTRUCTIONS;
+import static com.example.essen.Fragments.HomeFragment.HomeFragment.LOCATION;
+import static com.example.essen.Fragments.HomeFragment.HomeFragment.NAME_MEAL;
+import static com.example.essen.Fragments.HomeFragment.HomeFragment.THUMB_MEAL;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -40,6 +47,41 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         MainMeal meal = meals.get(position);
+
+        if (meal != null) {
+            holder.mealName.setText(meal.getStrMeal() != null ? meal.getStrMeal() : "No Name");
+
+            Glide.with(holder.imageView.getContext())
+                    .load(meal.getStrMealThumb())
+                    .into(holder.imageView);
+
+            holder.itemView.setOnClickListener(v -> {
+                Intent intent = new Intent(context, MealActivity.class);
+                intent.putExtra(Cat, meal.getStrCategory() != null ? meal.getStrCategory() : "No Category");
+                intent.putExtra(NAME_MEAL, meal.getStrMeal() != null ? meal.getStrMeal() : "No Name");
+                intent.putExtra(THUMB_MEAL, meal.getStrMealThumb() != null ? meal.getStrMealThumb() : "No Thumb");
+                intent.putExtra(LOCATION, meal.getStrArea() != null ? meal.getStrArea() : "No Location");
+                intent.putExtra(INSTRUCTIONS, meal.getStrInstructions() != null ? meal.getStrInstructions() : "No Instructions");
+                intent.putExtra(INGREDIENTS,
+                        meal.getStrIngredient1() != null ? meal.getStrIngredient1() : "No Ingredients" + "\n" +
+                                meal.getStrIngredient2() +
+                                meal.getStrIngredient3() + "\n" + meal.getStrIngredient4() +
+                                meal.getStrIngredient5() + "\n" + meal.getStrIngredient6() +
+                                meal.getStrIngredient7() + "\n" + meal.getStrIngredient8() +
+                                meal.getStrIngredient9() + "\n" + meal.getStrIngredient10() +
+                                meal.getStrIngredient11() + "\n" + meal.getStrIngredient12() +
+                                meal.getStrIngredient13() + "\n" + meal.getStrIngredient14() +
+                                meal.getStrIngredient15() + "\n" + meal.getStrIngredient16() +
+                                meal.getStrIngredient17() + "\n" + meal.getStrIngredient18() +
+                                meal.getStrIngredient19() + "\n" + meal.getStrIngredient20()
+                );
+                intent.putExtra(HomeFragment.YOUTUBE, meal.getStrYoutube() != null ? meal.getStrYoutube() : "No Youtube");
+                context.startActivity(intent);
+            });
+        } else {
+            Toast.makeText(context, "Meal data not available", Toast.LENGTH_SHORT).show();
+        }
+       /* MainMeal meal = meals.get(position);
         holder.mealName.setText(meal.getStrMeal());
 
         Glide.with(holder.imageView.getContext())
@@ -47,27 +89,32 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> {
                 .into(holder.imageView);
 
         holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(context, MealActivity.class);
-            intent.putExtra(HomeFragment.Cat, meal.getStrCategory());
-            intent.putExtra(HomeFragment.NAME_MEAL, meal.getStrMeal());
-            intent.putExtra(HomeFragment.THUMB_MEAL, meal.getStrMealThumb());
-            intent.putExtra(HomeFragment.LOCATION, meal.getStrArea());
-            intent.putExtra(HomeFragment.INSTRUCTIONS, meal.getStrInstructions());
-            intent.putExtra(HomeFragment.INGREDIENTS,
-                    meal.getStrIngredient1() + "\n" + meal.getStrIngredient2() +
-                            meal.getStrIngredient3() + "\n" + meal.getStrIngredient4() +
-                            meal.getStrIngredient5() + "\n" + meal.getStrIngredient6() +
-                            meal.getStrIngredient7() + "\n" + meal.getStrIngredient8() +
-                            meal.getStrIngredient9() + "\n" + meal.getStrIngredient10() +
-                            meal.getStrIngredient11() + "\n" + meal.getStrIngredient12() +
-                            meal.getStrIngredient13() + "\n" + meal.getStrIngredient14() +
-                            meal.getStrIngredient15() + "\n" + meal.getStrIngredient16() +
-                            meal.getStrIngredient17() + "\n" + meal.getStrIngredient18() +
-                            meal.getStrIngredient19() + "\n" + meal.getStrIngredient20()
-            );
-            intent.putExtra(HomeFragment.YOUTUBE, meal.getStrYoutube());
-            context.startActivity(intent);
-        });
+            if (mealselected != null){
+                Intent intent = new Intent(context, MealActivity.class);
+                intent.putExtra(Cat, meal.getStrCategory());
+                intent.putExtra(NAME_MEAL, meal.getStrMeal());
+                intent.putExtra(THUMB_MEAL, meal.getStrMealThumb());
+                intent.putExtra(LOCATION, meal.getStrArea());
+                intent.putExtra(INSTRUCTIONS, meal.getStrInstructions());
+                intent.putExtra(INGREDIENTS,
+                        meal.getStrIngredient1() + "\n" + meal.getStrIngredient2() +
+                                meal.getStrIngredient3() + "\n" + meal.getStrIngredient4() +
+                                meal.getStrIngredient5() + "\n" + meal.getStrIngredient6() +
+                                meal.getStrIngredient7() + "\n" + meal.getStrIngredient8() +
+                                meal.getStrIngredient9() + "\n" + meal.getStrIngredient10() +
+                                meal.getStrIngredient11() + "\n" + meal.getStrIngredient12() +
+                                meal.getStrIngredient13() + "\n" + meal.getStrIngredient14() +
+                                meal.getStrIngredient15() + "\n" + meal.getStrIngredient16() +
+                                meal.getStrIngredient17() + "\n" + meal.getStrIngredient18() +
+                                meal.getStrIngredient19() + "\n" + meal.getStrIngredient20()
+                );
+                intent.putExtra(HomeFragment.YOUTUBE, meal.getStrYoutube());
+                context.startActivity(intent);
+            }else {
+                Toast.makeText(context, "Meal data not available", Toast.LENGTH_SHORT).show();
+            }
+
+        });*/
     }
 
     @Override
@@ -91,3 +138,7 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> {
         }
     }
 }
+
+
+
+

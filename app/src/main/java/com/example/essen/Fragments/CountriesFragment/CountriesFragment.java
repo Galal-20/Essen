@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.essen.R;
 import com.example.essen.pojo.MainMeal;
-import com.example.essen.pojo.Meal;
 import com.example.essen.retrofit.MealAPI;
 import com.example.essen.retrofit.RetrofitInstance;
 
@@ -51,16 +50,21 @@ public class CountriesFragment extends Fragment implements CountriesContract.Vie
     }
 
     @Override
-    public void showCountries(List<Meal> countries) {
+    public void showCountries(List<MainMeal> countries) {
         CountriesAdapter adapter = new CountriesAdapter(getContext(), countries);
         recyclerView.setAdapter(adapter);
     }
 
-    @Override
+    /*@Override
     public void showMeals(List<MainMeal> meals) {
-        // This method might not be used here if you're using Activity to show meals.
-        // You may handle this method if you use Fragment to show meals.
-    }
+        MainMeal meal = new MainMeal();
+        meal.getStrMeal();
+        meal.getStrMealThumb();
+        meal.getStrCategory();
+        meal.getStrArea();
+        meal.getStrYoutube();
+        meals.add(meal);
+    }*/
 
     @Override
     public void showError(String message) {

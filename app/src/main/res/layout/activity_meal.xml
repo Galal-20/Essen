@@ -102,6 +102,21 @@
                     tools:ignore="UseCompatTextViewDrawableXml" />
             </LinearLayout>
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/make_plane"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:backgroundTint="@color/cardview_dark_background"
+                android:importantForAccessibility="no"
+                android:text="@string/make_plan"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/linearCA" />
+
+
             <TextView
                 android:id="@+id/textInst"
                 android:layout_width="match_parent"
@@ -114,7 +129,7 @@
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@id/linearCA"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/linearCA"
+                app:layout_constraintTop_toBottomOf="@id/make_plane"
 
                 />
 

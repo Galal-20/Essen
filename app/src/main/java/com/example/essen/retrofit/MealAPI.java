@@ -17,13 +17,24 @@ public interface MealAPI {
     @GET("filter.php?")
     Call<CatygoryByMeal> getMealByCategory(@Query("c") String categoryName);
     @GET("search.php?")
-    Call<MealList> getSearchMeal(@Query("f") String searchQuery);
+    Call<MealList> getSearchMeal(@Query("s") String searchQuery);
 
     @GET("list.php?a=list")
-    Call<Countries> getCountries(); // Fetches list of countries
+    Call<Countries> getCountries();
 
-    @GET("filter.php")
-    Call<MealList> getMealsByCountry(@Query("a") String countryName); // Fetches meals by country
+    @GET("filter.php?")
+    Call<MealList> getMealsByCountry(@Query("a") String countryName);
+
+    @GET("filter.php?")
+    Call<MealList> getMealsByIngredient(@Query("i") String ingredient);
+
+    @GET("filter.php?")
+    Call<MealList> searchMealsByCategory(@Query("c") String category);
+
+
+    @GET("lookup.php")
+    Call<MealList> getMealDetails(@Query("i") String mealId);
+
 
 }
 

@@ -55,6 +55,7 @@
     <color name="olive">#FF808000</color>
     <color name="navy">#FF000080</color>
     <color name="maroon">#FF800000</color>
+    <color name="selected_button_color">#2196F3</color> <!-- Example color -->
 
 
 </resources>

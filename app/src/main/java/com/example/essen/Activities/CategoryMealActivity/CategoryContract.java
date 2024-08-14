@@ -16,5 +16,6 @@ public interface CategoryContract {
 
     interface presenter {
         void getCategoryByMeal(String categoryName);
+
     }
 }

@@ -30,7 +30,7 @@
     <string name="galal_ahmed">Galal Ahmed</string>
     <string name="email_profile">Email:</string>
     <string name="popualr_meals">Epicurean Delight </string>
-    <string name="Category">Category: </string>
+    <string name="Category">Category</string>
     <string name="Area">Area: </string>
     <string name="meal_name">Meal Name</string>
     <string name="add_to_favorites">Add to Favorites</string>
@@ -81,4 +81,7 @@
     </string>
     <string name="meals">Meals</string>
     <string name="ingredients">Ingredients:</string>
+    <string name="ingredient">Ingredient</string>
+    <string name="make_plan">Make Plan</string>
+    <string name="meal_plan">Meal Plan</string>
 </resources>

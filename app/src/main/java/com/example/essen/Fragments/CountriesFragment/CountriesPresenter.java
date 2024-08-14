@@ -1,7 +1,6 @@
 package com.example.essen.Fragments.CountriesFragment;
 
 import com.example.essen.pojo.Countries;
-import com.example.essen.pojo.MealList;
 import com.example.essen.retrofit.MealAPI;
 
 import retrofit2.Call;
@@ -34,7 +33,7 @@ public class CountriesPresenter implements CountriesContract.Presenter {
         });
     }
 
-    public void getMealsByCountry(String countryName) {
+    /*public void getMealsByCountry(String countryName) {
         mealAPI.getMealsByCountry(countryName).enqueue(new Callback<MealList>() {
             @Override
             public void onResponse(Call<MealList> call, Response<MealList> response) {
@@ -50,7 +49,7 @@ public class CountriesPresenter implements CountriesContract.Presenter {
                 view.showError(t.getMessage());
             }
         });
-    }
+    }*/
 
 }
 

@@ -7,13 +7,13 @@ package com.example.essen.pojo;
 import java.util.List;
 
 public class Countries {
-    private List<Meal> meals;
+    private List<MainMeal> meals;
 
-    public List<Meal> getMeals() {
+    public List<MainMeal> getMeals() {
         return meals;
     }
 
-    public void setMeals(List<Meal> value) {
+    public void setMeals(List<MainMeal> value) {
         this.meals = value;
     }
 }

@@ -26,7 +26,7 @@ import com.example.essen.Activities.AuthActivities.Login.Login_Screen;
 import com.example.essen.Fragments.CountriesFragment.CountriesFragment;
 import com.example.essen.Fragments.FavoritFragment.FavoritFragment;
 import com.example.essen.Fragments.HomeFragment.HomeFragment;
-import com.example.essen.Fragments.ProfileFragment.ProfileFragment;
+import com.example.essen.Fragments.MealPlanFragment.MealPlanFragment;
 import com.example.essen.Fragments.SearchFragment.SearchFragment;
 import com.example.essen.R;
 import com.example.essen.Util.NetworkChangeReceiver;
@@ -114,7 +114,37 @@ public class MainActivity extends AppCompatActivity implements NetworkChangeRece
             } else if (itemId == R.id.countries) {
                 replaceFragment(new CountriesFragment());
 
-            } else if (itemId == R.id.profileMenu) {
+            } else if (itemId == R.id.meal_plan) {
+                if (isGuest) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("Please login to show profile.");
+                    builder.setMessage("Are you want to join with us?");
+
+                    builder.setPositiveButton("Go to login", (dialog, which) -> {
+                        startActivity(new Intent(getApplicationContext(), Login_Screen.class));
+                        finish();
+                        dialog.dismiss();
+                    });
+
+                    builder.setNegativeButton("Still Guest", (dialog, which) -> {
+                        dialog.dismiss();
+                        startActivity(new Intent(this, MainActivity.class));
+                        finish();
+                    });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+
+                } else {
+                    replaceFragment(new MealPlanFragment());
+                }
+
+            }
+            return true;
+        });
+    }
+
+    /*
+    * else if (itemId == R.id.profileMenu) {
                 if (isGuest) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setTitle("Please login to show profile.");
@@ -138,10 +168,7 @@ public class MainActivity extends AppCompatActivity implements NetworkChangeRece
                     replaceFragment(new ProfileFragment());
                 }
 
-            }
-            return true;
-        });
-    }
+            }*/
 
     private void replaceFragment(Fragment fragment) {
         Log.d(TAG, "Replacing fragment with: " + fragment.getClass().getSimpleName());

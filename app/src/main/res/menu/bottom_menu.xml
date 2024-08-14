@@ -20,11 +20,15 @@
         android:id="@+id/countries"
         android:icon="@drawable/country"
         android:title="@string/countries" />
-
     <item
-        android:id="@+id/profileMenu"
-        android:icon="@drawable/user"
-        android:title="@string/profile" />
+        android:id="@+id/meal_plan"
+        android:icon="@drawable/meal_plan_ic"
+        android:title="@string/meal_plan" />
+
+    <!-- <item
+         android:id="@+id/profileMenu"
+         android:icon="@drawable/user"
+         android:title="@string/profile" />-->
 
 
 </menu>

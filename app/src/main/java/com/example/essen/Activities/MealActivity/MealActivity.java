@@ -3,12 +3,17 @@ package com.example.essen.Activities.MealActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,9 +22,11 @@ import com.bumptech.glide.Glide;
 import com.example.essen.Activities.AuthActivities.Login.Login_Screen;
 import com.example.essen.Fragments.HomeFragment.HomeFragment;
 import com.example.essen.R;
+import com.example.essen.pojo.MainMeal;
 import com.example.essen.room.AppDatabase;
 import com.example.essen.room.MealEntity;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.snackbar.Snackbar;
@@ -52,8 +59,8 @@ public class MealActivity extends AppCompatActivity implements MealView {
     String textIngredient;
     private MealPresenter presenter;
     private AppDatabase appDatabase;
-    private boolean isGuest; // Flag to check if the user is a guest
-
+    Button makePlanButton;
+    private boolean isGuest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +69,15 @@ public class MealActivity extends AppCompatActivity implements MealView {
         setContentView(R.layout.activity_meal);
         findView();
         presenter = new MealPresenter(this);
+
         appDatabase = AppDatabase.getDatabase(this);
         getDataFromIntent();
         setYoutubeLinkClickListener();
+
+        String mealId = getIntent().getStringExtra("MEAL_ID");
+        if (mealId != null) {
+            presenter.loadMealDetails(mealId);
+        }
 
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefsFile", MODE_PRIVATE);
         isGuest = sharedPreferences.getBoolean("isGuest", true);
@@ -93,24 +106,22 @@ public class MealActivity extends AppCompatActivity implements MealView {
 
         });
 
+        makePlanButton = findViewById(R.id.make_plane);
+        makePlanButton.setOnClickListener(v -> showBottomSheetDialog());
+
         getLifecycle().addObserver(youTubePlayerView);
 
-        // Load the YouTube video
+
         youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
             @Override
             public void onReady(YouTubePlayer youTubePlayer) {
-                /*
-                String videoId = youtubeLink.split("v=")[1];
-                youTubePlayer.loadVideo(videoId, 0);*/
-                /* youTubePlayer.loadVideo(getVideoIdFromUrl(youtubeLink), 0);*/
-
                 String videoId = getVideoIdFromUrl(youtubeLink);
                 if (videoId != null) {
                     //youTubePlayer.loadVideo(videoId, 0);
                     youTubePlayer.cueVideo(videoId, 0);
 
                 } else {
-                    showMessage("Video not available");
+                    //showMessage("Video not available");
                 }
 
             }
@@ -118,14 +129,63 @@ public class MealActivity extends AppCompatActivity implements MealView {
 
     }
 
+    private void showBottomSheetDialog() {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        View bottomSheetView = LayoutInflater.from(getApplicationContext())
+                .inflate(R.layout.buttom_sheet, null);  // Removed the parent view reference
+
+        DatePicker datePicker = bottomSheetView.findViewById(R.id.date_picker);
+        RadioGroup mealTypeGroup = bottomSheetView.findViewById(R.id.meal_type_group);
+        Button saveButton = bottomSheetView.findViewById(R.id.btn_save);
+
+        saveButton.setOnClickListener(v -> {
+            // Get selected date
+            int day = datePicker.getDayOfMonth();
+            int month = datePicker.getMonth();
+            int year = datePicker.getYear();
+
+            // Get selected meal type
+            int selectedMealId = mealTypeGroup.getCheckedRadioButtonId();
+            RadioButton selectedMealType = bottomSheetView.findViewById(selectedMealId);
+            String mealType = selectedMealType.getText().toString();
+
+            // Save the plan (You can add your save logic here)
+            Toast.makeText(MealActivity.this, "Plan saved successfully!", Toast.LENGTH_SHORT).show();
+
+
+            bottomSheetDialog.dismiss();
+        });
+
+        bottomSheetDialog.setContentView(bottomSheetView);
+        bottomSheetDialog.show();
+    }
+
     public String getVideoIdFromUrl(String url) {
         String videoId = null;
 
-        // Patterns to match various YouTube URL formats
         String[] patterns = {
-                "https?://www.youtube.com/watch\\?v=([^&]+)",   // https://www.youtube.com/watch?v=VIDEO_ID
-                "https?://youtu.be/([^?]+)",                    // https://youtu.be/VIDEO_ID
-                "https?://www.youtube.com/embed/([^?]+)",       // https://www.youtube.com/embed/VIDEO_ID
+                "https?://www.youtube.com/watch\\?v=([^&]+)",
+                "https?://youtu.be/([^?]+)",
+                "https?://www.youtube.com/embed/([^?]+)",
+        };
+
+        for (String pattern : patterns) {
+            Pattern compiledPattern = Pattern.compile(pattern);
+            if (url != null && !url.isEmpty()) {
+                Matcher matcher = compiledPattern.matcher(url);
+                if (matcher.find()) {
+                    return matcher.group(1);
+                }
+            }
+        }
+
+        return videoId;
+       /* String videoId = null;
+
+        String[] patterns = {
+                "https?://www.youtube.com/watch\\?v=([^&]+)",
+                "https?://youtu.be/([^?]+)",
+                "https?://www.youtube.com/embed/([^?]+)",
         };
 
         for (String pattern : patterns) {
@@ -141,7 +201,7 @@ public class MealActivity extends AppCompatActivity implements MealView {
             }
         }
 
-        return videoId;
+        return videoId;*/
     }
 
 
@@ -192,6 +252,18 @@ public class MealActivity extends AppCompatActivity implements MealView {
     }
 
     @Override
+    public void showMeals(MainMeal meal) {
+        collapsingToolbar.setTitle(meal.getStrMeal());
+        Glide.with(this).load(meal.getStrMealThumb()).into(mealImageView);
+        mealIdTextView.setText("Category: " + meal.getStrCategory());
+        locationTextView.setText("Area: " + meal.getStrArea());
+        mealInstructions.setText(meal.getStrInstructions());
+        textIngredients.setText(meal.getStrIngredient1() + meal.getStrIngredient2());
+        openYoutubeLink(meal.getStrYoutube());
+
+    }
+
+    @Override
     public void showMealImage(String imageUrl) {
         Glide.with(this).load(imageUrl).into(mealImageView);
     }
@@ -210,6 +282,7 @@ public class MealActivity extends AppCompatActivity implements MealView {
     public void showMealInstructions(String instructions) {
         mealInstructions.setText(instructions);
     }
+
 
     @Override
     public void showMeaIngredients(String ingredients) {
@@ -233,23 +306,35 @@ public class MealActivity extends AppCompatActivity implements MealView {
 
     @Override
     public void openYoutubeLink(String url) {
-
-          /*Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        startActivity(intent);*/
         imageLinkYoutube.setVisibility(View.GONE);
         youTubePlayerView.setVisibility(View.VISIBLE);
-
-        youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
+        /*youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
             @Override
             public void onReady(YouTubePlayer youTubePlayer) {
                 String videoId = url.split("v=")[1];
                 youTubePlayer.loadVideo(videoId, 0);
             }
-        });
+        });*/
 
+        if (url != null && !url.isEmpty()) {
+            imageLinkYoutube.setVisibility(View.GONE);
+            youTubePlayerView.setVisibility(View.VISIBLE);
 
+            youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
+                @Override
+                public void onReady(YouTubePlayer youTubePlayer) {
+                    String videoId = getVideoIdFromUrl(url);
+                    if (videoId != null) {
+                        youTubePlayer.cueVideo(videoId, 0);
+                    } else {
+                        showMessage("Invalid YouTube URL");
+                    }
+                }
+            });
+        } else {
+            showMessage("YouTube link not available");
+        }
     }
-
 
     private void saveMealToFavorites() {
         if (mealName != null) {
@@ -274,7 +359,7 @@ public class MealActivity extends AppCompatActivity implements MealView {
                 }
             }).start();
         } else {
-            showMessage("Meal data is incomplete.");
+            showMessage("Meal data Not saved.");
         }
     }
 

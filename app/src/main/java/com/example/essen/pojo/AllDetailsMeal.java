@@ -1,25 +1,20 @@
 package com.example.essen.pojo;
 
-public class MainMeal {
+public class AllDetailsMeal {
     private String strIngredient10;
     private String strIngredient12;
     private String strIngredient11;
     private String strIngredient14;
     private String strCategory;
     private String strIngredient13;
-    private String strIngredient16;
     private String strIngredient15;
-    private String strIngredient18;
-    private String strIngredient17;
     private String strArea;
-    private String strIngredient19;
     private String strTags;
     private String idMeal;
     private String strInstructions;
     private String strIngredient1;
     private String strIngredient3;
     private String strIngredient2;
-    private String strIngredient20;
     private String strIngredient5;
     private String strIngredient4;
     private String strIngredient7;
@@ -27,15 +22,12 @@ public class MainMeal {
     private String strIngredient9;
     private String strIngredient8;
     private String strMealThumb;
-    private String strMeasure20;
     private String strYoutube;
-
     private String strMeal;
     private String strMeasure12;
     private String strMeasure13;
     private String strMeasure10;
     private String strMeasure11;
-    private String strSource;
     private String strMeasure9;
     private String strMeasure7;
     private String strMeasure8;
@@ -44,11 +36,7 @@ public class MainMeal {
     private String strMeasure3;
     private String strMeasure4;
     private String strMeasure1;
-    private String strMeasure18;
     private String strMeasure2;
-    private String strMeasure19;
-    private String strMeasure16;
-    private String strMeasure17;
     private String strMeasure14;
     private String strMeasure15;
 
@@ -100,14 +88,6 @@ public class MainMeal {
         this.strIngredient13 = value;
     }
 
-    public String getStrIngredient16() {
-        return strIngredient16;
-    }
-
-    public void setStrIngredient16(String value) {
-        this.strIngredient16 = value;
-    }
-
     public String getStrIngredient15() {
         return strIngredient15;
     }
@@ -116,36 +96,12 @@ public class MainMeal {
         this.strIngredient15 = value;
     }
 
-    public String getStrIngredient18() {
-        return strIngredient18;
-    }
-
-    public void setStrIngredient18(String value) {
-        this.strIngredient18 = value;
-    }
-
-    public String getStrIngredient17() {
-        return strIngredient17;
-    }
-
-    public void setStrIngredient17(String value) {
-        this.strIngredient17 = value;
-    }
-
     public String getStrArea() {
         return strArea;
     }
 
     public void setStrArea(String value) {
         this.strArea = value;
-    }
-
-    public String getStrIngredient19() {
-        return strIngredient19;
-    }
-
-    public void setStrIngredient19(String value) {
-        this.strIngredient19 = value;
     }
 
     public String getStrTags() {
@@ -194,14 +150,6 @@ public class MainMeal {
 
     public void setStrIngredient2(String value) {
         this.strIngredient2 = value;
-    }
-
-    public String getStrIngredient20() {
-        return strIngredient20;
-    }
-
-    public void setStrIngredient20(String value) {
-        this.strIngredient20 = value;
     }
 
     public String getStrIngredient5() {
@@ -260,14 +208,6 @@ public class MainMeal {
         this.strMealThumb = value;
     }
 
-    public String getStrMeasure20() {
-        return strMeasure20;
-    }
-
-    public void setStrMeasure20(String value) {
-        this.strMeasure20 = value;
-    }
-
     public String getStrYoutube() {
         return strYoutube;
     }
@@ -314,14 +254,6 @@ public class MainMeal {
 
     public void setStrMeasure11(String value) {
         this.strMeasure11 = value;
-    }
-
-    public String getStrSource() {
-        return strSource;
-    }
-
-    public void setStrSource(String value) {
-        this.strSource = value;
     }
 
     public String getStrMeasure9() {
@@ -388,44 +320,12 @@ public class MainMeal {
         this.strMeasure1 = value;
     }
 
-    public String getStrMeasure18() {
-        return strMeasure18;
-    }
-
-    public void setStrMeasure18(String value) {
-        this.strMeasure18 = value;
-    }
-
     public String getStrMeasure2() {
         return strMeasure2;
     }
 
     public void setStrMeasure2(String value) {
         this.strMeasure2 = value;
-    }
-
-    public String getStrMeasure19() {
-        return strMeasure19;
-    }
-
-    public void setStrMeasure19(String value) {
-        this.strMeasure19 = value;
-    }
-
-    public String getStrMeasure16() {
-        return strMeasure16;
-    }
-
-    public void setStrMeasure16(String value) {
-        this.strMeasure16 = value;
-    }
-
-    public String getStrMeasure17() {
-        return strMeasure17;
-    }
-
-    public void setStrMeasure17(String value) {
-        this.strMeasure17 = value;
     }
 
     public String getStrMeasure14() {

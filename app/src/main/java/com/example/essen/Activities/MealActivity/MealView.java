@@ -1,7 +1,11 @@
 package com.example.essen.Activities.MealActivity;
 
+import com.example.essen.pojo.MainMeal;
+
 public interface MealView {
     void showMealName(String name);
+
+    void showMeals(MainMeal meal);
 
     void showMealImage(String imageUrl);
 
@@ -19,6 +23,11 @@ public interface MealView {
 
     void hideLoading();
 
-    void openYoutubeLink(String url);  // New method to handle opening YouTube links
+    void openYoutubeLink(String url);
+
+    interface presenter {
+        void loadMealDetails(String mealId);
+    }
+
 
 }

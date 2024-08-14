@@ -1,6 +1,7 @@
 package com.example.essen.Activities.CategoryMealActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.essen.Activities.MealActivity.MealActivity;
 import com.example.essen.R;
 import com.example.essen.pojo.MealX;
 
@@ -19,7 +21,11 @@ import java.util.List;
 
 public class CategoryMealsAdapter extends RecyclerView.Adapter<CategoryMealsAdapter.CategoryMealsViewHolder> {
     private ArrayList<MealX> mealList = new ArrayList<>();
-    static Context context;
+    private Context context;
+
+    public CategoryMealsAdapter(Context context) {
+        this.context = context;
+    }
 
     public void setMealsList(List<MealX> mealList) {
         this.mealList = (ArrayList<MealX>) mealList;
@@ -40,16 +46,12 @@ public class CategoryMealsAdapter extends RecyclerView.Adapter<CategoryMealsAdap
         Glide.with(holder.itemView.getContext()).load(meal.getStrMealThumb()).into(holder.imageMeal);
         holder.tvMeal.setText(meal.getStrMeal());
 
-       /* holder.itemView.setOnClickListener(v ->{
+        holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, MealActivity.class);
-            intent.putExtra(HomeFragment.NAME_MEAL, meal.getidMeal());
-            intent.putExtra(HomeFragment.THUMB_MEAL, meal.getStrMealThumb());
-            intent.putExtra(HomeFragment.Cat, meal.getStrCategory());
-            intent.putExtra(HomeFragment.LOCATION, meal.getStrArea());
-            intent.putExtra(HomeFragment.INSTRUCTIONS, meal.getStrInstructions());
-            intent.putExtra(HomeFragment.YOUTUBE,meal.getStrYoutube());
+            intent.putExtra("MEAL_ID", meal.getidMeal());
             context.startActivity(intent);
-        });*/
+        });
+
 
     }
 
@@ -71,3 +73,22 @@ public class CategoryMealsAdapter extends RecyclerView.Adapter<CategoryMealsAdap
         }
     }
 }
+
+
+/* holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(holder.itemView.getContext(), MealActivity.class);
+            intent.putExtra("mealId", meal.getidMeal()); // Pass meal ID to MealActivity
+            holder.itemView.getContext().startActivity(intent);
+        });*/
+
+
+/*holder.itemView.setOnClickListener(v ->{
+            Intent intent = new Intent(context, MealActivity.class);
+            intent.putExtra(HomeFragment.NAME_MEAL, meal.getidMeal());
+            intent.putExtra(HomeFragment.THUMB_MEAL, meal.getStrMealThumb());
+            intent.putExtra(HomeFragment.Cat, meal.getStrCategory());
+            intent.putExtra(HomeFragment.LOCATION, meal.getStrArea());
+            intent.putExtra(HomeFragment.INSTRUCTIONS, meal.getStrInstructions());
+            intent.putExtra(HomeFragment.YOUTUBE,meal.getStrYoutube());
+            context.startActivity(intent);
+        });*/

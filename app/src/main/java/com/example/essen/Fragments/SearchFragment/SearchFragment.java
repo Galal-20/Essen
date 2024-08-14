@@ -1,9 +1,11 @@
 package com.example.essen.Fragments.SearchFragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
@@ -25,6 +27,9 @@ public class SearchFragment extends Fragment implements SearchContract.View {
     private SearchView searchView;
     private SearchResultAdapter adapter;
     private SearchPresenter presenter;
+    Button searchCountryButton;
+    Button searchIngredientButton;
+    Button searchCategoryButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,6 +46,11 @@ public class SearchFragment extends Fragment implements SearchContract.View {
         recyclerView = view.findViewById(R.id.recyclerViewSearchResults);
         searchView = view.findViewById(R.id.searchView);
 
+        searchCountryButton = view.findViewById(R.id.Searchcountry);
+        searchIngredientButton = view.findViewById(R.id.SearchIngredient);
+        searchCategoryButton = view.findViewById(R.id.SearchCategory);
+
+
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new SearchResultAdapter(getContext());
         recyclerView.setAdapter(adapter);
@@ -49,6 +59,27 @@ public class SearchFragment extends Fragment implements SearchContract.View {
 
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                query = query.trim();
+                if (!query.isEmpty()) {
+                    presenter.searchMeals(query);
+                }
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                newText = newText.trim();
+                if (newText.isEmpty()) {
+                    clearResults();
+                } else {
+                    presenter.searchMeals(newText);
+                }
+                return false;
+            }
+        });
+
+       /* searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 if (!query.isEmpty()) {
@@ -66,10 +97,45 @@ public class SearchFragment extends Fragment implements SearchContract.View {
                 }
                 return false;
             }
-        });
+        });*/
+
+
+        View.OnClickListener searchButtonClickListener = v -> {
+            String query = searchView.getQuery().toString().trim();
+            if (!query.isEmpty()) {
+                Log.d("SearchButtonClick", "Button clicked: " + v.getId() + ", Query: " + query);
+                resetButtonBackgrounds();
+                v.setBackgroundColor(getResources().getColor(R.color.selected_button_color));
+
+                if (v == searchCountryButton) {
+                    Log.d("SearchButtonClick", "Searching by country");
+                    presenter.searchMealsByCountry(query);
+                } else if (v == searchIngredientButton) {
+                    Log.d("SearchButtonClick", "Searching by ingredient");
+                    presenter.searchMealsByIngredient(query);
+                } else if (v == searchCategoryButton) {
+                    Log.d("SearchButtonClick", "Searching by category");
+                    presenter.searchMealsByCategory(query);
+                }
+            }
+        };
+
+
+        searchCountryButton.setOnClickListener(searchButtonClickListener);
+        searchIngredientButton.setOnClickListener(searchButtonClickListener);
+        searchCategoryButton.setOnClickListener(searchButtonClickListener);
+
+
 
         return view;
     }
+
+    private void resetButtonBackgrounds() {
+        searchCountryButton.setBackgroundResource(R.drawable.button_border);
+        searchIngredientButton.setBackgroundResource(R.drawable.button_border);
+        searchCategoryButton.setBackgroundResource(R.drawable.button_border);
+    }
+
 
     private void clearResults() {
         adapter.setMealList(new ArrayList<>());
@@ -80,6 +146,8 @@ public class SearchFragment extends Fragment implements SearchContract.View {
     @Override
     public void showMeals(List<MainMeal> meals) {
         if (meals == null || meals.isEmpty()) {
+            Log.d("SearchFragment", "Showing meals: " + meals);
+
             clearResults();
             //Toast.makeText(getContext(), "No results found", Toast.LENGTH_SHORT).show();
         } else {
@@ -95,7 +163,10 @@ public class SearchFragment extends Fragment implements SearchContract.View {
 
     }
 
-     /*searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+}
+
+/*searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 presenter.searchMeals(query);
@@ -108,4 +179,24 @@ public class SearchFragment extends Fragment implements SearchContract.View {
                 return false;
             }
         });*/
-}
+
+/* searchCountryButton.setOnClickListener(v -> {
+            String query = searchView.getQuery().toString();
+            if (!query.isEmpty()) {
+                presenter.searchMealsByCountry(query);
+            }
+        });
+
+        searchIngredientButton.setOnClickListener(v -> {
+            String query = searchView.getQuery().toString();
+            if (!query.isEmpty()) {
+                presenter.searchMealsByIngredient(query);
+            }
+        });
+
+        searchCategoryButton.setOnClickListener(v -> {
+            String query = searchView.getQuery().toString();
+            if (!query.isEmpty()) {
+                presenter.searchMealsByCategory(query);
+            }
+        });*/

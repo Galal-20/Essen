@@ -1,4 +1,3 @@
-// MealCountryActivity.java
 package com.example.essen.Activities.MealCountry;
 
 import android.os.Bundle;
@@ -58,7 +57,12 @@ public class MealCountryActivity extends AppCompatActivity implements CountryCon
 
     @Override
     public void showMeals(List<MainMeal> meals) {
-        mealAdapter.updateMeals(meals);
+        if (meals != null) {
+            mealAdapter.updateMeals(meals);
+        } else {
+            Toast.makeText(this, "No meals found", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     @Override
