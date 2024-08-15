@@ -138,24 +138,12 @@
         android:layout_marginTop="40dp"
         android:onClick="LoginGoogle"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintEnd_toStartOf="@id/button_facebook"
-        app:layout_constraintStart_toStartOf="@id/text_continue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_continue"
 
         app:srcCompat="@drawable/searcheng" />
 
-    <ImageView
-        android:id="@+id/button_facebook"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginStart="60dp"
-        android:onClick="LoginFacebook"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/button_google"
-        app:layout_constraintTop_toBottomOf="@+id/text_continue"
-        app:layout_constraintEnd_toEndOf="@id/text_continue"
-        app:srcCompat="@drawable/facebook" />
 
 
     <Button

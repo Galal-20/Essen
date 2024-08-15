@@ -1,6 +1,9 @@
 package com.example.essen.Fragments.HomeFragment;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -18,8 +22,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
+import com.example.essen.Activities.AuthActivities.Login.Login_Screen;
 import com.example.essen.Activities.CategoryMealActivity.CategoryMeal;
 import com.example.essen.Activities.MealActivity.MealActivity;
+import com.example.essen.Activities.Profile.ProfileActivity;
 import com.example.essen.R;
 import com.example.essen.pojo.Category;
 import com.example.essen.pojo.MainMeal;
@@ -47,6 +53,9 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     private SwipeRefreshLayout swipeRefreshLayout;
     private MainMeal randomMeal;
     private ProgressBar progressBar;
+    private ImageView settings;
+    private boolean isGuest; // Flag to check if the user is a guest
+
 
 
     @Override
@@ -65,6 +74,10 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         categoryRecyclerView = view.findViewById(R.id.recycleC);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         progressBar = view.findViewById(R.id.progressBar);
+        settings = view.findViewById(R.id.settings);
+
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefsFile", MODE_PRIVATE);
+        isGuest = sharedPreferences.getBoolean("isGuest", true);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         showLoading(true);
@@ -107,6 +120,8 @@ public class HomeFragment extends Fragment implements HomeContract.View {
                 Toast.makeText(getContext(), "Meal data not available", Toast.LENGTH_SHORT).show();
             }
         });
+
+        settings.setOnClickListener(v -> GoToProfile());
 
         return view;
     }
@@ -157,7 +172,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     @Override
     public void showCategories(List<Category> categories) {
         if (categories != null && !categories.isEmpty()) {
-            categoryRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3)); // 3 columns, vertical
+            categoryRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
             CategoryAdapter categoryAdapter = new CategoryAdapter();
             categoryAdapter.setCategoriesList(categories);
             categoryRecyclerView.setAdapter(categoryAdapter);
@@ -174,6 +189,32 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     }
 
 
+    public void GoToProfile() {
+        if (isGuest) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle("Please login to access Setting.");
+            builder.setMessage("Are you want to join with us?");
+
+            builder.setPositiveButton("Go to login", (dialog, which) -> {
+                startActivity(new Intent(getContext(), Login_Screen.class));
+                getActivity().finish();
+                dialog.dismiss();
+            });
+
+            builder.setNegativeButton("Still Guest", (dialog, which) -> {
+                dialog.dismiss();
+                //startActivity(new Intent(getContext(), MainActivity.class));
+
+            });
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+
+        } else {
+            startActivity(new Intent(getContext(), ProfileActivity.class));
+            requireActivity().finish();
+        }
+
+    }
 }
 
 

@@ -1,6 +1,7 @@
 package com.example.essen.Fragments.SearchFragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,7 +59,7 @@ public class SearchFragment extends Fragment implements SearchContract.View {
         swipeRefreshLayout.setOnRefreshListener(() -> swipeRefreshLayout.setRefreshing(false));
 
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        /*searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 query = query.trim();
@@ -77,11 +78,15 @@ public class SearchFragment extends Fragment implements SearchContract.View {
                 }
                 return false;
             }
-        });
+        });*/
 
-       /* searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            private Handler handler = new Handler();
+            private Runnable searchRunnable;
+
             @Override
             public boolean onQueryTextSubmit(String query) {
+                query = query.trim();
                 if (!query.isEmpty()) {
                     presenter.searchMeals(query);
                 }
@@ -89,15 +94,25 @@ public class SearchFragment extends Fragment implements SearchContract.View {
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
-                if (newText.isEmpty()) {
-                    clearResults();
-                } else {
-                    presenter.searchMeals(newText);
-                }
+            public boolean onQueryTextChange(final String newText) {
+                handler.removeCallbacks(searchRunnable);
+                searchRunnable = () -> {
+                    String query = newText.trim();
+                    if (query.isEmpty()) {
+                        clearResults();
+                    } else {
+                        presenter.searchMeals(query);
+                    }
+                };
+                handler.postDelayed(searchRunnable, 500);
                 return false;
             }
-        });*/
+        });
+
+       /* searchCountryButton.setOnClickListener(v -> presenter.searchMealsByCountry(searchView.getQuery().toString()));
+        searchIngredientButton.setOnClickListener(v -> presenter.searchMealsByIngredient(searchView.getQuery().toString()));
+        searchCategoryButton.setOnClickListener(v -> presenter.searchMealsByCategory(searchView.getQuery().toString()));*/
+
 
 
         View.OnClickListener searchButtonClickListener = v -> {
@@ -119,16 +134,13 @@ public class SearchFragment extends Fragment implements SearchContract.View {
                 }
             }
         };
-
-
         searchCountryButton.setOnClickListener(searchButtonClickListener);
         searchIngredientButton.setOnClickListener(searchButtonClickListener);
         searchCategoryButton.setOnClickListener(searchButtonClickListener);
 
-
-
         return view;
     }
+
 
     private void resetButtonBackgrounds() {
         searchCountryButton.setBackgroundResource(R.drawable.button_border);
@@ -136,35 +148,26 @@ public class SearchFragment extends Fragment implements SearchContract.View {
         searchCategoryButton.setBackgroundResource(R.drawable.button_border);
     }
 
-
     private void clearResults() {
         adapter.setMealList(new ArrayList<>());
-        //Toast.makeText(getContext(), "Search cleared", Toast.LENGTH_SHORT).show();
     }
-
 
     @Override
     public void showMeals(List<MainMeal> meals) {
         if (meals == null || meals.isEmpty()) {
             Log.d("SearchFragment", "Showing meals: " + meals);
-
             clearResults();
-            //Toast.makeText(getContext(), "No results found", Toast.LENGTH_SHORT).show();
         } else {
             adapter.setMealList(meals);
         }
     }
-
-
     @Override
     public void showError(String error) {
         clearResults();
-        //Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
-
     }
-
-
 }
+
+
 
 /*searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -198,5 +201,25 @@ public class SearchFragment extends Fragment implements SearchContract.View {
             String query = searchView.getQuery().toString();
             if (!query.isEmpty()) {
                 presenter.searchMealsByCategory(query);
+            }
+        });*/
+
+/* searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if (!query.isEmpty()) {
+                    presenter.searchMeals(query);
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (newText.isEmpty()) {
+                    clearResults();
+                } else {
+                    presenter.searchMeals(newText);
+                }
+                return false;
             }
         });*/

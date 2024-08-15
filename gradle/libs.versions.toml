@@ -2,6 +2,7 @@
 agp = "8.5.1"
 firebaseAuthVersion = "21.0.1"
 glide = "4.15.1"
+googleFirebaseAuth = "23.5.0"
 imageslideshow = "0.1.2"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -14,15 +15,18 @@ constraintlayout = "2.1.4"
 googleGmsGoogleServices = "4.4.2"
 firebaseAuth = "23.0.0"
 playServicesAuth = "21.2.0"
+playServicesAuthVersion = "21.0.1"
 retrofit = "2.9.0"
 sdpAndroid = "1.0.6"
 sspAndroid = "1.0.6"
 navigationFragment = "2.7.7"
 navigationUi = "2.7.7"
+firebaseFirestore = "25.0.0"
 
 [libraries]
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 firebase-auth-v2101 = { module = "com.google.firebase:firebase-auth", version.ref = "firebaseAuthVersion" }
+firebase-auth-v2350 = { module = "com.google.firebase:firebase-auth", version.ref = "googleFirebaseAuth" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 imageslideshow = { module = "com.github.denzcoskun:ImageSlideshow", version.ref = "imageslideshow" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -35,11 +39,13 @@ activity = { group = "androidx.activity", name = "activity", version.ref = "acti
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
+play-services-auth-v2101 = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuthVersion" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 sdp-android = { module = "com.intuit.sdp:sdp-android", version.ref = "sdpAndroid" }
 ssp-android = { module = "com.intuit.ssp:ssp-android", version.ref = "sspAndroid" }
 navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigationFragment" }
 navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigationUi" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

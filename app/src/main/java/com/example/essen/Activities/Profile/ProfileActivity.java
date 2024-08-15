@@ -1,20 +1,21 @@
-package com.example.essen.Fragments.ProfileFragment;
+package com.example.essen.Activities.Profile;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
-import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.essen.Activities.MainActivity.MainActivity;
 import com.example.essen.Activities.Welcome.Welcome_Screen;
 import com.example.essen.R;
 import com.example.essen.Util.SecurePreferences;
@@ -24,51 +25,45 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Locale;
 
-public class ProfileFragment extends Fragment {
+public class ProfileActivity extends AppCompatActivity {
 
     private static final String PREFS_NAME = "MyPrefsFile";
     ImageView imageView;
     SwipeRefreshLayout swipeRefreshLayout;
+    String savedLanguage;
     private AuthService authService;
     private Spinner languageSpinner;
-    String savedLanguage;
+    private ImageView imageBack;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        authService = new AuthService(requireActivity());
-    }
+        Hide_status_Bar();
+        setContentView(R.layout.activity_profile);
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_profile, container, false);
+        imageView = findViewById(R.id.log_out);
+        languageSpinner = findViewById(R.id.language_spinner);
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        imageBack = findViewById(R.id.image_back);
 
-        imageView = view.findViewById(R.id.log_out);
-        languageSpinner = view.findViewById(R.id.language_spinner);
-        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
+        authService = new AuthService(this);
 
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            swipeRefreshLayout.setRefreshing(false);
-        });
+        swipeRefreshLayout.setOnRefreshListener(() -> swipeRefreshLayout.setRefreshing(false));
 
-        if (languageSpinner == null) {
-            throw new NullPointerException("languageSpinner is null");
-        }
+        imageView.setOnClickListener(v -> signOut());
+        imageBack.setOnClickListener(v -> {
+                    startActivity(new Intent(this, MainActivity.class));
+                    finish();
+                }
 
-        imageView.setOnClickListener(v -> {
-            signOut();
-        });
+        );
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                requireContext(), R.array.languages_array, android.R.layout.simple_spinner_item);
+                this, R.array.languages_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         languageSpinner.setAdapter(adapter);
 
-
-        // Set the spinner to show the saved language choice
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         savedLanguage = sharedPreferences.getString("selectedLanguage", "Select Language");
 
         if (savedLanguage.equals("English")) {
@@ -85,10 +80,8 @@ public class ProfileFragment extends Fragment {
                 String selectedLanguage = (String) parent.getItemAtPosition(position);
                 if (selectedLanguage.equals("English")) {
                     setLocale("en");
-                    languageSpinner.getSelectedItem();
                 } else if (selectedLanguage.equals("Arabic")) {
                     setLocale("ar");
-                    languageSpinner.getSelectedItem();
                 }
             }
 
@@ -96,17 +89,27 @@ public class ProfileFragment extends Fragment {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+    }
 
-        return view;
+    public void Hide_status_Bar() {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN
+        );
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
     }
 
     public void signOut() {
-        authService.signOut(requireActivity(), new AuthService.AuthCallback() {
+        authService.signOut(this, new AuthService.AuthCallback() {
             @Override
             public void onSuccess(FirebaseUser user) {
                 showMessage("Sign out Successfully");
-                Intent intent = new Intent(getContext(), Welcome_Screen.class);
+                Intent intent = new Intent(ProfileActivity.this, Welcome_Screen.class);
                 startActivity(intent);
+                finish();
             }
 
             @Override
@@ -123,26 +126,19 @@ public class ProfileFragment extends Fragment {
         config.setLocale(locale);
         getResources().updateConfiguration(config, getResources().getDisplayMetrics());
 
-        SecurePreferences securePreferences = new SecurePreferences(getContext(), PREFS_NAME, "1234567", true);
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SecurePreferences securePreferences = new SecurePreferences(this, PREFS_NAME, "1234567", true);
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("selectedLanguage", languageCode);
         editor.apply();
         securePreferences.put("selectedLanguage", "true");
 
-        // Restart the activity to apply the new locale
-        Intent intent = new Intent(getActivity(), getActivity().getClass());
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
-        getActivity().finish();
+        finish();
     }
-
 
     private void showMessage(String message) {
-        Snackbar.make(requireView(), message, Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_SHORT).show();
     }
 }
-
-/* ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                requireContext(), android.R.layout.simple_spinner_item, languages);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        languageSpinner.setAdapter(adapter);*/

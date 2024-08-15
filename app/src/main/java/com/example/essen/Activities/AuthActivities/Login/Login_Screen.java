@@ -36,16 +36,13 @@ public class Login_Screen extends AppCompatActivity implements AuthViewLogin {
     private EditText passwordInput;
     private Button loginButton;
     private TextView titleTextView;
-    ;
     private TextView loginTextView;
-    ;
     private TextView forgetPasswordTextView;
     private TextView orTextView;
     private TextView byWithTextView;
     private TextView doYouHaveTextView;
     private TextView regTextView;
     private ImageView googleButton;
-    private ImageView facebookButton;
     private LoginPresenter presenter;
     private static final String PREFS_NAME = "MyPrefsFile";
     private static final String SERURE_KEY = "password_key_09@0";
@@ -81,7 +78,6 @@ public class Login_Screen extends AppCompatActivity implements AuthViewLogin {
         orTextView.startAnimation(fadeIn);
         byWithTextView.startAnimation(fadeIn);
         googleButton.startAnimation(fadeIn);
-        facebookButton.startAnimation(fadeIn);
         doYouHaveTextView.startAnimation(fadeIn);
         regTextView.startAnimation(fadeIn);
         loginButton.startAnimation(fadeIn);
@@ -108,7 +104,6 @@ public class Login_Screen extends AppCompatActivity implements AuthViewLogin {
         orTextView = findViewById(R.id.text_or);
         byWithTextView = findViewById(R.id.text_continue);
         googleButton = findViewById(R.id.button_google);
-        facebookButton = findViewById(R.id.button_facebook);
         doYouHaveTextView = findViewById(R.id.Login_a);
         regTextView = findViewById(R.id.Text_Login);
         loginButton = findViewById(R.id.button_log);

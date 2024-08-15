@@ -23,6 +23,7 @@ public class AuthService {
     private static final String PREFS_NAME = "MyPrefsFile";
 
 
+
     public AuthService(Activity activity){
         firebaseAuth = FirebaseAuth.getInstance();
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -108,7 +109,6 @@ public class AuthService {
         // Sign out from Google
         googleSignInClient.signOut().addOnCompleteListener(activity, task -> {
             if (task.isSuccessful()) {
-                // Clear login state from Shared Preferences
                 SharedPreferences sharedPreferences = activity.getSharedPreferences(PREFS_NAME, Activity.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putBoolean("isLoggedIn", false);
@@ -120,3 +120,6 @@ public class AuthService {
         });
     }
 }
+
+
+

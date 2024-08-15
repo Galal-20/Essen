@@ -1,6 +1,12 @@
 package com.example.essen.Fragments.SearchFragment;
 
+import static com.example.essen.Fragments.HomeFragment.HomeFragment.Cat;
 import static com.example.essen.Fragments.HomeFragment.HomeFragment.INGREDIENTS;
+import static com.example.essen.Fragments.HomeFragment.HomeFragment.INSTRUCTIONS;
+import static com.example.essen.Fragments.HomeFragment.HomeFragment.LOCATION;
+import static com.example.essen.Fragments.HomeFragment.HomeFragment.NAME_MEAL;
+import static com.example.essen.Fragments.HomeFragment.HomeFragment.THUMB_MEAL;
+import static com.example.essen.Fragments.HomeFragment.HomeFragment.YOUTUBE;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,7 +21,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.essen.Activities.MealActivity.MealActivity;
-import com.example.essen.Fragments.HomeFragment.HomeFragment;
 import com.example.essen.R;
 import com.example.essen.pojo.MainMeal;
 
@@ -68,16 +73,17 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             nameTextView = itemView.findViewById(R.id.textSearchResultName);
             imageView = itemView.findViewById(R.id.imageSearchResult);
 
+
             itemView.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
                     MainMeal meal = mealList.get(position);
                     Intent intent = new Intent(context, MealActivity.class);
-                    intent.putExtra(HomeFragment.Cat, meal.getStrCategory());
-                    intent.putExtra(HomeFragment.NAME_MEAL, meal.getStrMeal());
-                    intent.putExtra(HomeFragment.THUMB_MEAL, meal.getStrMealThumb());
-                    intent.putExtra(HomeFragment.LOCATION, meal.getStrArea());
-                    intent.putExtra(HomeFragment.INSTRUCTIONS, meal.getStrInstructions());
+                    intent.putExtra(Cat, meal.getStrCategory());
+                    intent.putExtra(NAME_MEAL, meal.getStrMeal());
+                    intent.putExtra(THUMB_MEAL, meal.getStrMealThumb());
+                    intent.putExtra(LOCATION, meal.getStrArea());
+                    intent.putExtra(INSTRUCTIONS, meal.getStrInstructions());
                     intent.putExtra(INGREDIENTS,
                             meal.getStrIngredient1() + "\n" + meal.getStrIngredient2() +
                                     meal.getStrIngredient3() + "\n" + meal.getStrIngredient4() +
@@ -91,7 +97,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
                                     meal.getStrIngredient19() + "\n" + meal.getStrIngredient20()
 
                     );
-                    intent.putExtra(HomeFragment.YOUTUBE, meal.getStrYoutube());
+                    intent.putExtra(YOUTUBE, meal.getStrYoutube());
                     context.startActivity(intent);
                 }
             });

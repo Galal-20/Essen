@@ -32,6 +32,9 @@
         android:theme="@style/Theme.Essen"
         tools:targetApi="31">
         <activity
+            android:name=".Activities.Profile.ProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activities.MealCountry.MealCountryActivity"
             android:exported="false" />
         <activity

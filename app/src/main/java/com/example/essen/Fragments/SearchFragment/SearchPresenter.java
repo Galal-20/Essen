@@ -1,5 +1,7 @@
 package com.example.essen.Fragments.SearchFragment;
 
+import android.content.Context;
+
 import com.example.essen.pojo.MainMeal;
 import com.example.essen.pojo.MealList;
 import com.example.essen.retrofit.MealAPI;
@@ -16,6 +18,7 @@ import retrofit2.Response;
 public class SearchPresenter implements SearchContract.Presenter {
     private final SearchContract.View view;
     private final MealAPI mealAPI;
+    private Context context;
 
     public SearchPresenter(SearchContract.View view) {
         this.view = view;
