@@ -39,7 +39,6 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView userTitle;
     private TextView userEmail;
     private FirebaseAuth firebaseAuth; // Add this line
-    //private AppDatabase appDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,10 +120,6 @@ public class ProfileActivity extends AppCompatActivity {
         authService.signOut(this, new AuthService.AuthCallback() {
             @Override
             public void onSuccess(FirebaseUser user) {
-                /*if (user != null) {
-                    String userId = user.getUid();
-                    clearUserData(userId); // Clear old user data
-                }*/
                 showMessage("Sign out Successfully");
                 Intent intent = new Intent(ProfileActivity.this, Welcome_Screen.class);
                 startActivity(intent);
@@ -138,12 +133,6 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
-    /*private void clearUserData(String userId) {
-        new Thread(() -> {
-            appDatabase.mealDao().deleteAllByUserId(userId); // Clear all meals for the user
-            appDatabase.mealPlanDao().deleteAllByUserId(userId); // Clear all meal plans for the user
-        }).start();
-    }*/
 
 
 

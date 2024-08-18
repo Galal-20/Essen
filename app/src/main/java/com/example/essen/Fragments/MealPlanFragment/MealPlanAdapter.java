@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,20 +29,30 @@ import com.example.essen.Fragments.HomeFragment.HomeFragment;
 import com.example.essen.R;
 import com.example.essen.room.AppDatabase;
 import com.example.essen.room.MealPlanEntity;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
+
 public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.MealPlanViewHolder> {
     private static final int REQUEST_READ_CALENDAR_PERMISSION = 100;
-
     private final Context context;
     private List<MealPlanEntity> mealPlans;
     private AppDatabase appDatabase;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseUser currentUser;
+
 
     public MealPlanAdapter(List<MealPlanEntity> mealPlans, AppDatabase appDatabase, Context context) {
         this.mealPlans = mealPlans;
         this.appDatabase = appDatabase;
         this.context = context;
+        this.firebaseAuth = FirebaseAuth.getInstance();
+        this.currentUser = firebaseAuth.getCurrentUser();
+
+
     }
 
     @NonNull
@@ -60,7 +71,7 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.MealPl
         holder.dateTextView.setText(mealPlan.getDayName() + ", " + mealPlan.getDayNumber() + " " + mealPlan.getMonthName());
         holder.mealTypeTextView.setText(mealPlan.getMealType());
 
-        holder.deleteButton.setOnClickListener(v -> {
+        /*holder.deleteButton.setOnClickListener(v -> {
             new Thread(() -> {
                 appDatabase.mealPlanDao().delete(mealPlan);
                 ((Activity) holder.itemView.getContext()).runOnUiThread(() -> {
@@ -69,7 +80,9 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.MealPl
                     notifyItemRangeChanged(position, mealPlans.size());
                 });
             }).start();
-        });
+        });*/
+        holder.deleteButton.setOnClickListener(v -> showDeleteDialog(mealPlan, position));
+
 
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, MealActivity.class);
@@ -94,6 +107,41 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.MealPl
         });
     }
 
+    private void showDeleteDialog(MealPlanEntity mealPlan, int position) {
+        new AlertDialog.Builder(context)
+                .setTitle("Delete Meal Plan")
+                .setMessage("Are you sure you want to delete this meal plan?")
+                .setPositiveButton("Yes", (dialog, which) -> deleteMealPlan(mealPlan, position))
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+    private void deleteMealPlan(MealPlanEntity mealPlan, int position) {
+        // Remove from local database
+        new Thread(() -> {
+            appDatabase.mealPlanDao().delete(mealPlan);
+            ((Activity) context).runOnUiThread(() -> {
+                mealPlans.remove(position);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, mealPlans.size());
+            });
+        }).start();
+
+        // Remove from Firestore if user is logged in
+        if (currentUser != null) {
+            FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+            firestore.collection("users").document(currentUser.getUid())
+                    .collection("mealPlans").document(mealPlan.getFirestoreId())
+                    .delete()
+                    .addOnSuccessListener(aVoid -> Toast.makeText(context, "Meal plan deleted from Firestore", Toast.LENGTH_SHORT).show())
+                    .addOnFailureListener(e -> Toast.makeText(context, "Error deleting meal plan", Toast.LENGTH_SHORT).show());
+        } else {
+            Toast.makeText(context, "User not logged in", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+
     @Override
     public int getItemCount() {
         return mealPlans.size();
@@ -108,7 +156,6 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.MealPl
         intent.putExtra(CalendarContract.Events.ALL_DAY, false);
         intent.putExtra(CalendarContract.Events.HAS_ALARM, true);
 
-        // Set reminder 10 minutes before
         intent.putExtra(CalendarContract.Reminders.MINUTES, 10);
         intent.putExtra(CalendarContract.Reminders.METHOD, CalendarContract.Reminders.METHOD_ALERT);
 

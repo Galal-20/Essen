@@ -15,6 +15,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.essen.R;
 import com.example.essen.room.AppDatabase;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class FavoritFragment extends Fragment implements FavoriteAdapter.OnDeleteClickListener {
     private RecyclerView recyclerView;
@@ -22,7 +24,8 @@ public class FavoritFragment extends Fragment implements FavoriteAdapter.OnDelet
     private SwipeRefreshLayout swipeRefreshLayout;
     private FavoritePresenter presenter;
     private AppDatabase appDatabase;
-
+    private FirebaseFirestore firestore;
+    private FirebaseAuth firebaseAuth;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -33,6 +36,8 @@ public class FavoritFragment extends Fragment implements FavoriteAdapter.OnDelet
         adapter = new FavoriteAdapter(getContext(), this);
         recyclerView.setAdapter(adapter);
         appDatabase = AppDatabase.getDatabase(requireContext());
+        firestore = FirebaseFirestore.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
         presenter = new FavoritePresenter(getActivity().getApplication());
         presenter.getFavoriteMeals().observe(getViewLifecycleOwner(), meals -> {
             adapter.submitList(meals);
@@ -58,13 +63,28 @@ public class FavoritFragment extends Fragment implements FavoriteAdapter.OnDelet
 
         yesButton.setOnClickListener(view -> {
             new Thread(() -> {
+                // Delete from local database
                 appDatabase.mealDao().deleteMeal(mealName);
-                requireActivity().runOnUiThread(() -> {
-                    presenter.getFavoriteMeals().observe(getViewLifecycleOwner(), meals -> {
-                        adapter.submitList(meals);
+
+                // Delete from Firestore
+                if (firebaseAuth.getCurrentUser() != null) {
+                    firestore.collection("users").document(firebaseAuth.getCurrentUser().getUid())
+                            .collection("favorites").document(mealName)
+                            .delete()
+                            .addOnSuccessListener(aVoid -> requireActivity().runOnUiThread(() -> {
+                                presenter.getFavoriteMeals().observe(getViewLifecycleOwner(), meals -> {
+                                    adapter.submitList(meals);
+                                });
+                                Snackbar.make(recyclerView, "Meal removed from favorites and Firestore!", Snackbar.LENGTH_SHORT).show();
+                            }))
+                            .addOnFailureListener(e -> requireActivity().runOnUiThread(() -> {
+                                Snackbar.make(recyclerView, "Error removing from Firestore: " + e.getMessage(), Snackbar.LENGTH_SHORT).show();
+                            }));
+                } else {
+                    requireActivity().runOnUiThread(() -> {
+                        Snackbar.make(recyclerView, "User not logged in, unable to remove from Firestore.", Snackbar.LENGTH_SHORT).show();
                     });
-                    Snackbar.make(recyclerView, "Meal removed from favorites!", Snackbar.LENGTH_SHORT).show();
-                });
+                }
             }).start();
             dialog.dismiss();
         });
@@ -80,20 +100,5 @@ public class FavoritFragment extends Fragment implements FavoriteAdapter.OnDelet
     @Override
     public void onDeleteClick(String mealName) {
         requireActivity().runOnUiThread(() -> showCustomDialog(mealName));
-
     }
 }
-
-
- /* new Thread(() -> {
-            appDatabase.mealDao().deleteMeal(mealName);
-            requireActivity().runOnUiThread(() -> {
-                presenter.getFavoriteMeals().observe(getViewLifecycleOwner(), meals -> {
-                    adapter.submitList(meals);
-                });
-                // show custom dialog:
-                showCustomDialog("Meal removed from favorites!");
-                Snackbar.make(recyclerView, "Meal removed from favorites!",Snackbar.LENGTH_SHORT).show();
-            });
-        }).start();*/
-

@@ -213,6 +213,8 @@ public class MealActivity extends AppCompatActivity implements MealView {
             mealType = selectedMealType.getText().toString();
 
             dayName = getDayName(year, month, day);
+            String firestoreId = mealName + "_" + dayName;
+
             new Thread(() -> {
                 int count = appDatabase.mealPlanDao().isMealInMealPlan(mealName);
                 if (count > 0) {
@@ -227,18 +229,18 @@ public class MealActivity extends AppCompatActivity implements MealView {
                         mealPlanEntity.setStrInstructions(instructions);
                         mealPlanEntity.setIngredients(textIngredient);
                         mealPlanEntity.setStrYoutube(youtubeLink);
-
                         mealPlanEntity.setMealType(mealType);
                         mealPlanEntity.setDayName(dayName);
                         mealPlanEntity.setDayNumber(day);
                         mealPlanEntity.setMonth(month);
                         mealPlanEntity.setYear(year);
+                        mealPlanEntity.setFirestoreId(firestoreId);
 
                         appDatabase.mealPlanDao().insert(mealPlanEntity);
 
-                        if (user != null) { // Ensure user is logged in
+                        if (user != null) {
                             firestore.collection("users").document(user.getUid())
-                                    .collection("mealPlans").document(mealName + "_" + dayName)
+                                    .collection("mealPlans").document(firestoreId)
                                     .set(mealPlanEntity)
                                     .addOnSuccessListener(aVoid -> runOnUiThread(() -> showMessage("Plan saved successfully and saved to Firestore!")))
                                     .addOnFailureListener(e -> runOnUiThread(() -> showMessage("Error saving to Firestore: " + e.getMessage())));
@@ -247,7 +249,6 @@ public class MealActivity extends AppCompatActivity implements MealView {
                         runOnUiThread(() -> Toast.makeText(MealActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
                     }
                 }
-
             }).start();
 
             bottomSheetDialog.dismiss();
