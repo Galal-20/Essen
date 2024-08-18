@@ -94,7 +94,7 @@
         android:background="@drawable/ed"
         app:layout_constraintWidth_percent=".8"
         android:inputType="text"
-        tools:ignore="TextFields" />
+        tools:ignore="RtlSymmetry,TextFields" />
 
     <EditText
         android:layout_width="0dp"
@@ -199,7 +199,8 @@
         app:layout_constraintEnd_toEndOf="@id/button_register"
         app:layout_constraintTop_toBottomOf="@id/button_register"
         app:layout_constraintVertical_bias="0.01"
-        android:onClick="login_text"/>
+        android:onClick="login_text"
+        tools:ignore="RtlSymmetry" />
 
     <ProgressBar
         android:id="@+id/progress_cir"

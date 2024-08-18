@@ -43,7 +43,11 @@ public class CategoryMealsAdapter extends RecyclerView.Adapter<CategoryMealsAdap
     @Override
     public void onBindViewHolder(@NonNull CategoryMealsViewHolder holder, int position) {
         MealX meal = mealList.get(position);
-        Glide.with(holder.itemView.getContext()).load(meal.getStrMealThumb()).into(holder.imageMeal);
+        Glide.with(holder.itemView.getContext())
+                .load(meal.getStrMealThumb())
+                .placeholder(R.drawable.bg1)
+                .error(R.drawable.bg1)
+                .into(holder.imageMeal);
         holder.tvMeal.setText(meal.getStrMeal());
 
         holder.itemView.setOnClickListener(v -> {

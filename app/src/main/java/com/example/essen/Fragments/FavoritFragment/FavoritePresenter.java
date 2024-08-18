@@ -20,8 +20,9 @@ public class FavoritePresenter {
         return mealRepository.getFavoriteMeals();
     }
 
-    /*private void loadFavoriteMeals() {
+}
+
+  /*private void loadFavoriteMeals() {
         // LiveData will automatically update the observer
     }*/
-}
 

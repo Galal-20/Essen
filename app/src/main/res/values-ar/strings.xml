@@ -35,6 +35,34 @@
     <string name="add_to_favorites">أضف إلى المفضلة</string>
     <string name="Area">المنطقة: </string>
     <string name="indulge_in_your_culinary_cravings">استمتع بتلبية رغباتك الذواقة</string>
+    <string name="guest">ضيف</string>
+    <string name="countries">البلاد</string>
+    <string name="previous">السابق</string>
+    <string name="meals">الوجبات</string>
+    <string name="ingredient">المكون</string>
+    <string name="make_plan">اضافه خطه</string>
+    <string name="meal_plan">اضافه خطه</string>
+    <string name="sunday_24_may">الاحد، ٢٣ ابريل</string>
+    <string name="kind_of_time">نوع الوجبه</string>
+    <string name="ingredients">المكونات:</string>
+    <string name="next">التالي</string>
+    <string name="continue_with">الدخول عن طريق</string>
+    <string name="category_beef">قسم البرجر</string>
+    <string name="area_egypt">مصر</string>
+    <string name="steps">الخطوات:</string>
+    <string name="breakfast">الفطار</string>
+    <string name="lunch">الغداء</string>
+    <string name="dinner">العشاء</string>
+    <string name="save">خفظ</string>
+    <string name="cancle">غير موافق</string>
+    <string name="yes">موافق</string>
+    <string name="favorites">المفضلات</string>
+    <string name="categories">الاقسام</string>
+    <string name="country_name">اسم البلد</string>
+    <string name="delete">حذف</string>
+    <string name="food_name">اسم الوجبه</string>
+    <string name="Please_fill_all_fields">من فضلك اكمل البيانات</string>
+    <string name="Reset_link_sent_to_email"> لينك اعاده التعيين تم ارساله الي الايميل الخاص بك</string>
 
 
 </resources>

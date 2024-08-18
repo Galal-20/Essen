@@ -2,10 +2,12 @@ package com.example.essen.Fragments.HomeFragment;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,7 +63,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new HomePresenter(this);
+        presenter = new HomePresenter(this, getContext());
     }
 
     @Override
@@ -82,9 +84,17 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         showLoading(true);
 
-        presenter.getRandomMeal();
-        presenter.getPopularMeals();
-        presenter.getCategories();
+
+        if (isInternetAvailable()) {
+            presenter.getRandomMeal();
+            presenter.getPopularMeals();
+            presenter.getCategories();
+        } else {
+            showError("No internet connection. Loading cached data.");
+            presenter.getRandomMeal();
+            presenter.getPopularMeals();
+            presenter.getCategories();
+        }
 
         swipeRefreshLayout.setOnRefreshListener(() -> {
             showLoading(true);
@@ -126,6 +136,12 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         return view;
     }
 
+    public boolean isInternetAvailable() {
+        ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+    }
+
     private void showLoading(boolean isLoading) {
         if (isLoading) {
             progressBar.setVisibility(View.VISIBLE);
@@ -137,16 +153,19 @@ public class HomeFragment extends Fragment implements HomeContract.View {
 
     @Override
     public void showRandomMeal(MainMeal meal) {
-        if (isAdded() && getView() != null && imageView != null) {
-            randomMeal = meal;
-            Glide.with(requireContext())
-                    .load(meal.getStrMealThumb())
-                    .into(imageView);
-            swipeRefreshLayout.setRefreshing(false);
-            showLoading(false);
+        randomMeal = meal;
+        Glide.with(requireContext())
+                .load(meal.getStrMealThumb())
+                .placeholder(R.drawable.coffe)
+                .error(R.drawable.coffe)
+                .into(imageView);
+        swipeRefreshLayout.setRefreshing(false);
+        showLoading(false);
+       /* if (isAdded() && getView() != null && imageView != null) {
+
         } else {
-            Log.w("HomeFragment", "Fragment not attached or view not ready. Cannot load image.");
-        }
+            //showError("Cannot load image.");
+        }*/
     }
 
     @Override

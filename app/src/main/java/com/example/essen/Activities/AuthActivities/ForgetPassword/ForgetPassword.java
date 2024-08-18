@@ -37,7 +37,7 @@ public class ForgetPassword extends AppCompatActivity implements AuthViewForgetP
     public void SendForgetPassword(View view) {
         String email = emailInput.getText().toString();
         if (email.isEmpty()) {
-            Snackbar.make(view, "Please fill all fields", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(view, R.string.Please_fill_all_fields, Snackbar.LENGTH_SHORT).show();
         } else {
             progressBar.setVisibility(View.VISIBLE);
             presenter.forgetPassword(email);

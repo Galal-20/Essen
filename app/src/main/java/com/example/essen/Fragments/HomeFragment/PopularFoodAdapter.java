@@ -47,6 +47,8 @@ public class PopularFoodAdapter extends RecyclerView.Adapter<PopularFoodAdapter.
         MainMeal meal = popularMeals.get(position);
         Glide.with(context)
                 .load(meal.getStrMealThumb())
+                // .placeholder(R.drawable.breakfast)
+                // .error(R.drawable.breakfast)
                 .into(holder.imagePopular);
 
         holder.itemView.setOnClickListener(v -> {

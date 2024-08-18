@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="450dp"
+    android:layout_height="420dp"
     android:layout_margin="10dp"
     app:cardCornerRadius="20dp">
 
@@ -18,7 +19,8 @@
             android:src="@drawable/berger"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/text_meal_plan"
@@ -48,28 +50,42 @@
             android:id="@+id/dinner_lanuch_breakfast"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
             android:text="@string/kind_of_time"
             android:textColor="@color/black"
             android:textSize="24sp"
-            app:layout_constraintBottom_toTopOf="@id/deleteButton_plan"
             app:layout_constraintStart_toStartOf="@id/text_meal_plan"
             app:layout_constraintTop_toBottomOf="@id/text_date_picker" />
 
-        <Button
+        <ImageView
             android:id="@+id/deleteButton_plan"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="@color/cardview_dark_background"
+            android:src="@drawable/ic_delete"
+            android:text="@string/delete"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_16sdp"
+            app:layout_constraintBottom_toBottomOf="@+id/dinner_lanuch_breakfast"
+            app:layout_constraintEnd_toEndOf="@id/text_date_picker"
+            app:layout_constraintTop_toTopOf="@+id/dinner_lanuch_breakfast" />
+
+        <Button
+            android:id="@+id/addToCalendarButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/_20sdp"
             android:layout_marginTop="@dimen/_30sdp"
             android:backgroundTint="@color/cardview_dark_background"
-            android:text="Delete"
+            android:text="Add to Calendar"
             android:textColor="@color/white"
             android:textSize="@dimen/_16sdp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/deleteButton_plan"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

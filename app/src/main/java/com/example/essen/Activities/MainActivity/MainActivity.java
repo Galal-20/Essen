@@ -59,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements NetworkChangeRece
 
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefsFile", MODE_PRIVATE);
         isGuest = sharedPreferences.getBoolean("isGuest", true);
-        //isLoggedIn = getIntent().getBooleanExtra("isLoggedIn", true);
 
 
 
@@ -253,32 +252,20 @@ public class MainActivity extends AppCompatActivity implements NetworkChangeRece
         builder.setTitle("Confirm Action");
         builder.setMessage("Are you sure you want to proceed?");
 
-        // Set up the Yes button
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                // Action to perform when Yes is clicked
                 dialog.dismiss();
-                // Add your code here for what should happen when Yes is clicked
             }
         });
 
-        // Set up the No button
         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                // Action to perform when No is clicked
                 dialog.dismiss();
-                // Add your code here for what should happen when No is clicked
             }
         });
 
-        // Show the alert dialog
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
 }
 
-/*if (isConnected) {
-            showCustomSnackbar("Back to connection", Snackbar.LENGTH_SHORT);
-        } else {
-            showCustomSnackbar("Internet is not available", Snackbar.LENGTH_SHORT);
-        }*/

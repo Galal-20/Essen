@@ -20,7 +20,7 @@
             android:layout_height="match_parent"
             app:contentScrim="#D81B60"
             app:layout_scrollFlags="scroll|snap|exitUntilCollapsed"
-            app:title="Meal Name">
+            app:title="@string/meal_name">
 
             <ImageView
                 android:id="@+id/maelDetail"
@@ -83,7 +83,7 @@
                     android:drawableStart="@drawable/category"
                     android:drawablePadding="5dp"
                     android:drawableTint="@color/black"
-                    android:hint="category beef"
+                    android:hint="@string/category_beef"
                     android:textColor="@color/black"
                     android:textStyle="bold"
                     tools:ignore="UseCompatTextViewDrawableXml" />
@@ -96,7 +96,7 @@
                     android:drawableStart="@drawable/location"
                     android:drawablePadding="5dp"
                     android:drawableTint="@color/black"
-                    android:hint="area_egypt"
+                    android:hint="@string/area_egypt"
                     android:textColor="@color/black"
                     android:textStyle="bold"
                     tools:ignore="UseCompatTextViewDrawableXml" />
@@ -123,7 +123,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="20dp"
-                android:text="Steps:"
+                android:text="@string/steps"
                 android:textColor="@color/black"
                 android:textSize="24sp"
                 android:textStyle="bold"
@@ -167,7 +167,7 @@
                 app:layout_constraintStart_toStartOf="@id/tvIngredients"
                 app:layout_constraintTop_toBottomOf="@id/tvIngredients"
 
-                />
+                tools:ignore="RtlSymmetry" />
 
             <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
                 android:id="@+id/youtube_player_view"

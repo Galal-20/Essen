@@ -18,7 +18,7 @@ import java.util.List;
 public class MealPlanFragment extends Fragment {
 
     private RecyclerView mealPlanRecyclerView;
-    private MealPlanAsdapter mealPlanAdapter;
+    private MealPlanAdapter mealPlanAdapter;
     private AppDatabase appDatabase;
 
     @Override
@@ -41,7 +41,7 @@ public class MealPlanFragment extends Fragment {
             List<MealPlanEntity> mealPlans = appDatabase.mealPlanDao().getAllMealPlans();
             getActivity().runOnUiThread(() -> {
                 if (mealPlanAdapter == null) {
-                    mealPlanAdapter = new MealPlanAsdapter(mealPlans, appDatabase, getContext());
+                    mealPlanAdapter = new MealPlanAdapter(mealPlans, appDatabase, getContext());
                     mealPlanRecyclerView.setAdapter(mealPlanAdapter);
                 } else {
                     mealPlanAdapter.notifyDataSetChanged(); // Refresh adapter data

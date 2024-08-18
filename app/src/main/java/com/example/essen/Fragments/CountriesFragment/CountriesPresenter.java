@@ -25,7 +25,6 @@ public class CountriesPresenter implements CountriesContract.Presenter {
                     view.showCountries(response.body().getMeals());
                 }
             }
-
             @Override
             public void onFailure(Call<Countries> call, Throwable t) {
                 view.showError(t.getMessage());

@@ -1,7 +1,5 @@
 package com.example.essen.Activities.MealCountry;
 
-import android.util.Log;
-
 import com.example.essen.pojo.MainMeal;
 import com.example.essen.pojo.MealList;
 import com.example.essen.retrofit.MealAPI;
@@ -28,10 +26,12 @@ public class MealCountryPresenter implements CountryContract.Presenter {
         mealAPI.getMealsByCountry(countryName).enqueue(new Callback<MealList>() {
             @Override
             public void onResponse(Call<MealList> call, Response<MealList> response) {
+                /*List<MainMeal> meals = response.body().getMeals();
+                    Log.d("API Response", meals.toString());
+                    view.showMeals(meals);*/
                 if (response.isSuccessful()) {
                     assert response.body() != null;
                     List<MainMeal> meals = response.body().getMeals();
-                    Log.d("API Response", meals.toString());
                     view.showMeals(meals);
                 } else {
                     view.showError("Failed to load meals");

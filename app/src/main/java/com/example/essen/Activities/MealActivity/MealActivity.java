@@ -8,8 +8,11 @@ import static com.example.essen.Fragments.HomeFragment.HomeFragment.NAME_MEAL;
 import static com.example.essen.Fragments.HomeFragment.HomeFragment.THUMB_MEAL;
 import static com.example.essen.Fragments.HomeFragment.HomeFragment.YOUTUBE;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,7 +75,6 @@ public class MealActivity extends AppCompatActivity implements MealView {
     private AppDatabase appDatabase;
     Button makePlanButton;
     private boolean isGuest;
-
     DatePicker datePicker;
     RadioGroup mealTypeGroup;
     Button saveButton;
@@ -121,7 +123,11 @@ public class MealActivity extends AppCompatActivity implements MealView {
                 alertDialog.show();
 
             } else {
-                saveMealToFavorites();
+                if (isInternetAvailable()) {
+                    saveMealToFavorites();
+                } else {
+                    Snackbar.make(findViewById(android.R.id.content), "No internet connection", Snackbar.LENGTH_SHORT).show();
+                }
             }
 
         });
@@ -147,8 +153,12 @@ public class MealActivity extends AppCompatActivity implements MealView {
                 alertDialog.show();
 
             } else {
+                if (isInternetAvailable()) {
+                    showBottomSheetDialog();
+                } else {
+                    Snackbar.make(findViewById(android.R.id.content), "No internet connection", Snackbar.LENGTH_SHORT).show();
+                }
 
-                showBottomSheetDialog();
             }
 
         });
@@ -195,7 +205,7 @@ public class MealActivity extends AppCompatActivity implements MealView {
             new Thread(() -> {
                 int count = appDatabase.mealPlanDao().isMealInMealPlan(mealName);
                 if (count > 0) {
-                    runOnUiThread(() -> showMessage("Meal is already in Meal plan!"));
+                    runOnUiThread(() -> showMessage("Meal already in Meal plan!"));
                 } else {
                     try {
                         MealPlanEntity mealPlanEntity = new MealPlanEntity();
@@ -262,6 +272,12 @@ public class MealActivity extends AppCompatActivity implements MealView {
 
     }
 
+    public boolean isInternetAvailable() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+    }
+
 
     public void Hide_status_Bar() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -309,6 +325,7 @@ public class MealActivity extends AppCompatActivity implements MealView {
         collapsingToolbar.setTitle(name);
     }
 
+    //Getting meals by ID
     @Override
     public void showMeals(AllDetailsMeal meal) {
         Intent intent = new Intent(this, MealActivity.class);

@@ -82,9 +82,10 @@ public class FavoritFragment extends Fragment implements FavoriteAdapter.OnDelet
         requireActivity().runOnUiThread(() -> showCustomDialog(mealName));
 
     }
-
-
 }
+
+
+
 
  /* new Thread(() -> {
             appDatabase.mealDao().deleteMeal(mealName);

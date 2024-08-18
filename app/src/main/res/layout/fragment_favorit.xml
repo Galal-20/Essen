@@ -29,14 +29,16 @@
                 app:layout_constraintBottom_toTopOf="@id/recyclerViewFavorites"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="UseCompoundDrawables">
 
                 <ImageView
                     android:layout_width="@dimen/_30sdp"
                     android:layout_height="@dimen/_30sdp"
                     android:layout_gravity="center"
                     android:layout_marginStart="@dimen/_20sdp"
-                    android:src="@drawable/cat" />
+                    android:src="@drawable/cat"
+                    tools:ignore="ContentDescription" />
 
                 <TextView
                     android:id="@+id/text_title"
@@ -44,7 +46,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginStart="@dimen/_85sdp"
-                    android:text="Favorites"
+                    android:text="@string/favorites"
                     android:textSize="24sp"
                     android:textStyle="bold" />
 

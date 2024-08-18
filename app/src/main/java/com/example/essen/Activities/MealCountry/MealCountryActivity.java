@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.essen.R;
 import com.example.essen.pojo.MainMeal;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MealCountryActivity extends AppCompatActivity implements CountryContract.View {
@@ -32,7 +33,7 @@ public class MealCountryActivity extends AppCompatActivity implements CountryCon
         titleText = findViewById(R.id.text_title_country);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        mealAdapter = new MealAdapter(this, null);
+        mealAdapter = new MealAdapter(this, new ArrayList<>());
         recyclerView.setAdapter(mealAdapter);
 
         presenter = new MealCountryPresenter(this);
@@ -57,12 +58,11 @@ public class MealCountryActivity extends AppCompatActivity implements CountryCon
 
     @Override
     public void showMeals(List<MainMeal> meals) {
-        if (meals != null) {
+        if (meals != null && !meals.isEmpty()) {
             mealAdapter.updateMeals(meals);
         } else {
             Toast.makeText(this, "No meals found", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     @Override

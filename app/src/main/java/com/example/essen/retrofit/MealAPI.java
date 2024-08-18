@@ -23,7 +23,7 @@ public interface MealAPI {
     @GET("list.php?a=list")
     Call<Countries> getCountries();
 
-    @GET("filter.php?")
+    @GET("filter.php")
     Call<MealList> getMealsByCountry(@Query("a") String countryName);
 
     @GET("filter.php?")
