@@ -13,7 +13,7 @@ public class FavoritePresenter {
 
     public FavoritePresenter(Application application) {
         mealRepository = new MealRepository(application);
-        //loadFavoriteMeals();
+
     }
 
     public LiveData<List<MealEntity>> getFavoriteMeals() {
@@ -26,3 +26,4 @@ public class FavoritePresenter {
         // LiveData will automatically update the observer
     }*/
 
+//loadFavoriteMeals();

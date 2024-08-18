@@ -21,6 +21,7 @@ import com.example.essen.Activities.Welcome.Welcome_Screen;
 import com.example.essen.R;
 import com.example.essen.Util.SecurePreferences;
 import com.example.essen.model.AuthService;
+import com.example.essen.room.AppDatabase;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -115,12 +116,12 @@ public class ProfileActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
     }
-
     public void signOut() {
         authService.signOut(this, new AuthService.AuthCallback() {
             @Override
             public void onSuccess(FirebaseUser user) {
                 showMessage("Sign out Successfully");
+                clearLocalFavorites();
                 Intent intent = new Intent(ProfileActivity.this, Welcome_Screen.class);
                 startActivity(intent);
                 finish();
@@ -133,9 +134,13 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
-
-
-
+    private void clearLocalFavorites() {
+        // Clear favorite data from local database if needed
+        AppDatabase database = AppDatabase.getDatabase(this);
+        new Thread(() -> {
+            database.mealDao().deleteAllFavorites(); // Assuming you have a method to delete all favorites
+        }).start();
+    }
 
 
     private void setLocale(String languageCode) {
@@ -161,3 +166,6 @@ public class ProfileActivity extends AppCompatActivity {
         Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_SHORT).show();
     }
 }
+
+
+

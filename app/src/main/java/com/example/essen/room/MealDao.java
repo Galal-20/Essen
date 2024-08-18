@@ -27,6 +27,10 @@ public interface MealDao {
     @Query("SELECT * FROM meal_table")
     List<MealEntity> getAllMealPlans();
 
+    @Query("DELETE FROM meal_table")
+    void deleteAllFavorites();
+
+
 }
 
 
