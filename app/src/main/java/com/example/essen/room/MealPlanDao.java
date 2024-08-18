@@ -21,4 +21,8 @@ public interface MealPlanDao {
 
     @Query("SELECT COUNT(*) FROM meal_plans WHERE strMeal = :mealName")
     int isMealInMealPlan(String mealName);
+
+
 }
+
+

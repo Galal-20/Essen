@@ -103,6 +103,7 @@
             android:layout_marginTop="10dp"
             android:text="@string/username"
             android:textSize="20sp"
+            android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="@id/accountDetails"
             app:layout_constraintTop_toBottomOf="@id/accountDetails" />
 
@@ -114,6 +115,7 @@
             android:layout_marginTop="10dp"
             android:text="@string/galal_ahmed"
             android:textSize="20sp"
+            android:textColor="@color/black"
             app:layout_constraintStart_toEndOf="@id/UserName"
             app:layout_constraintTop_toBottomOf="@id/accountDetails" />
 

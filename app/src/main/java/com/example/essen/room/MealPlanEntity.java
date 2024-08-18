@@ -8,6 +8,7 @@ import java.text.DateFormatSymbols;
 @Entity(tableName = "meal_plans")
 public class MealPlanEntity {
 
+
     @PrimaryKey(autoGenerate = true)
     private int id;
     private String strMeal;

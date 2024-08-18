@@ -102,7 +102,7 @@ public class SignUp_Screen extends AppCompatActivity implements AuthViewSiginUp 
         regButton = findViewById(R.id.button_register);
     }
 
-    public void register_button(View view) {
+    /*public void register_button(View view) {
         String fullName = FullName.getText().toString();
         String email = emailInput.getText().toString();
         String password = passwordInput.getText().toString();
@@ -114,7 +114,25 @@ public class SignUp_Screen extends AppCompatActivity implements AuthViewSiginUp 
             presenter.signUp(fullName, email, password);
         }
 
+    }*/
+
+    public void register_button(View view) {
+        String fullName = FullName.getText().toString();
+        String email = emailInput.getText().toString();
+        String password = passwordInput.getText().toString();
+        String confirmP = confirmPassword.getText().toString();
+
+        if (fullName.isEmpty() || email.isEmpty() || password.isEmpty() || confirmP.isEmpty()) {
+            Snackbar.make(view, "Please fill all fields", Snackbar.LENGTH_SHORT).show();
+        } else if (!password.equals(confirmP)) {
+            Snackbar.make(view, "Passwords do not match", Snackbar.LENGTH_SHORT).show();
+        } else {
+            progressBar.setVisibility(View.VISIBLE);
+            presenter.signUp(fullName, email, password);
+        }
     }
+
+
     @Override
     public void showSignUpSuccess(String message) {
         progressBar.setVisibility(View.GONE);

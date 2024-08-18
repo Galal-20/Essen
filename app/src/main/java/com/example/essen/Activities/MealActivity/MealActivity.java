@@ -42,6 +42,9 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
@@ -66,6 +69,7 @@ public class MealActivity extends AppCompatActivity implements MealView {
     LinearProgressIndicator progressBar;
     String mealCat;
     String mealName;
+    String userId;
     String mealThumb;
     String location;
     String instructions;
@@ -84,6 +88,10 @@ public class MealActivity extends AppCompatActivity implements MealView {
     String dayName;
     String mealType;
 
+    private FirebaseFirestore firestore;
+    private FirebaseAuth auth;
+    private FirebaseUser user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,6 +101,9 @@ public class MealActivity extends AppCompatActivity implements MealView {
         presenter = new MealPresenter(this);
 
         appDatabase = AppDatabase.getDatabase(this);
+        firestore = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
         getDataFromIntent();
         setYoutubeLinkClickListener();
 
@@ -225,9 +236,13 @@ public class MealActivity extends AppCompatActivity implements MealView {
 
                         appDatabase.mealPlanDao().insert(mealPlanEntity);
 
-                        runOnUiThread(() -> {
-                            Toast.makeText(MealActivity.this, "Plan saved successfully!", Toast.LENGTH_SHORT).show();
-                        });
+                        if (user != null) { // Ensure user is logged in
+                            firestore.collection("users").document(user.getUid())
+                                    .collection("mealPlans").document(mealName + "_" + dayName)
+                                    .set(mealPlanEntity)
+                                    .addOnSuccessListener(aVoid -> runOnUiThread(() -> showMessage("Plan saved successfully and saved to Firestore!")))
+                                    .addOnFailureListener(e -> runOnUiThread(() -> showMessage("Error saving to Firestore: " + e.getMessage())));
+                        }
                     } catch (Exception e) {
                         runOnUiThread(() -> Toast.makeText(MealActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
                     }
@@ -378,8 +393,6 @@ public class MealActivity extends AppCompatActivity implements MealView {
     public void showMealInstructions(String instructions) {
         mealInstructions.setText(instructions);
     }
-
-
     @Override
     public void showMeaIngredients(String ingredients) {
         textIngredients.setText(ingredients);
@@ -389,7 +402,6 @@ public class MealActivity extends AppCompatActivity implements MealView {
     public void showMessage(String message) {
         Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_SHORT).show();
     }
-
     @Override
     public void showLoading() {
         progressBar.setVisibility(View.VISIBLE);
@@ -404,14 +416,6 @@ public class MealActivity extends AppCompatActivity implements MealView {
     public void openYoutubeLink(String url) {
         imageLinkYoutube.setVisibility(View.GONE);
         youTubePlayerView.setVisibility(View.VISIBLE);
-        /*youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
-            @Override
-            public void onReady(YouTubePlayer youTubePlayer) {
-                String videoId = url.split("v=")[1];
-                youTubePlayer.loadVideo(videoId, 0);
-            }
-        });*/
-
         if (url != null && !url.isEmpty()) {
             imageLinkYoutube.setVisibility(View.GONE);
             youTubePlayerView.setVisibility(View.VISIBLE);
@@ -452,7 +456,13 @@ public class MealActivity extends AppCompatActivity implements MealView {
 
                         appDatabase.mealDao().insert(mealEntity);
 
-                        runOnUiThread(() -> showMessage("Meal added to favorites!"));
+                        if (user != null) { // Ensure user is logged in
+                            firestore.collection("users").document(user.getUid())
+                                    .collection("favorites").document(mealName)
+                                    .set(mealEntity)
+                                    .addOnSuccessListener(aVoid -> runOnUiThread(() -> showMessage("Meal added to favorites and saved to Firestore!")))
+                                    .addOnFailureListener(e -> runOnUiThread(() -> showMessage("Error saving to Firestore: " + e.getMessage())));
+                        }
                     } catch (Exception e) {
                         runOnUiThread(() -> Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show());
                     }
@@ -464,6 +474,14 @@ public class MealActivity extends AppCompatActivity implements MealView {
     }
 
 }
+
+ /*youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
+            @Override
+            public void onReady(YouTubePlayer youTubePlayer) {
+                String videoId = url.split("v=")[1];
+                youTubePlayer.loadVideo(videoId, 0);
+            }
+        });*/
 
 /*
 

@@ -15,12 +15,19 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class AuthService {
     private FirebaseAuth firebaseAuth;
     private GoogleSignInClient googleSignInClient;
     private static final int RC_SIGN_IN = 9001;
     private static final String PREFS_NAME = "MyPrefsFile";
+    String fullName;
+    String email;
 
 
 
@@ -50,17 +57,80 @@ public class AuthService {
                 });
     }
 
+
+  /* public void signUp(String fullName, String email, String password, final AuthCallback callback) {
+       firebaseAuth.createUserWithEmailAndPassword(email, password)
+               .addOnCompleteListener(task -> {
+                   if (task.isSuccessful()) {
+                       FirebaseUser user = firebaseAuth.getCurrentUser();
+                       if (user != null) {
+                           // Save user data to Firestore
+                           DataService dataService = new DataService(user.getUid());
+                           Map<String, Object> userData = new HashMap<>();
+                           userData.put("fullName", fullName);
+                           userData.put("email", email);
+
+                           dataService.saveUserData(user, userData, new DataService.SaveCallback() {
+                               @Override
+                               public void onSuccess() {
+                                   callback.onSuccess(user);
+                               }
+
+                               @Override
+                               public void onFailure(String message) {
+                                   callback.onFailure(message);
+                               }
+                           });
+                       } else {
+                           callback.onFailure("User creation failed");
+                       }
+                   } else {
+                       callback.onFailure(task.getException().getMessage());
+                   }
+               });
+   }*/
+
     public void signUp(String fullName, String email, String password, final AuthCallback callback) {
         firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser user = firebaseAuth.getCurrentUser();
-                        callback.onSuccess(user);
+                        if (user != null) {
+                            user.updateProfile(new UserProfileChangeRequest.Builder()
+                                            .setDisplayName(fullName)
+                                            .build())
+                                    .addOnCompleteListener(profileTask -> {
+                                        if (profileTask.isSuccessful()) {
+                                            DataService dataService = new DataService(user.getUid());
+                                            Map<String, Object> userData = new HashMap<>();
+                                            userData.put("fullName", fullName);
+                                            userData.put("email", email);
+                                            userData.put("password", password);
+
+                                            dataService.saveUserData(user, userData, new DataService.SaveCallback() {
+                                                @Override
+                                                public void onSuccess() {
+                                                    callback.onSuccess(user);
+                                                }
+
+                                                @Override
+                                                public void onFailure(String message) {
+                                                    callback.onFailure(message);
+                                                }
+                                            });
+                                        } else {
+                                            callback.onFailure("Profile update failed");
+                                        }
+                                    });
+                        } else {
+                            callback.onFailure("User creation failed");
+                        }
                     } else {
                         callback.onFailure(task.getException().getMessage());
                     }
                 });
     }
+
 
     public void forgetPassword(String email, final AuthCallback callback) {
         firebaseAuth.sendPasswordResetEmail(email)
@@ -83,6 +153,9 @@ public class AuthService {
         try {
             GoogleSignInAccount account = task.getResult(ApiException.class);
             if (account != null) {
+                fullName = account.getDisplayName();
+                email = account.getEmail();
+
                 firebaseAuthWithGoogle(account, callback);
             }
         } catch (ApiException e) {
@@ -96,6 +169,9 @@ public class AuthService {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser user = firebaseAuth.getCurrentUser();
+                        if (user != null) {
+                            saveUserToFirestore(user, fullName, email);
+                        }
                         callback.onSuccess(user);
                     } else {
                         callback.onFailure(task.getException().getMessage());
@@ -103,10 +179,25 @@ public class AuthService {
                 });
     }
 
+    private void saveUserToFirestore(FirebaseUser user, String fullName, String email) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Map<String, Object> userData = new HashMap<>();
+        userData.put("fullName", fullName);
+        userData.put("email", email);
+
+        db.collection("users").document(user.getUid())
+                .set(userData)
+                .addOnSuccessListener(aVoid -> {
+                    System.out.println("User data saved successfully.");
+                })
+                .addOnFailureListener(e -> {
+                    System.err.println("Error saving user data: " + e.getMessage());
+                });
+    }
+
     public void signOut(Activity activity, final AuthCallback callback) {
         firebaseAuth.signOut();
 
-        // Sign out from Google
         googleSignInClient.signOut().addOnCompleteListener(activity, task -> {
             if (task.isSuccessful()) {
                 SharedPreferences sharedPreferences = activity.getSharedPreferences(PREFS_NAME, Activity.MODE_PRIVATE);
@@ -122,4 +213,14 @@ public class AuthService {
 }
 
 
-
+ /* public void signUp(String fullName, String email, String password, final AuthCallback callback) {
+        firebaseAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = firebaseAuth.getCurrentUser();
+                        callback.onSuccess(user);
+                    } else {
+                        callback.onFailure(task.getException().getMessage());
+                    }
+                });
+    }*/

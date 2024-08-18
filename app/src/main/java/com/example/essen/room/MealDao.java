@@ -23,7 +23,10 @@ public interface MealDao {
     @Query("DELETE FROM meal_table WHERE strMeal = :mealName")
     void deleteMeal(String mealName);
 
+
     @Query("SELECT * FROM meal_table")
     List<MealEntity> getAllMealPlans();
 
 }
+
+

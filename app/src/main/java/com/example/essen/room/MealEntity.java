@@ -10,6 +10,7 @@ public class MealEntity {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
+
     private String strMeal;
     private String strMealThumb;
     private String strCategory;
@@ -17,57 +18,6 @@ public class MealEntity {
     private String strInstructions;
     private String ingredients;
     private String strYoutube;
-
-    /*// New fields for meal plan
-    private String mealType;
-    private String dayName;
-    private int dayNumber;
-    private int month;*/
-
-
-
-   /* public String getMealType() {
-        return mealType;
-    }
-
-    public void setMealType(String mealType) {
-        this.mealType = mealType;
-    }
-
-    public String getDayName() {
-        return dayName;
-    }
-
-    public void setDayName(String dayName) {
-        this.dayName = dayName;
-    }
-
-    public int getDayNumber() {
-        return dayNumber;
-    }
-
-    public void setDayNumber(int dayNumber) {
-        this.dayNumber = dayNumber;
-    }
-
-    public int getMonth() {
-        return month;
-    }
-
-    public void setMonth(int  month) {
-        this.month = month;
-    }*/
-
-   /* public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
-    }
-
-    private int year;*/
-
 
 
     public int getId() {

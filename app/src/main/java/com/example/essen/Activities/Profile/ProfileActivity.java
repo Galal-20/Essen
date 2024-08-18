@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -21,6 +22,7 @@ import com.example.essen.R;
 import com.example.essen.Util.SecurePreferences;
 import com.example.essen.model.AuthService;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Locale;
@@ -34,6 +36,10 @@ public class ProfileActivity extends AppCompatActivity {
     private AuthService authService;
     private Spinner languageSpinner;
     private ImageView imageBack;
+    private TextView userTitle;
+    private TextView userEmail;
+    private FirebaseAuth firebaseAuth; // Add this line
+    //private AppDatabase appDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,18 +51,27 @@ public class ProfileActivity extends AppCompatActivity {
         languageSpinner = findViewById(R.id.language_spinner);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         imageBack = findViewById(R.id.image_back);
+        userTitle = findViewById(R.id.UserNameValue);
+        userEmail = findViewById(R.id.Email_profile_value);
 
-        authService = new AuthService(this);
+        // Initialize Firebase Auth
+        firebaseAuth = FirebaseAuth.getInstance();
+        authService = new AuthService(this); // Initialize AuthService with FirebaseAuth
+
+        // Retrieve user information
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        if (currentUser != null) {
+            userTitle.setText(currentUser.getDisplayName());
+            userEmail.setText(currentUser.getEmail());
+        }
 
         swipeRefreshLayout.setOnRefreshListener(() -> swipeRefreshLayout.setRefreshing(false));
 
         imageView.setOnClickListener(v -> signOut());
         imageBack.setOnClickListener(v -> {
-                    startActivity(new Intent(this, MainActivity.class));
-                    finish();
-                }
-
-        );
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+        });
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this, R.array.languages_array, android.R.layout.simple_spinner_item);
@@ -106,6 +121,10 @@ public class ProfileActivity extends AppCompatActivity {
         authService.signOut(this, new AuthService.AuthCallback() {
             @Override
             public void onSuccess(FirebaseUser user) {
+                /*if (user != null) {
+                    String userId = user.getUid();
+                    clearUserData(userId); // Clear old user data
+                }*/
                 showMessage("Sign out Successfully");
                 Intent intent = new Intent(ProfileActivity.this, Welcome_Screen.class);
                 startActivity(intent);
@@ -118,6 +137,17 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
     }
+
+    /*private void clearUserData(String userId) {
+        new Thread(() -> {
+            appDatabase.mealDao().deleteAllByUserId(userId); // Clear all meals for the user
+            appDatabase.mealPlanDao().deleteAllByUserId(userId); // Clear all meal plans for the user
+        }).start();
+    }*/
+
+
+
+
 
     private void setLocale(String languageCode) {
         Locale locale = new Locale(languageCode);

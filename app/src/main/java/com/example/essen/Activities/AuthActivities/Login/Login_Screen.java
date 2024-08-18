@@ -29,6 +29,7 @@ import com.example.essen.Activities.MainActivity.MainActivity;
 import com.example.essen.R;
 import com.example.essen.Util.NetworkChangeReceiver;
 import com.example.essen.Util.SecurePreferences;
+import com.example.essen.room.AppDatabase;
 import com.google.android.material.snackbar.Snackbar;
 
 public class Login_Screen extends AppCompatActivity implements AuthViewLogin {
@@ -49,6 +50,7 @@ public class Login_Screen extends AppCompatActivity implements AuthViewLogin {
     private static final int RC_SIGN_IN = 9001;
     private ProgressBar progressBar; // Declare ProgressBar
     private boolean isPasswordVisible = false;
+    private AppDatabase appDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
