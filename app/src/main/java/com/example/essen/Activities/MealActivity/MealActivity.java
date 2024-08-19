@@ -8,12 +8,16 @@ import static com.example.essen.Fragments.HomeFragment.HomeFragment.NAME_MEAL;
 import static com.example.essen.Fragments.HomeFragment.HomeFragment.THUMB_MEAL;
 import static com.example.essen.Fragments.HomeFragment.HomeFragment.YOUTUBE;
 
+import android.app.PictureInPictureParams;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Rational;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -26,6 +30,8 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -88,6 +94,7 @@ public class MealActivity extends AppCompatActivity implements MealView {
     String dayName;
     String mealType;
 
+
     private FirebaseFirestore firestore;
     private FirebaseAuth auth;
     private FirebaseUser user;
@@ -99,13 +106,13 @@ public class MealActivity extends AppCompatActivity implements MealView {
         setContentView(R.layout.activity_meal);
         findView();
         presenter = new MealPresenter(this);
-
         appDatabase = AppDatabase.getDatabase(this);
         firestore = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
         getDataFromIntent();
         setYoutubeLinkClickListener();
+
 
         String mealId = getIntent().getStringExtra("MEAL_ID");
         if (mealId != null) {
@@ -194,6 +201,52 @@ public class MealActivity extends AppCompatActivity implements MealView {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void enterPipMode() {
+        Rational aspectRatio = new Rational(youTubePlayerView.getWidth(), youTubePlayerView.getHeight());
+        PictureInPictureParams.Builder pipBuilder = new PictureInPictureParams.Builder();
+        pipBuilder.setAspectRatio(aspectRatio);
+
+        enterPictureInPictureMode(pipBuilder.build());
+    }
+
+
+    @Override
+    public void onUserLeaveHint() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            enterPipMode();
+        }
+        super.onUserLeaveHint();
+    }
+
+    @Override
+    public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode, @NonNull Configuration newConfig) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
+
+        if (isInPictureInPictureMode) {
+            makePlanButton.setVisibility(View.GONE);
+            favoriteButton.setVisibility(View.GONE);
+            youTubePlayerView.setVisibility(View.VISIBLE);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                resizePictureInPicture();
+            }
+        } else {
+            makePlanButton.setVisibility(View.VISIBLE);
+            favoriteButton.setVisibility(View.VISIBLE);
+            youTubePlayerView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void resizePictureInPicture() {
+        Rational aspectRatio = new Rational(9, 16);
+        PictureInPictureParams.Builder pipBuilder = new PictureInPictureParams.Builder();
+        pipBuilder.setAspectRatio(aspectRatio);
+        setPictureInPictureParams(pipBuilder.build());
+    }
+
+
     private void showBottomSheetDialog() {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         View bottomSheetView = LayoutInflater.from(getApplicationContext())
@@ -213,7 +266,7 @@ public class MealActivity extends AppCompatActivity implements MealView {
             mealType = selectedMealType.getText().toString();
 
             dayName = getDayName(year, month, day);
-            String firestoreId = mealName + "_" + dayName;
+            //String firestoreId = mealName + "_" + dayName;
 
             new Thread(() -> {
                 int count = appDatabase.mealPlanDao().isMealInMealPlan(mealName);
@@ -234,13 +287,12 @@ public class MealActivity extends AppCompatActivity implements MealView {
                         mealPlanEntity.setDayNumber(day);
                         mealPlanEntity.setMonth(month);
                         mealPlanEntity.setYear(year);
-                        mealPlanEntity.setFirestoreId(firestoreId);
 
                         appDatabase.mealPlanDao().insert(mealPlanEntity);
 
                         if (user != null) {
                             firestore.collection("users").document(user.getUid())
-                                    .collection("mealPlans").document(firestoreId)
+                                    .collection("mealPlans").document(mealName)
                                     .set(mealPlanEntity)
                                     .addOnSuccessListener(aVoid -> runOnUiThread(() -> showMessage("Plan saved successfully and saved to Firestore!")))
                                     .addOnFailureListener(e -> runOnUiThread(() -> showMessage("Error saving to Firestore: " + e.getMessage())));
@@ -457,7 +509,7 @@ public class MealActivity extends AppCompatActivity implements MealView {
 
                         appDatabase.mealDao().insert(mealEntity);
 
-                        if (user != null) { // Ensure user is logged in
+                        if (user != null) {
                             firestore.collection("users").document(user.getUid())
                                     .collection("favorites").document(mealName)
                                     .set(mealEntity)

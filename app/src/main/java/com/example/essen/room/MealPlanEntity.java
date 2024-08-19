@@ -7,10 +7,10 @@ import java.text.DateFormatSymbols;
 
 @Entity(tableName = "meal_plans")
 public class MealPlanEntity {
-    private String firestoreId;
 
     @PrimaryKey(autoGenerate = true)
     private int id;
+    //private String firestoreId;
     private String strMeal;
     private String strMealThumb;
     private String strCategory;
@@ -18,20 +18,21 @@ public class MealPlanEntity {
     private String strInstructions;
     private String strYoutube;
     private String ingredients;
-
     private String mealType;
     private String dayName;
     private int dayNumber;
     private int month;
     private int year;
 
-    public String getFirestoreId() {
+
+
+   /* public String getFirestoreId() {
         return firestoreId;
     }
 
     public void setFirestoreId(String firestoreId) {
         this.firestoreId = firestoreId;
-    }
+    }*/
 
     public String getMonthName() {
         return new DateFormatSymbols().getMonths()[month];

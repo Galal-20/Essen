@@ -140,18 +140,22 @@ public class FavoritFragment extends Fragment implements FavoriteAdapter.OnDelet
 
     private void deleteFavorite(String mealName) {
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-        if (currentUser != null) {
-            firestore.collection("users").document(currentUser.getUid())
-                    .collection("favorites").document(mealName)
-                    .delete()
-                    .addOnSuccessListener(aVoid -> {
-                        fetchUserFavorites(); // Refresh favorites after deletion
-                        Snackbar.make(recyclerView, "Meal removed from favorites!", Snackbar.LENGTH_SHORT).show();
-                    })
-                    .addOnFailureListener(e -> Snackbar.make(recyclerView, "Error removing from Firestore: " + e.getMessage(), Snackbar.LENGTH_SHORT).show());
-        } else {
-            Snackbar.make(recyclerView, "User not logged in, unable to remove from Firestore.", Snackbar.LENGTH_SHORT).show();
-        }
+        new Thread(() -> {
+            appDatabase.mealDao().deleteMeal(mealName);
+            if (currentUser != null) {
+                firestore.collection("users").document(currentUser.getUid())
+                        .collection("favorites").document(mealName)
+                        .delete()
+                        .addOnSuccessListener(aVoid -> {
+                            fetchUserFavorites(); // Refresh favorites after deletion
+                            Snackbar.make(recyclerView, "Meal removed from favorites!", Snackbar.LENGTH_SHORT).show();
+                        })
+                        .addOnFailureListener(e -> Snackbar.make(recyclerView, "Error removing from Firestore: " + e.getMessage(), Snackbar.LENGTH_SHORT).show());
+            } else {
+                Snackbar.make(recyclerView, "User not logged in, unable to remove from Firestore.", Snackbar.LENGTH_SHORT).show();
+            }
+        }).start();
+
     }
 
     @Override

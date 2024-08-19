@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.CalendarContract;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.MealPlanViewHolder> {
     private static final int REQUEST_READ_CALENDAR_PERMISSION = 100;
     private final Context context;
@@ -58,6 +63,7 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.MealPl
         return new MealPlanViewHolder(view);
     }
 
+    @SuppressLint("CheckResult")
     @Override
     public void onBindViewHolder(@NonNull MealPlanViewHolder holder, int position) {
         MealPlanEntity mealPlan = mealPlans.get(position);
@@ -67,7 +73,34 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.MealPl
         holder.dateTextView.setText(mealPlan.getDayName() + ", " + mealPlan.getDayNumber() + " " + mealPlan.getMonthName());
         holder.mealTypeTextView.setText(mealPlan.getMealType());
 
-        holder.deleteButton.setOnClickListener(v -> showDeleteDialog(mealPlan, position));
+        holder.deleteButton.setOnClickListener(v -> {
+            Completable.fromAction(() -> appDatabase.mealPlanDao().delete(mealPlan))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(() -> {
+                        mealPlans.remove(position);
+                        notifyItemRemoved(position);
+                        Toast.makeText(context, "Meal plan deleted from Room", Toast.LENGTH_SHORT).show();
+                        notifyItemRangeChanged(position, mealPlans.size());
+                        if (currentUser != null) {
+                            FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+                            firestore.collection("users").document(currentUser.getUid())
+                                    .collection("mealPlans").document(mealPlan.getStrMeal())
+                                    .delete()
+                                    .addOnSuccessListener(aVoid -> Toast.makeText(context, "Meal plan deleted from Firestore", Toast.LENGTH_SHORT).show())
+                                    .addOnFailureListener(e -> {
+                                        Log.e("DeleteError", "Error deleting meal plan from Firestore: " + e.getMessage());
+                                        Toast.makeText(context, "Error deleting meal plan from Firestore", Toast.LENGTH_SHORT).show();
+                                    });
+                        } else {
+                            Toast.makeText(context, "User not logged in", Toast.LENGTH_SHORT).show();
+                        }
+                    }, throwable -> {
+                        Log.e("DeleteError", "Error deleting meal plan: " + throwable.getMessage());
+                        Toast.makeText(context, "Error deleting meal plan: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+        });
+
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, MealActivity.class);
             intent.putExtra(HomeFragment.Cat, mealPlan.getStrCategory());
@@ -91,6 +124,12 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.MealPl
         });
     }
 
+    public void updateMealPlans(List<MealPlanEntity> newMealPlans) {
+        this.mealPlans.clear();
+        this.mealPlans.addAll(newMealPlans);
+        notifyDataSetChanged();
+    }
+
     private void showDeleteDialog(MealPlanEntity mealPlan, int position) {
         new AlertDialog.Builder(context)
                 .setTitle("Delete Meal Plan")
@@ -101,27 +140,32 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.MealPl
     }
 
     private void deleteMealPlan(MealPlanEntity mealPlan, int position) {
-        // Remove from local database
-        new Thread(() -> {
-            appDatabase.mealPlanDao().delete(mealPlan);
-            ((Activity) context).runOnUiThread(() -> {
-                mealPlans.remove(position);
-                notifyItemRemoved(position);
-                notifyItemRangeChanged(position, mealPlans.size());
-            });
-        }).start();
-
-        // Remove from Firestore if user is logged in
-        if (currentUser != null) {
-            FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-            firestore.collection("users").document(currentUser.getUid())
-                    .collection("mealPlans").document(mealPlan.getFirestoreId()) // Ensure you have a Firestore ID for deletion
-                    .delete()
-                    .addOnSuccessListener(aVoid -> Toast.makeText(context, "Meal plan deleted from Firestore", Toast.LENGTH_SHORT).show())
-                    .addOnFailureListener(e -> Toast.makeText(context, "Error deleting meal plan", Toast.LENGTH_SHORT).show());
-        } else {
-            Toast.makeText(context, "User not logged in", Toast.LENGTH_SHORT).show();
+        try {
+            new Thread(() -> {
+                Log.d("DeleteDebug", "Attempting to delete from Room database.");
+                appDatabase.mealPlanDao().delete(mealPlan);
+                ((Activity) context).runOnUiThread(() -> {
+                    mealPlans.remove(position);
+                    notifyItemRemoved(position);
+                    notifyItemRangeChanged(position, mealPlans.size());
+                    Log.d("DeleteDebug", "Meal plan removed from UI.");
+                });
+            }).start();
+            if (currentUser != null) {
+                FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+                firestore.collection("users").document(currentUser.getUid())
+                        .collection("mealPlans").document(mealPlan.getStrMeal())
+                        .delete()
+                        .addOnSuccessListener(aVoid -> Toast.makeText(context, "Meal plan deleted from Firestore", Toast.LENGTH_SHORT).show())
+                        .addOnFailureListener(e -> Toast.makeText(context, "Error deleting meal plan", Toast.LENGTH_SHORT).show());
+            } else {
+                Toast.makeText(context, "User not logged in", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            Log.e("DeleteError", "Error deleting meal plan from Room: " + e.getMessage());
+            Toast.makeText(context, "Error deleting meal plan: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
+
     }
 
     @Override
@@ -214,9 +258,3 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.MealPl
     }
 }
 
-
-/* holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(v.getContext(), MealActivity.class);
-            intent.putExtra("MEAL_ID", mealPlan.getId());
-            v.getContext().startActivity(intent);
-        });*/

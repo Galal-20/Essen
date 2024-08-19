@@ -1,9 +1,13 @@
 package com.example.essen.Fragments.MealPlanFragment;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,6 +32,7 @@ public class MealPlanFragment extends Fragment {
     private AppDatabase appDatabase;
     private FirebaseFirestore firestore;
     private FirebaseAuth firebaseAuth;
+    private FirebaseUser currentUse;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -40,6 +45,9 @@ public class MealPlanFragment extends Fragment {
         appDatabase = AppDatabase.getDatabase(getContext());
         firestore = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
+        currentUse = firebaseAuth.getCurrentUser();
+
+
 
         loadMealPlans();
 
@@ -47,9 +55,8 @@ public class MealPlanFragment extends Fragment {
     }
 
     private void loadMealPlans() {
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-        if (currentUser != null) {
-            firestore.collection("users").document(currentUser.getUid())
+        if (currentUse != null) {
+            firestore.collection("users").document(currentUse.getUid())
                     .collection("mealPlans")
                     .get()
                     .addOnCompleteListener(task -> {
@@ -57,23 +64,73 @@ public class MealPlanFragment extends Fragment {
                             List<MealPlanEntity> mealPlans = new ArrayList<>();
                             for (DocumentSnapshot document : task.getResult()) {
                                 MealPlanEntity mealPlan = document.toObject(MealPlanEntity.class);
+
+                                // Check if the meal plan already exists in the database
+                                new Thread(() -> {
+                                    int count =
+                                            appDatabase.mealPlanDao().isMealInMealPlan(mealPlan.getStrMeal());
+                                    if (count == 0) { // Only insert if it does not exist
+                                        appDatabase.mealPlanDao().insert(mealPlan);
+                                    }
+                                }).start();
+
                                 mealPlans.add(mealPlan);
-                                // Optionally update local Room database
-                                new Thread(() -> appDatabase.mealPlanDao().insert(mealPlan)).start();
                             }
+
                             if (mealPlanAdapter == null) {
                                 mealPlanAdapter = new MealPlanAdapter(mealPlans, appDatabase, getContext());
                                 mealPlanRecyclerView.setAdapter(mealPlanAdapter);
                             } else {
-                                mealPlanAdapter.notifyDataSetChanged(); // Refresh adapter data
+                                mealPlanAdapter.updateMealPlans(mealPlans);
                             }
                         } else {
+                            // If the task fails, load data from Room
+                            loadMealPlansFromRoom();
                             showMessage("Error fetching meal plans: " + task.getException().getMessage());
                         }
+                    })
+                    .addOnFailureListener(e -> {
+                        // If there's an error or no internet, load from Room database
+                        loadMealPlansFromRoom();
+
                     });
         } else {
             showMessage("User not logged in.");
         }
+    }
+
+
+    private void loadMealPlansFromRoom() {
+        if (!isConnectedToInternet()) {
+            new Thread(() -> {
+                List<MealPlanEntity> mealPlans = appDatabase.mealPlanDao().getAllMealPlans();
+
+                getActivity().runOnUiThread(() -> {
+                    updateAdapter(mealPlans);
+                });
+            }).start();
+        } else {
+            Toast.makeText(requireContext(), "No internet connection", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    private void updateAdapter(List<MealPlanEntity> mealPlans) {
+
+        if (mealPlanAdapter == null) {
+            mealPlanAdapter = new MealPlanAdapter(mealPlans, appDatabase, getContext());
+            mealPlanRecyclerView.setAdapter(mealPlanAdapter);
+        } else {
+            mealPlanAdapter.updateMealPlans(mealPlans); // Assuming you have a method to update data in adapter
+        }
+    }
+
+
+    // Utility method to check internet connection
+    private boolean isConnectedToInternet() {
+        ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
     private void showMessage(String message) {
@@ -91,3 +148,52 @@ public class MealPlanFragment extends Fragment {
                 mealPlanRecyclerView.setAdapter(mealPlanAdapter);
             });
         }).start();*/
+
+
+/*
+*  private void loadMealPlans() {
+        if (currentUse != null) {
+            firestore.collection("users").document(currentUse.getUid())
+                    .collection("mealPlans")
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            // Fetch existing meal plans from Room
+                            List<MealPlanEntity> existingMealPlans = appDatabase.mealPlanDao().getAllMealPlans();
+                            List<MealPlanEntity> newMealPlans = new ArrayList<>();
+
+                            for (DocumentSnapshot document : task.getResult()) {
+                                MealPlanEntity mealPlan = document.toObject(MealPlanEntity.class);
+
+                                // Check if the meal plan already exists in Room
+                                boolean exists = false;
+                                for (MealPlanEntity existingMealPlan : existingMealPlans) {
+                                    if (existingMealPlan.getStrMeal().equals(mealPlan.getStrMeal())) {
+                                        exists = true;
+                                        break;
+                                    }
+                                }
+
+                                // If not exists, add to newMealPlans and insert into Room
+                                if (!exists) {
+                                    newMealPlans.add(mealPlan);
+                                    new Thread(() -> appDatabase.mealPlanDao().insert(mealPlan)).start();
+                                }
+                            }
+
+                            // Set up or update the adapter with newMealPlans only
+                            if (mealPlanAdapter == null) {
+                                mealPlanAdapter = new MealPlanAdapter(newMealPlans, appDatabase, getContext());
+                                mealPlanRecyclerView.setAdapter(mealPlanAdapter);
+                            } else {
+                                mealPlanAdapter.updateMealPlans(newMealPlans);
+                            }
+                        } else {
+                            showMessage("Error fetching meal plans: " + task.getException().getMessage());
+                        }
+                    });
+        } else {
+            showMessage("User not logged in.");
+        }
+    }
+* */

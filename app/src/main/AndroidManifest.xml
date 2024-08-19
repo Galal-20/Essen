@@ -53,7 +53,10 @@
             android:exported="false" />
         <activity
             android:name=".Activities.MealActivity.MealActivity"
-            android:exported="false" />
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|density"
+            android:exported="false"
+            android:resizeableActivity="true"
+            android:supportsPictureInPicture="true" />
         <activity
             android:name=".Activities.AuthActivities.ForgetPassword.ForgetPassword"
             android:exported="false" />
