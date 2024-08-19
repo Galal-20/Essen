@@ -65,7 +65,6 @@ public class MealPlanFragment extends Fragment {
                             for (DocumentSnapshot document : task.getResult()) {
                                 MealPlanEntity mealPlan = document.toObject(MealPlanEntity.class);
 
-                                // Check if the meal plan already exists in the database
                                 new Thread(() -> {
                                     int count =
                                             appDatabase.mealPlanDao().isMealInMealPlan(mealPlan.getStrMeal());
@@ -84,13 +83,11 @@ public class MealPlanFragment extends Fragment {
                                 mealPlanAdapter.updateMealPlans(mealPlans);
                             }
                         } else {
-                            // If the task fails, load data from Room
                             loadMealPlansFromRoom();
                             showMessage("Error fetching meal plans: " + task.getException().getMessage());
                         }
                     })
                     .addOnFailureListener(e -> {
-                        // If there's an error or no internet, load from Room database
                         loadMealPlansFromRoom();
 
                     });
@@ -126,7 +123,6 @@ public class MealPlanFragment extends Fragment {
     }
 
 
-    // Utility method to check internet connection
     private boolean isConnectedToInternet() {
         ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();

@@ -33,6 +33,7 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
 }
 
 dependencies {
@@ -70,4 +71,8 @@ dependencies {
     implementation("io.reactivex.rxjava3:rxandroid:3.0.2")
     implementation("io.reactivex.rxjava3:rxjava:3.1.5")
     implementation("androidx.room:room-rxjava3:$2.6.1")
+
+    implementation("com.github.mhdmoh:swipe-button:1.0.3")
+    implementation("com.airbnb.android:lottie:6.1.0")
+
 }

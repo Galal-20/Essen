@@ -222,7 +222,6 @@ public class MealActivity extends AppCompatActivity implements MealView {
     @Override
     public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode, @NonNull Configuration newConfig) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
-
         if (isInPictureInPictureMode) {
             makePlanButton.setVisibility(View.GONE);
             favoriteButton.setVisibility(View.GONE);
