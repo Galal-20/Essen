@@ -21,6 +21,7 @@
 
 
 <h3>Libraries Used:</h3>
+<ul>
 <li>Firebase: Authentication and firebase store</li>
 <li>Retrofit</li>
 <li>converter to gson</li>
@@ -30,3 +31,4 @@
 <li>Youtubeplayer</li>
 <li>Lottie animation</li>
 <li>SwipeButton</li>
+</ul>
