@@ -11,6 +11,7 @@
   <li>Add to calendar📅  : Add Meal to calendar.</li>
   <li>Localization : support English and Arabic.</li>
   <li>Picture in picture</li>
+  <li>Push Notifications.</li>
   <li>Meal plan: make user choose meal and set up(dinner, breakfast, lunch, date, and time).</li>
   <li>Firebase store: save favourites and meal plan.</li>
   <li>Real-Time Updates: Get data from the Firebase store and save it in the room database to show it if the internet is not available.</li>
