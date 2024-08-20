@@ -50,6 +50,7 @@ import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
@@ -491,12 +492,12 @@ public class MealActivity extends AppCompatActivity implements MealView {
     private void saveMealToFavorites() {
         if (mealName != null) {
             new Thread(() -> {
-                int count = appDatabase.mealDao().isMealInFavorites(mealName);
+                try {
+                    int count = appDatabase.mealDao().isMealInFavorites(mealName);
 
-                if (count > 0) {
-                    runOnUiThread(() -> showMessage("Meal is already in favorites!"));
-                } else {
-                    try {
+                    if (count > 0) {
+                        runOnUiThread(() -> showMessage("Meal is already in favorites!"));
+                    } else {
                         MealEntity mealEntity = new MealEntity();
                         mealEntity.setStrMeal(mealName);
                         mealEntity.setStrMealThumb(mealThumb);
@@ -506,24 +507,43 @@ public class MealActivity extends AppCompatActivity implements MealView {
                         mealEntity.setStrYoutube(youtubeLink);
                         mealEntity.setIngredients(textIngredient);
 
-                        appDatabase.mealDao().insert(mealEntity);
+                        // Insert the meal into the local Room database
+                        appDatabase.runInTransaction(() -> {
+                            try {
+                                appDatabase.mealDao().insert(mealEntity);
+                            } catch (Exception e) {
+                                runOnUiThread(() -> Toast.makeText(this, "Error inserting meal locally: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                            }
+                        });
 
+                        // Now save the meal in Firestore using a transaction to avoid conflicts
                         if (user != null) {
-                            firestore.collection("users").document(user.getUid())
-                                    .collection("favorites").document(mealName)
-                                    .set(mealEntity)
-                                    .addOnSuccessListener(aVoid -> runOnUiThread(() -> showMessage("Meal added to favorites and saved to Firestore!")))
+                            firestore.runTransaction(transaction -> {
+                                        DocumentReference mealRef = firestore.collection("users").document(user.getUid())
+                                                .collection("favorites").document(mealName);
+
+                                        // Fetch the meal to check if it already exists in Firestore
+                                        MealEntity existingMeal = transaction.get(mealRef).toObject(MealEntity.class);
+
+                                        if (existingMeal == null) {
+                                            // If the meal doesn't exist, add it to Firestore
+                                            transaction.set(mealRef, mealEntity);
+                                        }
+
+                                        return null;
+                                    }).addOnSuccessListener(aVoid -> runOnUiThread(() -> showMessage("Meal added to favorites and saved to Firestore!")))
                                     .addOnFailureListener(e -> runOnUiThread(() -> showMessage("Error saving to Firestore: " + e.getMessage())));
                         }
-                    } catch (Exception e) {
-                        runOnUiThread(() -> Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show());
                     }
+                } catch (Exception e) {
+                    runOnUiThread(() -> Toast.makeText(this, "Error processing favorites: " + e.getMessage(), Toast.LENGTH_SHORT).show());
                 }
             }).start();
         } else {
             showMessage("Meal data not saved.");
         }
     }
+
 
 }
 

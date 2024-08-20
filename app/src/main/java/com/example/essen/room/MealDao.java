@@ -17,6 +17,9 @@ public interface MealDao {
     @Query("SELECT * FROM meal_table")
     LiveData<List<MealEntity>> getAllMeals();
 
+    @Query("SELECT * FROM meal_table")
+    List<MealEntity> getAllMealsList(); // New method for getting List<MealEntity>
+
     @Query("SELECT COUNT(*) FROM meal_table WHERE strMeal = :mealName")
     int isMealInFavorites(String mealName);
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +27,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class FavoritFragment extends Fragment implements FavoriteAdapter.OnDeleteClickListener {
     private RecyclerView recyclerView;
@@ -54,8 +57,9 @@ public class FavoritFragment extends Fragment implements FavoriteAdapter.OnDelet
             adapter.submitList(meals);
         });
 
-        fetchUserFavorites();
-        checkInternetAndSync();
+       /* fetchUserFavorites();
+        checkInternetAndSync();*/
+        setupRealtimeUpdates();
 
         swipeRefreshLayout.setOnRefreshListener(() -> {
             fetchUserFavorites();
@@ -70,24 +74,26 @@ public class FavoritFragment extends Fragment implements FavoriteAdapter.OnDelet
         if (currentUser != null) {
             firestore.collection("users").document(currentUser.getUid())
                     .collection("favorites")
-                    .get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
+                    .addSnapshotListener((snapshots, e) -> {
+                        if (e != null) {
+                            Toast.makeText(requireContext(), "Error listening to changes: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        if (snapshots != null && !snapshots.isEmpty()) {
                             List<MealEntity> favoriteMeals = new ArrayList<>();
-                            for (QueryDocumentSnapshot document : task.getResult()) {
+                            for (QueryDocumentSnapshot document : snapshots) {
                                 MealEntity meal = document.toObject(MealEntity.class);
                                 favoriteMeals.add(meal);
-                                //appDatabase.mealDao().insert(meal);
                             }
                             adapter.submitList(favoriteMeals);
-                        } else {
-                            Toast.makeText(requireContext(), "Error fetching user favorites", Toast.LENGTH_SHORT).show();
                         }
                     });
         } else {
             Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show();
         }
     }
+
 
     @Override
     public void onResume() {
@@ -114,28 +120,137 @@ public class FavoritFragment extends Fragment implements FavoriteAdapter.OnDelet
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             new Thread(() -> {
+                                List<MealEntity> newMeals = new ArrayList<>();
                                 for (QueryDocumentSnapshot document : task.getResult()) {
                                     MealEntity meal = document.toObject(MealEntity.class);
-                                    int count = appDatabase.mealDao().isMealInFavorites(meal.getStrMeal());
+                                    int count = appDatabase.mealDao().isMealInFavorites(meal.getStrMeal().trim());
 
-                                    if (count == 0) {
-                                        appDatabase.mealDao().insert(meal);
+                                    try {
+                                        if (count == 0) {
+                                            appDatabase.mealDao().insert(meal);
+                                            newMeals.add(meal);
+                                        }
+                                    } catch (Exception e) {
+                                        // Log the exception if needed
                                     }
                                 }
-                                requireActivity().runOnUiThread(() -> {
-                                    presenter.getFavoriteMeals().observe(getViewLifecycleOwner(), meals -> {
-                                        adapter.submitList(meals);
+
+                                // Only update UI if the fragment is still attached to the activity
+                                if (isAdded() && getActivity() != null) {
+                                    requireActivity().runOnUiThread(() -> {
+                                        presenter.getFavoriteMeals().observe(getViewLifecycleOwner(), meals -> {
+                                            Set<MealEntity> uniqueMeals = new HashSet<>(meals); // Remove duplicates
+                                            adapter.submitList(new ArrayList<>(uniqueMeals));
+                                        });
                                     });
-                                });
+                                }
                             }).start();
                         } else {
-                            Toast.makeText(requireContext(), "Error syncing with Firestore", Toast.LENGTH_SHORT).show();
+                            if (isAdded() && getActivity() != null) {
+                                requireActivity().runOnUiThread(() ->
+                                        Toast.makeText(requireContext(), "Error syncing with Firestore", Toast.LENGTH_SHORT).show()
+                                );
+                            }
                         }
                     });
         } else {
-            Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show();
+            if (isAdded() && getActivity() != null) {
+                requireActivity().runOnUiThread(() ->
+                        Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
+                );
+            }
         }
     }
+
+
+    /* private void setupRealtimeUpdates() {
+         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+         if (currentUser != null) {
+             firestore.collection("users").document(currentUser.getUid())
+                     .collection("favorites")
+                     .addSnapshotListener((snapshots, e) -> {
+                         if (e != null) {
+                             if (isAdded() && getActivity() != null) {
+                                 requireActivity().runOnUiThread(() ->
+                                         Toast.makeText(requireContext(), "Error listening to updates", Toast.LENGTH_SHORT).show()
+                                 );
+                             }
+                             return;
+                         }
+
+                         new Thread(() -> {
+                             if (snapshots != null && !snapshots.isEmpty()) {
+                                 List<MealEntity> updatedMeals = new ArrayList<>();
+                                 for (QueryDocumentSnapshot document : snapshots) {
+                                     MealEntity meal = document.toObject(MealEntity.class);
+                                     updatedMeals.add(meal);
+
+                                     try {
+                                         appDatabase.mealDao().insert(meal);
+                                     } catch (Exception ex) {
+                                         // Handle insertion exceptions if necessary
+                                     }
+                                 }
+
+                                 // Only update UI if the fragment is still attached to the activity
+                                 if (isAdded() && getActivity() != null) {
+                                     requireActivity().runOnUiThread(() -> {
+                                         presenter.getFavoriteMeals().observe(getViewLifecycleOwner(), meals -> {
+                                             Set<MealEntity> uniqueMeals = new HashSet<>(meals); // Remove duplicates
+                                             adapter.submitList(new ArrayList<>(uniqueMeals));
+                                         });
+                                     });
+                                 }
+                             }
+                         }).start();
+                     });
+         } else {
+             if (isAdded() && getActivity() != null) {
+                 requireActivity().runOnUiThread(() ->
+                         Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
+                 );
+             }
+         }
+     }*/
+    private void setupRealtimeUpdates() {
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        if (currentUser != null) {
+            firestore.collection("users").document(currentUser.getUid())
+                    .collection("favorites")
+                    .addSnapshotListener((snapshots, e) -> {
+                        if (e != null) {
+                            if (isAdded() && getActivity() != null) {
+                                requireActivity().runOnUiThread(() ->
+                                        Toast.makeText(requireContext(), "Error listening to updates", Toast.LENGTH_SHORT).show()
+                                );
+                            }
+                            return;
+                        }
+
+                        new Thread(() -> {
+                            if (snapshots != null) {
+                                List<MealEntity> updatedMeals = new ArrayList<>();
+                                for (QueryDocumentSnapshot document : snapshots) {
+                                    MealEntity meal = document.toObject(MealEntity.class);
+                                    updatedMeals.add(meal);
+                                }
+
+                                // Only update UI if the fragment is still attached to the activity
+                                if (isAdded() && getActivity() != null) {
+                                    requireActivity().runOnUiThread(() -> {
+                                        presenter.getFavoriteMeals().observe(getViewLifecycleOwner(), meals -> {
+                                            adapter.submitList(updatedMeals);
+                                        });
+                                    });
+                                }
+                            }
+                        }).start();
+                    });
+        }
+    }
+
+
+
 
 
     private void showCustomDialog(String mealName) {
@@ -162,10 +277,14 @@ public class FavoritFragment extends Fragment implements FavoriteAdapter.OnDelet
         dialog.show();
     }
 
-    private void deleteFavorite(String mealName) {
+    /*private void deleteFavorite(String mealName) {
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         new Thread(() -> {
-            appDatabase.mealDao().deleteMeal(mealName);
+            try {
+                appDatabase.mealDao().deleteMeal(mealName);
+            }catch (Exception e){
+
+            }
             if (currentUser != null) {
                 firestore.collection("users").document(currentUser.getUid())
                         .collection("favorites").document(mealName)
@@ -180,7 +299,52 @@ public class FavoritFragment extends Fragment implements FavoriteAdapter.OnDelet
             }
         }).start();
 
+    }*/
+
+    private void deleteFavorite(String mealName) {
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        new Thread(() -> {
+            try {
+                // Delete from the local Room database
+                appDatabase.mealDao().deleteMeal(mealName);
+
+                if (currentUser != null) {
+                    // Delete from Firestore
+                    firestore.collection("users").document(currentUser.getUid())
+                            .collection("favorites").document(mealName)
+                            .delete()
+                            .addOnSuccessListener(aVoid -> {
+                                if (isAdded() && getActivity() != null) {
+                                    requireActivity().runOnUiThread(() -> {
+                                        showMessage("Meal removed from favorites and Firestore!");
+                                        // Update UI with the latest data from Firestore
+                                        syncFavoritesFromFirestore();
+                                    });
+                                }
+                            })
+                            .addOnFailureListener(e -> {
+                                if (isAdded() && getActivity() != null) {
+                                    requireActivity().runOnUiThread(() ->
+                                            showMessage("Error removing from Firestore: " + e.getMessage()));
+                                }
+                            });
+                } else {
+                    if (isAdded() && getActivity() != null) {
+                        requireActivity().runOnUiThread(() ->
+                                showMessage("User not logged in, unable to remove from Firestore."));
+                    }
+                }
+            } catch (Exception e) {
+                Log.e("DeleteError", "Error deleting meal: " + mealName, e);
+            }
+        }).start();
     }
+
+
+    private void showMessage(String s) {
+        Toast.makeText(requireContext(), s, Toast.LENGTH_SHORT).show();
+    }
+
 
     @Override
     public void onDeleteClick(String mealName) {

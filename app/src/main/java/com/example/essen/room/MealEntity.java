@@ -2,9 +2,10 @@ package com.example.essen.room;
 
 
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "meal_table")
+@Entity(tableName = "meal_table", indices = {@Index(value = {"strMeal"}, unique = true)})
 public class MealEntity {
 
     @PrimaryKey(autoGenerate = true)
