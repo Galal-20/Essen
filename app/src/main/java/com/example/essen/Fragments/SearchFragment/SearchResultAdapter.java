@@ -22,17 +22,27 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.essen.Activities.MealActivity.MealActivity;
 import com.example.essen.R;
+import com.example.essen.pojo.AllDetailsMeal;
 import com.example.essen.pojo.MainMeal;
+import com.example.essen.pojo.MealId;
+import com.example.essen.retrofit.MealAPI;
+import com.example.essen.retrofit.RetrofitInstance;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapter.MealViewHolder> {
     private final Context context;
     private final List<MainMeal> mealList = new ArrayList<>();
+    private final MealAPI mealAPI;
 
     public SearchResultAdapter(Context context) {
         this.context = context;
+        this.mealAPI = RetrofitInstance.getApi();
     }
 
     public void setMealList(List<MainMeal> meals) {
@@ -43,7 +53,6 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         this.mealList.addAll(meals);
         notifyDataSetChanged();
     }
-
 
     @NonNull
     @Override
@@ -73,32 +82,42 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             nameTextView = itemView.findViewById(R.id.textSearchResultName);
             imageView = itemView.findViewById(R.id.imageSearchResult);
 
-
             itemView.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
                     MainMeal meal = mealList.get(position);
-                    Intent intent = new Intent(context, MealActivity.class);
-                    intent.putExtra(Cat, meal.getStrCategory());
-                    intent.putExtra(NAME_MEAL, meal.getStrMeal());
-                    intent.putExtra(THUMB_MEAL, meal.getStrMealThumb());
-                    intent.putExtra(LOCATION, meal.getStrArea());
-                    intent.putExtra(INSTRUCTIONS, meal.getStrInstructions());
-                    intent.putExtra(INGREDIENTS,
-                            meal.getStrIngredient1() + "\n" + meal.getStrIngredient2() +
-                                    meal.getStrIngredient3() + "\n" + meal.getStrIngredient4() +
-                                    meal.getStrIngredient5() + "\n" + meal.getStrIngredient6() +
-                                    meal.getStrIngredient7() + "\n" + meal.getStrIngredient8() +
-                                    meal.getStrIngredient9() + "\n" + meal.getStrIngredient10() +
-                                    meal.getStrIngredient11() + "\n" + meal.getStrIngredient12() +
-                                    meal.getStrIngredient13() + "\n" + meal.getStrIngredient14() +
-                                    meal.getStrIngredient15() + "\n" + meal.getStrIngredient16() +
-                                    meal.getStrIngredient17() + "\n" + meal.getStrIngredient18() +
-                                    meal.getStrIngredient19() + "\n" + meal.getStrIngredient20()
+                    mealAPI.getMealDetails(meal.getidMeal()).enqueue(new Callback<MealId>() {
+                        @Override
+                        public void onResponse(Call<MealId> call, Response<MealId> response) {
+                            if (response.isSuccessful() && response.body() != null) {
+                                AllDetailsMeal detailedMeal = response.body().getMeals().get(0);
 
-                    );
-                    intent.putExtra(YOUTUBE, meal.getStrYoutube());
-                    context.startActivity(intent);
+                                Intent intent = new Intent(context, MealActivity.class);
+                                intent.putExtra(Cat, detailedMeal.getStrCategory());
+                                intent.putExtra(NAME_MEAL, detailedMeal.getStrMeal());
+                                intent.putExtra(THUMB_MEAL, detailedMeal.getStrMealThumb());
+                                intent.putExtra(LOCATION, detailedMeal.getStrArea());
+                                intent.putExtra(INSTRUCTIONS, detailedMeal.getStrInstructions());
+                                intent.putExtra(INGREDIENTS,
+                                        detailedMeal.getStrIngredient1() + "\n" + detailedMeal.getStrIngredient2() +
+                                                detailedMeal.getStrIngredient3() + "\n" + detailedMeal.getStrIngredient4() +
+                                                detailedMeal.getStrIngredient5() + "\n" + detailedMeal.getStrIngredient6() +
+                                                detailedMeal.getStrIngredient7() + "\n" + detailedMeal.getStrIngredient8() +
+                                                detailedMeal.getStrIngredient9() + "\n" + detailedMeal.getStrIngredient10() +
+                                                detailedMeal.getStrIngredient11() + "\n" + detailedMeal.getStrIngredient12() +
+                                                detailedMeal.getStrIngredient13() + "\n" + detailedMeal.getStrIngredient14() +
+                                                detailedMeal.getStrIngredient15() + "\n"
+                                );
+                                intent.putExtra(YOUTUBE, detailedMeal.getStrYoutube());
+                                context.startActivity(intent);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<MealId> call, Throwable t) {
+
+                        }
+                    });
                 }
             });
         }
@@ -109,3 +128,5 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         }
     }
 }
+
+

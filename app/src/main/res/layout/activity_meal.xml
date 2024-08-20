@@ -35,6 +35,7 @@
                 android:layout_height="?actionBarSize"
                 android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
                 app:layout_collapseMode="pin"
+                android:fontFamily="@font/poppins_bold"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
@@ -79,6 +80,7 @@
                     android:id="@+id/tv_category"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_extra_light_italic"
                     android:layout_weight="1"
                     android:drawableStart="@drawable/category"
                     android:drawablePadding="5dp"
@@ -94,6 +96,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:drawableStart="@drawable/location"
+                    android:fontFamily="@font/poppins_extra_light_italic"
                     android:drawablePadding="5dp"
                     android:drawableTint="@color/black"
                     android:hint="@string/area_egypt"
@@ -107,6 +110,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
+                android:fontFamily="@font/poppins_bold"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
                 android:backgroundTint="@color/cardview_dark_background"
@@ -122,6 +126,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
+                android:fontFamily="@font/poppins_bold"
                 android:layout_marginTop="20dp"
                 android:text="@string/steps"
                 android:textColor="@color/black"
@@ -140,6 +145,7 @@
                 android:layout_marginTop="5dp"
                 android:paddingStart="20dp"
                 android:paddingEnd="10dp"
+                android:fontFamily="@font/poppins_extra_light_italic"
                 android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="@id/textInst"
                 app:layout_constraintTop_toBottomOf="@id/textInst"
@@ -154,6 +160,7 @@
                 android:text="@string/ingredients"
                 android:textSize="24sp"
                 android:textStyle="bold"
+                android:fontFamily="@font/poppins_bold"
                 app:layout_constraintEnd_toEndOf="@id/tvInst"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvInst" />
@@ -166,6 +173,7 @@
                 android:paddingStart="20dp"
                 android:paddingEnd="10dp"
                 android:textColor="@color/black"
+                android:fontFamily="@font/poppins_extra_light_italic"
                 app:layout_constraintStart_toStartOf="@id/tvIngredients"
                 app:layout_constraintTop_toBottomOf="@id/tvIngredients"
 

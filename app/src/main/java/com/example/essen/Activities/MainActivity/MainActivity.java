@@ -1,11 +1,14 @@
 package com.example.essen.Activities.MainActivity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,8 +18,11 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -32,6 +38,7 @@ import com.example.essen.R;
 import com.example.essen.Util.NetworkChangeReceiver;
 import com.example.essen.databinding.ActivityMainBinding;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainActivity extends AppCompatActivity implements NetworkChangeReceiver.NetworkChangeListener {
 
@@ -40,11 +47,19 @@ public class MainActivity extends AppCompatActivity implements NetworkChangeRece
     SwipeRefreshLayout swipeRefreshLayout;
     boolean isConnected;
     private NetworkChangeReceiver networkChangeReceiver;
-    private boolean wasDisconnected = false;  // Track the previous connection state
-    private boolean isGuest; // Flag to check if the user is a guest
+    private boolean wasDisconnected = false;
+    private boolean isGuest;
     private boolean isLoggedIn;
 
 
+    private ActivityResultLauncher<String> resultLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    getDeviceToken();
+                } else {
+                }
+            }
+    );
 
     @SuppressLint("NonConstantResourceId")
     @Override
@@ -57,10 +72,10 @@ public class MainActivity extends AppCompatActivity implements NetworkChangeRece
         isConnected = NetworkChangeReceiver.isConnectedToInternet(this);
         checkNetworkStatus();
 
+        requestPermission();
+
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefsFile", MODE_PRIVATE);
         isGuest = sharedPreferences.getBoolean("isGuest", true);
-
-
 
         if (swipeRefreshLayout != null) {
             swipeRefreshLayout.setOnRefreshListener(() -> {
@@ -141,6 +156,35 @@ public class MainActivity extends AppCompatActivity implements NetworkChangeRece
             return true;
         });
     }
+
+    public void requestPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+
+            } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
+
+            } else {
+                resultLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            }
+        } else {
+            getDeviceToken();
+        }
+    }
+
+    
+    public void getDeviceToken() {
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                String token = task.getResult();
+                Log.v("FirebaseMessaging", "Token: " + token);
+            } else {
+                Log.e("FirebaseMessaging", "Failed to fetch token", task.getException());
+            }
+        });
+    }
+
+
+
 
     /*
     * else if (itemId == R.id.profileMenu) {

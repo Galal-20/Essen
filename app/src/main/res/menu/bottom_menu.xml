@@ -3,25 +3,30 @@
 
     <item
         android:id="@+id/homeMenu"
+        android:fontFamily="@font/poppins_bold"
         android:icon="@drawable/home"
         android:title="@string/home" />
 
     <item
         android:id="@+id/searchMenu"
+        android:fontFamily="@font/poppins_bold"
         android:icon="@drawable/search"
         android:title="@string/search" />
 
     <item
         android:id="@+id/favMenu"
+        android:fontFamily="@font/poppins_bold"
         android:icon="@drawable/favorite"
         android:title="@string/favorite" />
 
     <item
         android:id="@+id/countries"
+        android:fontFamily="@font/poppins_bold"
         android:icon="@drawable/country"
         android:title="@string/countries" />
     <item
         android:id="@+id/meal_plan"
+        android:fontFamily="@font/poppins_bold"
         android:icon="@drawable/meal_plan_ic"
         android:title="@string/meal_plan" />
 

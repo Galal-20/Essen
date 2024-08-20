@@ -63,7 +63,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/Text_welcome"
-        android:fontFamily="@font/bonbon"
+        android:fontFamily="@font/poppins_bold"
         android:text="@string/welcome_text"
         android:textAlignment="center"
         android:textColor="@color/white"

@@ -55,30 +55,7 @@ public class SearchFragment extends Fragment implements SearchContract.View {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new SearchResultAdapter(getContext());
         recyclerView.setAdapter(adapter);
-
         swipeRefreshLayout.setOnRefreshListener(() -> swipeRefreshLayout.setRefreshing(false));
-
-
-        /*searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                query = query.trim();
-                if (!query.isEmpty()) {
-                    presenter.searchMeals(query);
-                }
-                return false;
-            }
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                newText = newText.trim();
-                if (newText.isEmpty()) {
-                    clearResults();
-                } else {
-                    presenter.searchMeals(newText);
-                }
-                return false;
-            }
-        });*/
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             private Handler handler = new Handler();
@@ -108,12 +85,6 @@ public class SearchFragment extends Fragment implements SearchContract.View {
                 return false;
             }
         });
-
-       /* searchCountryButton.setOnClickListener(v -> presenter.searchMealsByCountry(searchView.getQuery().toString()));
-        searchIngredientButton.setOnClickListener(v -> presenter.searchMealsByIngredient(searchView.getQuery().toString()));
-        searchCategoryButton.setOnClickListener(v -> presenter.searchMealsByCategory(searchView.getQuery().toString()));*/
-
-
 
         View.OnClickListener searchButtonClickListener = v -> {
             String query = searchView.getQuery().toString().trim();
@@ -168,6 +139,9 @@ public class SearchFragment extends Fragment implements SearchContract.View {
 }
 
 
+ /* searchCountryButton.setOnClickListener(v -> presenter.searchMealsByCountry(searchView.getQuery().toString()));
+        searchIngredientButton.setOnClickListener(v -> presenter.searchMealsByIngredient(searchView.getQuery().toString()));
+        searchCategoryButton.setOnClickListener(v -> presenter.searchMealsByCategory(searchView.getQuery().toString()));*/
 
 /*searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -215,6 +189,26 @@ public class SearchFragment extends Fragment implements SearchContract.View {
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                if (newText.isEmpty()) {
+                    clearResults();
+                } else {
+                    presenter.searchMeals(newText);
+                }
+                return false;
+            }
+        });*/
+ /*searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                query = query.trim();
+                if (!query.isEmpty()) {
+                    presenter.searchMeals(query);
+                }
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                newText = newText.trim();
                 if (newText.isEmpty()) {
                     clearResults();
                 } else {
