@@ -124,6 +124,10 @@ public class SignUp_Screen extends AppCompatActivity implements AuthViewSiginUp 
 
         if (fullName.isEmpty() || email.isEmpty() || password.isEmpty() || confirmP.isEmpty()) {
             Snackbar.make(view, "Please fill all fields", Snackbar.LENGTH_SHORT).show();
+        } else if (!isValidEmail(email)) {
+            Snackbar.make(view, "Invalid email format", Snackbar.LENGTH_SHORT).show();
+        } else if (!isValidPassword(password)) {
+            Snackbar.make(view, "Password must be at least 8 characters, include an uppercase letter, a lowercase letter, a number, and a special character", Snackbar.LENGTH_LONG).show();
         } else if (!password.equals(confirmP)) {
             Snackbar.make(view, "Passwords do not match", Snackbar.LENGTH_SHORT).show();
         } else {
@@ -131,6 +135,16 @@ public class SignUp_Screen extends AppCompatActivity implements AuthViewSiginUp 
             presenter.signUp(fullName, email, password);
         }
     }
+
+    private boolean isValidEmail(String email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
+    private boolean isValidPassword(String password) {
+        String passwordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{8,}$";
+        return password.matches(passwordPattern);
+    }
+
 
 
     @Override

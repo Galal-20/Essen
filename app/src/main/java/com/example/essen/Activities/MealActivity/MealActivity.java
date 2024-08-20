@@ -190,7 +190,6 @@ public class MealActivity extends AppCompatActivity implements MealView {
             public void onReady(YouTubePlayer youTubePlayer) {
                 String videoId = getVideoIdFromUrl(youtubeLink);
                 if (videoId != null) {
-                    //youTubePlayer.loadVideo(videoId, 0);
                     youTubePlayer.cueVideo(videoId, 0);
 
                 } else {
@@ -267,34 +266,20 @@ public class MealActivity extends AppCompatActivity implements MealView {
 
             dayName = getDayName(year, month, day);
             //String firestoreId = mealName + "_" + dayName;
-
             new Thread(() -> {
                 int count = appDatabase.mealPlanDao().isMealInMealPlan(mealName);
                 if (count > 0) {
-                    runOnUiThread(() -> showMessage("Meal already in Meal plan!"));
+                    runOnUiThread(() -> showMessage("Meal already in Meal Plan!"));
                 } else {
                     try {
-                        MealPlanEntity mealPlanEntity = new MealPlanEntity();
-                        mealPlanEntity.setStrMeal(mealName);
-                        mealPlanEntity.setStrMealThumb(mealThumb);
-                        mealPlanEntity.setStrCategory(mealCat);
-                        mealPlanEntity.setStrArea(location);
-                        mealPlanEntity.setStrInstructions(instructions);
-                        mealPlanEntity.setIngredients(textIngredient);
-                        mealPlanEntity.setStrYoutube(youtubeLink);
-                        mealPlanEntity.setMealType(mealType);
-                        mealPlanEntity.setDayName(dayName);
-                        mealPlanEntity.setDayNumber(day);
-                        mealPlanEntity.setMonth(month);
-                        mealPlanEntity.setYear(year);
-
+                        MealPlanEntity mealPlanEntity = createMealPlanEntity();
                         appDatabase.mealPlanDao().insert(mealPlanEntity);
 
                         if (user != null) {
                             firestore.collection("users").document(user.getUid())
                                     .collection("mealPlans").document(mealName)
                                     .set(mealPlanEntity)
-                                    .addOnSuccessListener(aVoid -> runOnUiThread(() -> showMessage("Plan saved successfully and saved to Firestore!")))
+                                    .addOnSuccessListener(aVoid -> runOnUiThread(() -> showMessage("Plan saved successfully and to Firestore!")))
                                     .addOnFailureListener(e -> runOnUiThread(() -> showMessage("Error saving to Firestore: " + e.getMessage())));
                         }
                     } catch (Exception e) {
@@ -304,11 +289,32 @@ public class MealActivity extends AppCompatActivity implements MealView {
             }).start();
 
             bottomSheetDialog.dismiss();
+
         });
 
         bottomSheetDialog.setContentView(bottomSheetView);
         bottomSheetDialog.show();
     }
+
+
+    private MealPlanEntity createMealPlanEntity() {
+        MealPlanEntity mealPlanEntity = new MealPlanEntity();
+
+        mealPlanEntity.setStrMeal(mealName);
+        mealPlanEntity.setStrMealThumb(mealThumb);
+        mealPlanEntity.setStrCategory(mealCat);
+        mealPlanEntity.setStrArea(location);
+        mealPlanEntity.setStrInstructions(instructions);
+        mealPlanEntity.setIngredients(textIngredient);
+        mealPlanEntity.setStrYoutube(youtubeLink);
+        mealPlanEntity.setMealType(mealType);
+        mealPlanEntity.setDayName(dayName);
+        mealPlanEntity.setDayNumber(day);
+        mealPlanEntity.setMonth(month);
+        mealPlanEntity.setYear(year);
+        return mealPlanEntity;
+    }
+
 
     private String getDayName(int year, int month, int day) {
         Calendar calendar = Calendar.getInstance();
@@ -427,6 +433,7 @@ public class MealActivity extends AppCompatActivity implements MealView {
 
     }
 
+
     @Override
     public void showMealImage(String imageUrl) {
         Glide.with(this).load(imageUrl).into(mealImageView);
@@ -543,8 +550,6 @@ public class MealActivity extends AppCompatActivity implements MealView {
             showMessage("Meal data not saved.");
         }
     }
-
-
 }
 
  /*youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
@@ -633,3 +638,53 @@ collapsingToolbar.setTitle(meal.getStrMeal());
         }
 
         return videoId;*/
+
+/* saveButton.setOnClickListener(v -> {
+            day = datePicker.getDayOfMonth();
+            month = datePicker.getMonth();
+            year = datePicker.getYear();
+
+            int selectedMealId = mealTypeGroup.getCheckedRadioButtonId();
+            RadioButton selectedMealType = bottomSheetView.findViewById(selectedMealId);
+            mealType = selectedMealType.getText().toString();
+
+            dayName = getDayName(year, month, day);
+            //String firestoreId = mealName + "_" + dayName;
+
+            new Thread(() -> {
+                int count = appDatabase.mealPlanDao().isMealInMealPlan(mealName);
+                if (count > 0) {
+                    runOnUiThread(() -> showMessage("Meal already in Meal plan!"));
+                } else {
+                    try {
+                        MealPlanEntity mealPlanEntity = new MealPlanEntity();
+                        mealPlanEntity.setStrMeal(mealName);
+                        mealPlanEntity.setStrMealThumb(mealThumb);
+                        mealPlanEntity.setStrCategory(mealCat);
+                        mealPlanEntity.setStrArea(location);
+                        mealPlanEntity.setStrInstructions(instructions);
+                        mealPlanEntity.setIngredients(textIngredient);
+                        mealPlanEntity.setStrYoutube(youtubeLink);
+                        mealPlanEntity.setMealType(mealType);
+                        mealPlanEntity.setDayName(dayName);
+                        mealPlanEntity.setDayNumber(day);
+                        mealPlanEntity.setMonth(month);
+                        mealPlanEntity.setYear(year);
+
+                        appDatabase.mealPlanDao().insert(mealPlanEntity);
+
+                        if (user != null) {
+                            firestore.collection("users").document(user.getUid())
+                                    .collection("mealPlans").document(mealName)
+                                    .set(mealPlanEntity)
+                                    .addOnSuccessListener(aVoid -> runOnUiThread(() -> showMessage("Plan saved successfully and saved to Firestore!")))
+                                    .addOnFailureListener(e -> runOnUiThread(() -> showMessage("Error saving to Firestore: " + e.getMessage())));
+                        }
+                    } catch (Exception e) {
+                        runOnUiThread(() -> Toast.makeText(MealActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
+                    }
+                }
+            }).start();
+
+            bottomSheetDialog.dismiss();
+        });*/

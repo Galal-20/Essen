@@ -13,12 +13,12 @@ import retrofit2.Response;
 
 public class MealCountryPresenter implements CountryContract.Presenter {
 
-    private CountryContract.View view;
-    private MealAPI mealAPI;
+    private final CountryContract.View view;
+    private final MealAPI mealAPI;
 
     public MealCountryPresenter(CountryContract.View view) {
         this.view = view;
-        mealAPI = RetrofitInstance.getApi();
+        this.mealAPI = RetrofitInstance.getApi();
     }
 
     @Override
@@ -26,13 +26,13 @@ public class MealCountryPresenter implements CountryContract.Presenter {
         mealAPI.getMealsByCountry(countryName).enqueue(new Callback<MealList>() {
             @Override
             public void onResponse(Call<MealList> call, Response<MealList> response) {
-                /*List<MainMeal> meals = response.body().getMeals();
-                    Log.d("API Response", meals.toString());
-                    view.showMeals(meals);*/
-                if (response.isSuccessful()) {
-                    assert response.body() != null;
+                if (response.isSuccessful() && response.body() != null) {
                     List<MainMeal> meals = response.body().getMeals();
-                    view.showMeals(meals);
+                    if (meals != null && !meals.isEmpty()) {
+                        view.showMeals(meals);
+                    } else {
+                        view.showError("No meals found");
+                    }
                 } else {
                     view.showError("Failed to load meals");
                 }
@@ -40,8 +40,11 @@ public class MealCountryPresenter implements CountryContract.Presenter {
 
             @Override
             public void onFailure(Call<MealList> call, Throwable t) {
-                view.showError(t.getMessage());
+
             }
         });
     }
+
+
 }
+

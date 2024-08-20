@@ -70,8 +70,6 @@ public class Login_Screen extends AppCompatActivity implements AuthViewLogin {
     private void applyFadeInAnimation() {
         Animation fadeIn = new AlphaAnimation(0, 1);
         fadeIn.setDuration(2000);
-
-
         emailInput.startAnimation(fadeIn);
         passwordInput.startAnimation(fadeIn);
         titleTextView.startAnimation(fadeIn);
@@ -117,11 +115,25 @@ public class Login_Screen extends AppCompatActivity implements AuthViewLogin {
 
         if (email.isEmpty() || password.isEmpty()) {
             Snackbar.make(view, "Please fill all fields", Snackbar.LENGTH_SHORT).show();
+        } else if (!isValidEmail(email)) {
+            Snackbar.make(view, "Invalid email format", Snackbar.LENGTH_SHORT).show();
+        } else if (!isValidPassword(password)) {
+            Snackbar.make(view, "Password must be at least 8 characters, include an uppercase letter, a lowercase letter, a number, and a special character", Snackbar.LENGTH_LONG).show();
         } else {
             progressBar.setVisibility(View.VISIBLE);
             presenter.login(email, password);
         }
     }
+
+    private boolean isValidEmail(String email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
+    private boolean isValidPassword(String password) {
+        String passwordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{8,}$";
+        return password.matches(passwordPattern);
+    }
+
 
     public void LoginGoogle(View view) {
         progressBar.setVisibility(View.VISIBLE);

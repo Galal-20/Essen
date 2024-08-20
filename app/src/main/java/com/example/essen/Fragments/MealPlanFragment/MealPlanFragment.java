@@ -48,13 +48,13 @@ public class MealPlanFragment extends Fragment {
         currentUse = firebaseAuth.getCurrentUser();
 
 
-
-        loadMealPlans();
+        listenForMealPlanUpdates();
+        //loadMealPlans();
 
         return view;
     }
 
-    private void loadMealPlans() {
+   /* private void loadMealPlans() {
         if (currentUse != null) {
             firestore.collection("users").document(currentUse.getUid())
                     .collection("mealPlans")
@@ -94,7 +94,49 @@ public class MealPlanFragment extends Fragment {
         } else {
             showMessage("User not logged in.");
         }
+    }*/
+
+    private void listenForMealPlanUpdates() {
+        if (currentUse != null) {
+            firestore.collection("users").document(currentUse.getUid())
+                    .collection("mealPlans")
+                    .addSnapshotListener((snapshots, e) -> {
+                        if (e != null) {
+                            showMessage("Error fetching updates: " + e.getMessage());
+                            return;
+                        }
+
+                        if (snapshots != null) {
+                            List<MealPlanEntity> mealPlans = new ArrayList<>();
+                            for (DocumentSnapshot document : snapshots.getDocuments()) {
+                                MealPlanEntity mealPlan = document.toObject(MealPlanEntity.class);
+
+                                // Update Room database
+                                new Thread(() -> {
+                                    int count = appDatabase.mealPlanDao().isMealInMealPlan(mealPlan.getStrMeal());
+                                    if (count == 0) {
+                                        appDatabase.mealPlanDao().insert(mealPlan);
+                                    }
+                                }).start();
+
+                                mealPlans.add(mealPlan);
+                            }
+
+                            // Update UI
+                            if (mealPlanAdapter == null) {
+                                mealPlanAdapter = new MealPlanAdapter(mealPlans, appDatabase, getContext());
+                                mealPlanRecyclerView.setAdapter(mealPlanAdapter);
+                            } else {
+                                mealPlanAdapter.updateMealPlans(mealPlans);
+                            }
+                        } else {
+                            loadMealPlansFromRoom();
+                        }
+                    });
+        }
     }
+
+
 
 
     private void loadMealPlansFromRoom() {

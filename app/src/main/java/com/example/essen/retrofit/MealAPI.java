@@ -26,6 +26,7 @@ public interface MealAPI {
     @GET("filter.php")
     Call<MealList> getMealsByCountry(@Query("a") String countryName);
 
+
     @GET("filter.php?")
     Call<MealList> getMealsByIngredient(@Query("i") String ingredient);
 

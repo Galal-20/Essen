@@ -2,12 +2,9 @@ package com.example.essen.Fragments.MealPlanFragment;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.net.Uri;
 import android.provider.CalendarContract;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -130,7 +126,54 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.MealPl
         notifyDataSetChanged();
     }
 
-    private void showDeleteDialog(MealPlanEntity mealPlan, int position) {
+
+    @Override
+    public int getItemCount() {
+        return mealPlans.size();
+    }
+
+    private void addMealPlanToCalendar(MealPlanEntity mealPlan) {
+        Intent intent = new Intent(Intent.ACTION_INSERT);
+        intent.setData(CalendarContract.Events.CONTENT_URI);
+        intent.putExtra(CalendarContract.Events.TITLE, mealPlan.getStrMeal());
+        intent.putExtra(CalendarContract.Events.DESCRIPTION, mealPlan.getStrInstructions());
+        intent.putExtra(CalendarContract.Events.EVENT_LOCATION, mealPlan.getStrArea()); // Set area as location
+        intent.putExtra(CalendarContract.Events.ALL_DAY, false);
+        intent.putExtra(CalendarContract.Events.HAS_ALARM, true);
+
+        intent.putExtra(CalendarContract.Reminders.MINUTES, 10);
+        intent.putExtra(CalendarContract.Reminders.METHOD, CalendarContract.Reminders.METHOD_ALERT);
+
+        if (intent.resolveActivity(context.getPackageManager()) != null) {
+            context.startActivity(intent);
+        } else {
+            Toast.makeText(context, "No Calendar app found!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    static class MealPlanViewHolder extends RecyclerView.ViewHolder {
+        TextView mealNameTextView;
+        TextView dateTextView;
+        TextView mealTypeTextView;
+        ImageView mealImageView;
+        ImageView deleteButton;
+        Button addToCalendarButton;
+
+        public MealPlanViewHolder(View itemView) {
+            super(itemView);
+            mealNameTextView = itemView.findViewById(R.id.text_meal_plan);
+            dateTextView = itemView.findViewById(R.id.text_date_picker);
+            mealTypeTextView = itemView.findViewById(R.id.dinner_lanuch_breakfast);
+            mealImageView = itemView.findViewById(R.id.image_meal_plan);
+            deleteButton = itemView.findViewById(R.id.deleteButton_plan);
+            addToCalendarButton = itemView.findViewById(R.id.addToCalendarButton);
+        }
+    }
+}
+
+
+/*private void showDeleteDialog(MealPlanEntity mealPlan, int position) {
         new AlertDialog.Builder(context)
                 .setTitle("Delete Meal Plan")
                 .setMessage("Are you sure you want to delete this meal plan?")
@@ -166,33 +209,10 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.MealPl
             Toast.makeText(context, "Error deleting meal plan: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
 
-    }
+    }*/
 
-    @Override
-    public int getItemCount() {
-        return mealPlans.size();
-    }
-
-    private void addMealPlanToCalendar(MealPlanEntity mealPlan) {
-        Intent intent = new Intent(Intent.ACTION_INSERT);
-        intent.setData(CalendarContract.Events.CONTENT_URI);
-        intent.putExtra(CalendarContract.Events.TITLE, mealPlan.getStrMeal());
-        intent.putExtra(CalendarContract.Events.DESCRIPTION, mealPlan.getStrInstructions());
-        intent.putExtra(CalendarContract.Events.EVENT_LOCATION, mealPlan.getStrArea()); // Set area as location
-        intent.putExtra(CalendarContract.Events.ALL_DAY, false);
-        intent.putExtra(CalendarContract.Events.HAS_ALARM, true);
-
-        intent.putExtra(CalendarContract.Reminders.MINUTES, 10);
-        intent.putExtra(CalendarContract.Reminders.METHOD, CalendarContract.Reminders.METHOD_ALERT);
-
-        if (intent.resolveActivity(context.getPackageManager()) != null) {
-            context.startActivity(intent);
-        } else {
-            Toast.makeText(context, "No Calendar app found!", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @SuppressLint("QueryPermissionsNeeded")
+/*
+* @SuppressLint("QueryPermissionsNeeded")
     private void findCalendarEvents(String mealName) {
         ContentResolver cr = context.getContentResolver();
         Uri uri = CalendarContract.Events.CONTENT_URI;
@@ -237,24 +257,4 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.MealPl
             Toast.makeText(context, "No events found for " + mealName, Toast.LENGTH_SHORT).show();
         }
     }
-
-    static class MealPlanViewHolder extends RecyclerView.ViewHolder {
-        TextView mealNameTextView;
-        TextView dateTextView;
-        TextView mealTypeTextView;
-        ImageView mealImageView;
-        ImageView deleteButton;
-        Button addToCalendarButton;
-
-        public MealPlanViewHolder(View itemView) {
-            super(itemView);
-            mealNameTextView = itemView.findViewById(R.id.text_meal_plan);
-            dateTextView = itemView.findViewById(R.id.text_date_picker);
-            mealTypeTextView = itemView.findViewById(R.id.dinner_lanuch_breakfast);
-            mealImageView = itemView.findViewById(R.id.image_meal_plan);
-            deleteButton = itemView.findViewById(R.id.deleteButton_plan);
-            addToCalendarButton = itemView.findViewById(R.id.addToCalendarButton);
-        }
-    }
-}
-
+* */

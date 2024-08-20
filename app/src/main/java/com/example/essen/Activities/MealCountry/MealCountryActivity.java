@@ -33,7 +33,7 @@ public class MealCountryActivity extends AppCompatActivity implements CountryCon
         titleText = findViewById(R.id.text_title_country);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        mealAdapter = new MealAdapter(this, new ArrayList<>());
+        mealAdapter = new MealAdapter(this, new ArrayList<>(), presenter);
         recyclerView.setAdapter(mealAdapter);
 
         presenter = new MealCountryPresenter(this);
@@ -74,4 +74,7 @@ public class MealCountryActivity extends AppCompatActivity implements CountryCon
     public void setTitle(String title) {
         titleText.setText(title);
     }
+
 }
+
+

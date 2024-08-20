@@ -13,9 +13,12 @@ public interface CountryContract {
         void showError(String message);
 
         void setTitle(String title);
+
+
     }
 
     interface Presenter {
         void loadMealsByCountry(String countryName);
+
     }
 }

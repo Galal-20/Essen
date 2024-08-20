@@ -29,9 +29,7 @@ public class CountriesFragment extends Fragment implements CountriesContract.Vie
         super.onCreate(savedInstanceState);
 
         MealAPI mealAPI = RetrofitInstance.getApi();
-
-        presenter = new CountriesPresenter(this, mealAPI);
-        presenter.getCountries();
+        presenter = new CountriesPresenter(this, mealAPI, getContext());
     }
 
     @Override
@@ -45,17 +43,24 @@ public class CountriesFragment extends Fragment implements CountriesContract.Vie
         super.onViewCreated(view, savedInstanceState);
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        presenter.getCountries();
     }
+
 
     @Override
     public void showCountries(List<MainMeal> countries) {
-        CountriesAdapter adapter = new CountriesAdapter(getContext(), countries);
-        recyclerView.setAdapter(adapter);
+        if (recyclerView != null) {
+            CountriesAdapter adapter = new CountriesAdapter(getContext(), countries);
+            recyclerView.setAdapter(adapter);
+        }
     }
-
 
     @Override
     public void showError(String message) {
-        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+        if (getContext() != null) {
+            Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+        } else {
+
+        }
     }
 }

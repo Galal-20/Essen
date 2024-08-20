@@ -77,7 +77,7 @@ public class MealPresenter implements MealView.presenter {
         });
     }
 
-    
+
     public void handleYoutubeLinkClick(String youtubeLink) {
         if (youtubeLink != null && !youtubeLink.isEmpty()) {
             view.openYoutubeLink(youtubeLink);
@@ -90,21 +90,3 @@ public class MealPresenter implements MealView.presenter {
 
 
 
-/*MainMeal meal = response.body().getMeals().get(0);
-                    view.showMealName(meal.getStrMeal());
-                    view.showMealImage(meal.getStrMealThumb());
-                    view.showMealCategory(meal.getStrCategory());
-                    view.showMealLocation(meal.getStrArea());
-                    view.showMealInstructions(meal.getStrInstructions());
-                    view.openYoutubeLink(meal.getStrYoutube());
-                    view.showMeaIngredients(
-                            meal.getStrIngredient1() + "\n" + meal.getStrIngredient2() +
-                                    meal.getStrIngredient3() + "\n" + meal.getStrIngredient4() +
-                                    meal.getStrIngredient5() + "\n" + meal.getStrIngredient6() +
-                                    meal.getStrIngredient7() + "\n" + meal.getStrIngredient8() +
-                                    meal.getStrIngredient9() + "\n" + meal.getStrIngredient10() +
-                                    meal.getStrIngredient11() + "\n" + meal.getStrIngredient12() +
-                                    meal.getStrIngredient13() + "\n" + meal.getStrIngredient14() +
-                                    meal.getStrIngredient15() + "\n"
-
-                    );*/
