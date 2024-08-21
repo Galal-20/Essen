@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/all_navigation"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.essen.Fragments.HomeFragment.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.example.essen.Fragments.SearchFragment.SearchFragment"
+        android:label="fragment_favorites"
+        tools:layout="@layout/fragment_search" />
+    <fragment
+        android:id="@+id/favoritesFragment"
+        android:name="com.example.essen.Fragments.FavoritFragment.FavoritFragment"
+        android:label="fragment_categories"
+        tools:layout="@layout/fragment_favorit" />
+
+    <!-- <fragment
+         android:id="@+id/profileFragment"
+         android:name="com.example.essen.Fragments.ProfileFragment.ProfileFragment"
+         android:label="fragment_categories"
+         tools:layout="@layout/fragment_favorit" />-->
+    <fragment
+        android:id="@+id/countriesFragment"
+        android:name="com.example.essen.Fragments.CountriesFragment.CountriesFragment"
+        android:label="fragment_countries"
+        tools:layout="@layout/fragment_countries" />
+    <fragment
+        android:id="@+id/mealPlanFragment"
+        android:name="com.example.essen.Fragments.MealPlanFragment.MealPlanFragment"
+        android:label="fragment_meal_plan"
+        tools:layout="@layout/fragment_meal_plan" />
+
+
+</navigation>

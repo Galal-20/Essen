@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Auth.Login_Screen">
+    tools:context=".Activities.AuthActivities.Login.Login_Screen">
 
     <ImageView
         android:layout_width="match_parent"
@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/text_reg"
-        android:fontFamily="@font/beth_ellen"
+        android:fontFamily="@font/poppins_bold"
         android:text="@string/welcome_back"
         android:textAlignment="center"
         android:textColor="@color/white"
@@ -29,7 +29,7 @@
         app:layout_constraintStart_toStartOf="@id/image_reg"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias=".25"
+        app:layout_constraintVertical_bias=".15"
         />
 
     <TextView
@@ -38,6 +38,7 @@
         android:text="@string/login"
         android:id="@+id/Register"
         android:textAlignment="center"
+        android:fontFamily="@font/poppins_extra_light_italic"
         android:textColor="@color/white"
         android:textSize="22sp"
         android:textStyle="bold"
@@ -55,6 +56,7 @@
         android:paddingStart="5dp"
         android:id="@+id/email"
         android:textColor="@color/white"
+        android:fontFamily="@font/poppins_extra_light_italic"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/Register"
@@ -73,6 +75,7 @@
         android:layout_height="50dp"
         android:background="@drawable/ed"
         android:paddingStart="5dp"
+        android:fontFamily="@font/poppins_extra_light_italic"
         android:id="@+id/password"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="@id/email"
@@ -82,6 +85,8 @@
         android:layout_marginEnd="20dp"
         android:layout_marginTop="40dp"
         android:drawableStart="@drawable/key"
+        android:drawableEnd="@drawable/hidden"
+        android:paddingEnd="5dp"
         android:hint="@string/password"
         android:textColorHint="@color/cardview_dark_background"
         android:drawablePadding="13dp"
@@ -95,6 +100,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/forgetPassword"
         android:text="@string/forget_password"
+        android:fontFamily="@font/poppins_bold"
         android:textColor="@color/teal_200"
         android:textStyle="bold"
         android:textSize="18sp"
@@ -109,6 +115,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text="@string/or"
+        android:fontFamily="@font/poppins_extra_light_italic"
         android:textColor="@color/white"
         android:textSize="22sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -122,7 +129,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Continue With"
+        android:text="@string/continue_with"
+        android:fontFamily="@font/poppins_extra_light_italic"
         android:textColor="@color/white"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="@+id/text_or"
@@ -133,27 +141,15 @@
         android:id="@+id/button_google"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="40dp"
         android:onClick="LoginGoogle"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintEnd_toStartOf="@id/button_facebook"
-        app:layout_constraintStart_toStartOf="@id/text_continue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_continue"
 
         app:srcCompat="@drawable/searcheng" />
 
-    <ImageView
-        android:id="@+id/button_facebook"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="60dp"
-        android:layout_marginStart="60dp"
-        android:onClick="LoginFacebook"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/button_google"
-        app:layout_constraintTop_toBottomOf="@+id/text_continue"
-        app:layout_constraintEnd_toEndOf="@id/text_continue"
-        app:srcCompat="@drawable/facebook" />
 
 
     <Button
@@ -164,6 +160,7 @@
         android:text="@string/login"
         android:padding="19dp"
         android:textAllCaps="false"
+        android:fontFamily="@font/poppins_bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -182,6 +179,7 @@
         android:id="@+id/Login_a"
         android:textAlignment="center"
         android:textColor="@color/white"
+        android:fontFamily="@font/poppins_extra_light_italic"
         android:textSize="18sp"
         android:textStyle="bold"
         android:layout_marginEnd="70dp"
@@ -202,6 +200,7 @@
         android:text="@string/register"
         android:textAlignment="center"
         android:textColor="@color/purple_700"
+        android:fontFamily="@font/poppins_bold"
         android:textSize="18sp"
         android:textStyle="bold"
         android:layout_marginStart="5dp"
@@ -210,5 +209,16 @@
         app:layout_constraintTop_toBottomOf="@id/button_log"
         app:layout_constraintVertical_bias="0.01"
         android:onClick="register_text"/>
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="@color/white"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

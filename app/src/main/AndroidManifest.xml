@@ -2,12 +2,35 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+
+
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission
+        android:name="android.permission.LOCATION_HARDWARE"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission
+        android:name="android.permission.CONTROL_LOCATION_UPDATES"
+        tools:ignore="ProtectedPermissions" />
 
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -15,10 +38,32 @@
         android:theme="@style/Theme.Essen"
         tools:targetApi="31">
         <activity
-            android:name=".Auth.ForgetPassword"
+            android:name=".Activities.Profile.ProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".Welcome_Screen"
+            android:name=".Activities.MealCountry.MealCountryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.MealCountryActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Essen" />
+        <activity
+            android:name=".Activities.CategoryMealActivity.CategoryMeal"
+            android:exported="false" />
+        <activity
+            android:name=".PopularActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.MealActivity.MealActivity"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|density"
+            android:exported="false"
+            android:resizeableActivity="true"
+            android:supportsPictureInPicture="true" />
+        <activity
+            android:name=".Activities.AuthActivities.ForgetPassword.ForgetPassword"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.Welcome.Welcome_Screen"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,14 +72,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Auth.SignUp_Screen"
+            android:name=".Activities.AuthActivities.SignUp.SignUp_Screen"
             android:exported="false" />
         <activity
-            android:name=".Auth.Login_Screen"
+            android:name=".Activities.AuthActivities.Login.Login_Screen"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
-            android:exported="true"></activity>
+            android:name=".Activities.MainActivity.MainActivity"
+            android:exported="false" />
 
         <meta-data
             android:name="preloaded_fonts"

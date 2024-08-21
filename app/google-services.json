@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "949273495788",
+    "project_id": "essen-5db65",
+    "storage_bucket": "essen-5db65.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:949273495788:android:ae8eb665a98eed7c3a3dc9",
+        "android_client_info": {
+          "package_name": "com.example.essen"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "949273495788-kp66fgl7tullnu1479331losrusmgt9p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTr6s9F9kxGP3QVsLWeeEtrEk2u2MdHqQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "949273495788-kp66fgl7tullnu1479331losrusmgt9p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Auth.SignUp_Screen">
+    tools:context=".Activities.AuthActivities.SignUp.SignUp_Screen">
 
 
     <ImageView
@@ -22,16 +22,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/text_reg"
-        android:fontFamily="@font/beth_ellen"
+        android:fontFamily="@font/poppins_bold"
         android:text="@string/happy"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="22sp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         app:layout_constraintEnd_toEndOf="@id/image_reg"
         app:layout_constraintStart_toStartOf="@id/image_reg"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias=".25"
+        app:layout_constraintVertical_bias=".2"
         />
 
     <TextView
@@ -40,6 +42,7 @@
         android:text="@string/register"
         android:id="@+id/Register"
         android:textAlignment="center"
+        android:fontFamily="@font/poppins_extra_light_italic"
         android:textColor="@color/white"
         android:textSize="22sp"
         android:textStyle="bold"
@@ -55,6 +58,7 @@
         android:layout_height="50dp"
         android:id="@+id/full_name"
         android:importantForAutofill="no"
+        android:fontFamily="@font/poppins_extra_light_italic"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -77,13 +81,14 @@
         android:id="@+id/Email"
         android:importantForAutofill="no"
         android:textColor="@color/white"
+        android:fontFamily="@font/poppins_extra_light_italic"
         android:paddingStart="5dp"
         app:layout_constraintStart_toStartOf="@id/full_name"
         app:layout_constraintEnd_toEndOf="@id/full_name"
         app:layout_constraintTop_toBottomOf="@id/full_name"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="30dp"
         android:drawableStart="@drawable/email"
         android:hint="@string/email"
         android:textColorHint="@color/cardview_dark_background"
@@ -92,7 +97,7 @@
         android:background="@drawable/ed"
         app:layout_constraintWidth_percent=".8"
         android:inputType="text"
-        tools:ignore="TextFields" />
+        tools:ignore="RtlSymmetry,TextFields" />
 
     <EditText
         android:layout_width="0dp"
@@ -101,14 +106,17 @@
         android:id="@+id/password_toggle"
         android:importantForAutofill="no"
         android:textColor="@color/white"
+        android:fontFamily="@font/poppins_extra_light_italic"
         app:layout_constraintStart_toStartOf="@id/Email"
         app:layout_constraintEnd_toEndOf="@id/Email"
         app:layout_constraintTop_toBottomOf="@id/Email"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="30dp"
         android:paddingStart="5dp"
+        android:drawableEnd="@drawable/hidden"
         android:drawableStart="@drawable/key"
+        android:paddingEnd="5dp"
         android:hint="@string/password"
         android:textColorHint="@color/cardview_dark_background"
         android:drawablePadding="13dp"
@@ -124,14 +132,17 @@
         android:id="@+id/password_Confirm"
         android:importantForAutofill="no"
         android:textColor="@color/white"
+        android:fontFamily="@font/poppins_extra_light_italic"
         app:layout_constraintStart_toStartOf="@id/password_toggle"
         app:layout_constraintEnd_toEndOf="@id/password_toggle"
         app:layout_constraintTop_toBottomOf="@id/password_toggle"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="30dp"
         android:drawableStart="@drawable/key"
+        android:drawableEnd="@drawable/hidden"
         android:paddingStart="5dp"
+        android:paddingEnd="5dp"
         android:hint="@string/confirm_password"
         android:textColorHint="@color/cardview_dark_background"
         android:drawablePadding="13dp"
@@ -148,6 +159,7 @@
         android:text="@string/register"
         android:padding="19dp"
         android:textAllCaps="false"
+        android:fontFamily="@font/poppins_bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -160,7 +172,7 @@
         />
 
     <TextView
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/already_have_an_account"
         android:id="@+id/Login_a"
@@ -169,8 +181,9 @@
         android:textSize="18sp"
         android:textStyle="bold"
         android:layout_margin="20dp"
-        app:layout_constraintEnd_toEndOf="@id/password_toggle"
-        app:layout_constraintStart_toStartOf="parent"
+        android:fontFamily="@font/poppins_extra_light_italic"
+        app:layout_constraintEnd_toStartOf="@id/Text_Login"
+        app:layout_constraintStart_toStartOf="@id/button_register"
         app:layout_constraintTop_toBottomOf="@id/button_register"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintVertical_bias=".01"
@@ -178,21 +191,35 @@
 
     <TextView
         android:id="@+id/Text_Login"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="8dp"
         android:text="@string/login"
         android:textAlignment="center"
+        android:fontFamily="@font/poppins_bold"
         android:textColor="@color/purple_700"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:paddingEnd="21dp"
+        android:paddingEnd="22dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/Login_a"
+        app:layout_constraintStart_toEndOf="@id/Login_a"
+        app:layout_constraintEnd_toEndOf="@id/button_register"
         app:layout_constraintTop_toBottomOf="@id/button_register"
         app:layout_constraintVertical_bias="0.01"
-        android:onClick="login_text"/>
+        android:onClick="login_text"
+        tools:ignore="RtlSymmetry" />
+
+    <ProgressBar
+        android:id="@+id/progress_cir"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="@color/white"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
