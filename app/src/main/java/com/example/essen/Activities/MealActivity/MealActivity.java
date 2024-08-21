@@ -255,6 +255,7 @@ public class MealActivity extends AppCompatActivity implements MealView {
         mealTypeGroup = bottomSheetView.findViewById(R.id.meal_type_group);
         saveButton = bottomSheetView.findViewById(R.id.btn_save);
 
+
         saveButton.setOnClickListener(v -> {
             day = datePicker.getDayOfMonth();
             month = datePicker.getMonth();
@@ -262,35 +263,39 @@ public class MealActivity extends AppCompatActivity implements MealView {
 
             int selectedMealId = mealTypeGroup.getCheckedRadioButtonId();
             RadioButton selectedMealType = bottomSheetView.findViewById(selectedMealId);
-            mealType = selectedMealType.getText().toString();
+            mealType = selectedMealType != null ? selectedMealType.getText().toString() : "";
 
             dayName = getDayName(year, month, day);
-            //String firestoreId = mealName + "_" + dayName;
-            new Thread(() -> {
-                int count = appDatabase.mealPlanDao().isMealInMealPlan(mealName);
-                if (count > 0) {
-                    runOnUiThread(() -> showMessage("Meal already in Meal Plan!"));
-                } else {
-                    try {
-                        MealPlanEntity mealPlanEntity = createMealPlanEntity();
-                        appDatabase.mealPlanDao().insert(mealPlanEntity);
 
-                        if (user != null) {
-                            firestore.collection("users").document(user.getUid())
-                                    .collection("mealPlans").document(mealName)
-                                    .set(mealPlanEntity)
-                                    .addOnSuccessListener(aVoid -> runOnUiThread(() -> showMessage("Plan saved successfully and to Firestore!")))
-                                    .addOnFailureListener(e -> runOnUiThread(() -> showMessage("Error saving to Firestore: " + e.getMessage())));
+            if (mealName == null || mealName.isEmpty() || mealType.isEmpty() || dayName == null || dayName.isEmpty()) {
+                Toast.makeText(MealActivity.this, "The data is empty", Toast.LENGTH_SHORT).show();
+            } else {
+                new Thread(() -> {
+                    int count = appDatabase.mealPlanDao().isMealInMealPlan(mealName);
+                    if (count > 0) {
+                        runOnUiThread(() -> showMessage("Meal already in Meal Plan!"));
+                    } else {
+                        try {
+                            MealPlanEntity mealPlanEntity = createMealPlanEntity();
+                            appDatabase.mealPlanDao().insert(mealPlanEntity);
+
+                            if (user != null) {
+                                firestore.collection("users").document(user.getUid())
+                                        .collection("mealPlans").document(mealName)
+                                        .set(mealPlanEntity)
+                                        .addOnSuccessListener(aVoid -> runOnUiThread(() -> showMessage("Plan saved successfully and to Firestore!")))
+                                        .addOnFailureListener(e -> runOnUiThread(() -> showMessage("Error saving to Firestore: " + e.getMessage())));
+                            }
+                        } catch (Exception e) {
+                            runOnUiThread(() -> Toast.makeText(MealActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
                         }
-                    } catch (Exception e) {
-                        runOnUiThread(() -> Toast.makeText(MealActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
                     }
-                }
-            }).start();
+                }).start();
 
-            bottomSheetDialog.dismiss();
-
+                bottomSheetDialog.dismiss();
+            }
         });
+
 
         bottomSheetDialog.setContentView(bottomSheetView);
         bottomSheetDialog.show();
@@ -523,17 +528,14 @@ public class MealActivity extends AppCompatActivity implements MealView {
                             }
                         });
 
-                        // Now save the meal in Firestore using a transaction to avoid conflicts
                         if (user != null) {
                             firestore.runTransaction(transaction -> {
                                         DocumentReference mealRef = firestore.collection("users").document(user.getUid())
                                                 .collection("favorites").document(mealName);
 
-                                        // Fetch the meal to check if it already exists in Firestore
                                         MealEntity existingMeal = transaction.get(mealRef).toObject(MealEntity.class);
 
                                         if (existingMeal == null) {
-                                            // If the meal doesn't exist, add it to Firestore
                                             transaction.set(mealRef, mealEntity);
                                         }
 
@@ -551,6 +553,46 @@ public class MealActivity extends AppCompatActivity implements MealView {
         }
     }
 }
+
+
+
+/* saveButton.setOnClickListener(v -> {
+            day = datePicker.getDayOfMonth();
+            month = datePicker.getMonth();
+            year = datePicker.getYear();
+
+            int selectedMealId = mealTypeGroup.getCheckedRadioButtonId();
+            RadioButton selectedMealType = bottomSheetView.findViewById(selectedMealId);
+            mealType = selectedMealType.getText().toString();
+
+            dayName = getDayName(year, month, day);
+            //String firestoreId = mealName + "_" + dayName;
+            new Thread(() -> {
+                int count = appDatabase.mealPlanDao().isMealInMealPlan(mealName);
+                if (count > 0) {
+                    runOnUiThread(() -> showMessage("Meal already in Meal Plan!"));
+                } else {
+                    try {
+                        MealPlanEntity mealPlanEntity = createMealPlanEntity();
+                        appDatabase.mealPlanDao().insert(mealPlanEntity);
+
+                        if (user != null) {
+                            firestore.collection("users").document(user.getUid())
+                                    .collection("mealPlans").document(mealName)
+                                    .set(mealPlanEntity)
+                                    .addOnSuccessListener(aVoid -> runOnUiThread(() -> showMessage("Plan saved successfully and to Firestore!")))
+                                    .addOnFailureListener(e -> runOnUiThread(() -> showMessage("Error saving to Firestore: " + e.getMessage())));
+                        }
+                    } catch (Exception e) {
+                        runOnUiThread(() -> Toast.makeText(MealActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
+                    }
+                }
+            }).start();
+
+            bottomSheetDialog.dismiss();
+
+        });*/
+
 
  /*youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
             @Override
