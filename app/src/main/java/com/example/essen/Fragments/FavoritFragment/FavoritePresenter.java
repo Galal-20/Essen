@@ -13,7 +13,6 @@ public class FavoritePresenter {
 
     public FavoritePresenter(Application application) {
         mealRepository = new MealRepository(application);
-
     }
 
     public LiveData<List<MealEntity>> getFavoriteMeals() {

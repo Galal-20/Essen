@@ -49,17 +49,28 @@
 
     </androidx.cardview.widget.CardView>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/food_recycler_view"
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_margin="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/card_country"
         app:layout_constraintStart_toStartOf="@id/card_country"
-        app:layout_constraintTop_toBottomOf="@id/card_country"
-        tools:listitem="@layout/meal_plan_item" />
+        app:layout_constraintTop_toBottomOf="@id/card_country">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/food_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/card_country"
+            app:layout_constraintStart_toStartOf="@id/card_country"
+            app:layout_constraintTop_toBottomOf="@id/card_country"
+            tools:listitem="@layout/meal_plan_item" />
+
+    </ScrollView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

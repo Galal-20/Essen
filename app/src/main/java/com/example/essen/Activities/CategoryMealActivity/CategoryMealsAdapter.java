@@ -78,21 +78,3 @@ public class CategoryMealsAdapter extends RecyclerView.Adapter<CategoryMealsAdap
     }
 }
 
-
-/* holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(holder.itemView.getContext(), MealActivity.class);
-            intent.putExtra("mealId", meal.getidMeal()); // Pass meal ID to MealActivity
-            holder.itemView.getContext().startActivity(intent);
-        });*/
-
-
-/*holder.itemView.setOnClickListener(v ->{
-            Intent intent = new Intent(context, MealActivity.class);
-            intent.putExtra(HomeFragment.NAME_MEAL, meal.getidMeal());
-            intent.putExtra(HomeFragment.THUMB_MEAL, meal.getStrMealThumb());
-            intent.putExtra(HomeFragment.Cat, meal.getStrCategory());
-            intent.putExtra(HomeFragment.LOCATION, meal.getStrArea());
-            intent.putExtra(HomeFragment.INSTRUCTIONS, meal.getStrInstructions());
-            intent.putExtra(HomeFragment.YOUTUBE,meal.getStrYoutube());
-            context.startActivity(intent);
-        });*/

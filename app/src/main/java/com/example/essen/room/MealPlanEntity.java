@@ -10,7 +10,6 @@ public class MealPlanEntity {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
-    //private String firestoreId;
     private String strMeal;
     private String strMealThumb;
     private String strCategory;
@@ -26,13 +25,6 @@ public class MealPlanEntity {
 
 
 
-   /* public String getFirestoreId() {
-        return firestoreId;
-    }
-
-    public void setFirestoreId(String firestoreId) {
-        this.firestoreId = firestoreId;
-    }*/
 
     public String getMonthName() {
         return new DateFormatSymbols().getMonths()[month];

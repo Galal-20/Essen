@@ -42,7 +42,7 @@ public class SignUp_Screen extends AppCompatActivity implements AuthViewSiginUp 
     private ProgressBar progressBar;
     private boolean isPasswordVisible = false;
     private boolean isConfirmPasswordVisible = false;
-    private boolean isGuest; // Flag to check if the user is a guest
+    private boolean isGuest;
 
 
     @Override
@@ -102,19 +102,6 @@ public class SignUp_Screen extends AppCompatActivity implements AuthViewSiginUp 
         regButton = findViewById(R.id.button_register);
     }
 
-    /*public void register_button(View view) {
-        String fullName = FullName.getText().toString();
-        String email = emailInput.getText().toString();
-        String password = passwordInput.getText().toString();
-        String confirmP = confirmPassword.getText().toString();
-        if (fullName.isEmpty() || email.isEmpty() || password.isEmpty() || confirmP.isEmpty()) {
-            Snackbar.make(view, "Please fill all fields", Snackbar.LENGTH_SHORT).show();
-        } else {
-            progressBar.setVisibility(View.VISIBLE);
-            presenter.signUp(fullName, email, password);
-        }
-
-    }*/
 
     public void register_button(View view) {
         String fullName = FullName.getText().toString();

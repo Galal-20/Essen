@@ -28,7 +28,6 @@ public class CategoryPresenter implements CategoryContract.presenter {
             @Override
             public void onFailure(Call<CatygoryByMeal> call, Throwable t) {
                 view.showError("Data not response");
-
             }
         });
     }

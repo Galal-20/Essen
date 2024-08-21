@@ -39,7 +39,7 @@ public class ProfileActivity extends AppCompatActivity {
     private ImageView imageBack;
     private TextView userTitle;
     private TextView userEmail;
-    private FirebaseAuth firebaseAuth; // Add this line
+    private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,11 +54,9 @@ public class ProfileActivity extends AppCompatActivity {
         userTitle = findViewById(R.id.UserNameValue);
         userEmail = findViewById(R.id.Email_profile_value);
 
-        // Initialize Firebase Auth
         firebaseAuth = FirebaseAuth.getInstance();
-        authService = new AuthService(this); // Initialize AuthService with FirebaseAuth
+        authService = new AuthService(this);
 
-        // Retrieve user information
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if (currentUser != null) {
             userTitle.setText(currentUser.getDisplayName());

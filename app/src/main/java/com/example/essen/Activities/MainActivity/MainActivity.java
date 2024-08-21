@@ -2,7 +2,6 @@ package com.example.essen.Activities.MainActivity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -49,7 +48,6 @@ public class MainActivity extends AppCompatActivity implements NetworkChangeRece
     private NetworkChangeReceiver networkChangeReceiver;
     private boolean wasDisconnected = false;
     private boolean isGuest;
-    private boolean isLoggedIn;
 
 
     private ActivityResultLauncher<String> resultLauncher = registerForActivityResult(
@@ -184,35 +182,6 @@ public class MainActivity extends AppCompatActivity implements NetworkChangeRece
     }
 
 
-
-
-    /*
-    * else if (itemId == R.id.profileMenu) {
-                if (isGuest) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle("Please login to show profile.");
-                    builder.setMessage("Are you want to join with us?");
-
-                    builder.setPositiveButton("Go to login", (dialog, which) -> {
-                        startActivity(new Intent(getApplicationContext(), Login_Screen.class));
-                        finish();
-                        dialog.dismiss();
-                    });
-
-                    builder.setNegativeButton("Still Guest", (dialog, which) -> {
-                        dialog.dismiss();
-                        startActivity(new Intent(this, MainActivity.class));
-                        finish();
-                    });
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
-
-                } else {
-                    replaceFragment(new ProfileFragment());
-                }
-
-            }*/
-
     private void replaceFragment(Fragment fragment) {
         Log.d(TAG, "Replacing fragment with: " + fragment.getClass().getSimpleName());
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -291,25 +260,5 @@ public class MainActivity extends AppCompatActivity implements NetworkChangeRece
         }
     }
 
-    private void showAlertDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Confirm Action");
-        builder.setMessage("Are you sure you want to proceed?");
-
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-    }
 }
 

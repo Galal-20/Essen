@@ -45,8 +45,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
         Glide.with(holder.itemView.getContext())
                 .load(category.getStrCategoryThumb())
-                //.placeholder(R.drawable.berger)
-                //.error(R.drawable.berger)
                 .into(holder.imageC);
 
         holder.tvC.setText(category.getStrCategory());

@@ -39,7 +39,6 @@ public class HomePresenter implements HomeContract.Presenter {
             view.showRandomMeal(cachedMeal);
         }
 
-        // Proceed with network request
         RetrofitInstance.getApi().getRandom().enqueue(new Callback<MealList>() {
             @Override
             public void onResponse(Call<MealList> call, Response<MealList> response) {
@@ -136,61 +135,3 @@ public class HomePresenter implements HomeContract.Presenter {
 }
 
 
-    /*public void getPopularMeals() {
-        RetrofitInstance.getApi().getRandom().enqueue(new Callback<MealList>() {
-            @Override
-            public void onResponse(Call<MealList> call, Response<MealList> response) {
-                if (response.body() != null && !response.body().getMeals().isEmpty()){
-                    view.showPopularMeals(response.body().getMeals());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<MealList> call, Throwable t) {
-                view.showError("Check network");
-            }
-        });
-    }*/
-   /* public void getPopularMeals() {
-        ExecutorService executorService = Executors.newFixedThreadPool(5);
-        List<Callable<Meal>> callables = new ArrayList<>();
-
-        int mealCount = 30;
-        for (int i = 0; i < mealCount; i++) {
-            callables.add(() -> {
-                try {
-                    Response<MealList> response = RetrofitInstance.getApi().getRandom().execute();
-                    if (response.body() != null && !response.body().getMeals().isEmpty()) {
-                        return response.body().getMeals().get(0);
-                    } else {
-                        throw new RuntimeException("No meal found");
-                    }
-                } catch (Exception e) {
-                    throw new RuntimeException("Failed to fetch meal", e);
-                }
-            });
-        }
-
-        try {
-
-            List<Future<Meal>> futures = executorService.invokeAll(callables);
-
-
-            List<Meal> mealList = new ArrayList<>();
-            for (Future<Meal> future : futures) {
-                try {
-                    mealList.add(future.get(1, TimeUnit.SECONDS));
-                } catch (TimeoutException e) {
-                    Log.e("HomePresenter", "Timeout while fetching meal", e);
-                }
-            }
-
-
-            view.showPopularMeals(mealList);
-
-        } catch (InterruptedException | ExecutionException e) {
-            view.showError("Error fetching meals: " + e.getMessage());
-        } finally {
-            executorService.shutdown();
-        }
-    }*/

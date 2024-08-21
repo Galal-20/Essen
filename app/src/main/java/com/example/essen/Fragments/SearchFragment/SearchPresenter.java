@@ -25,29 +25,6 @@ public class SearchPresenter implements SearchContract.Presenter {
         this.mealAPI = RetrofitInstance.getApi();
     }
 
-   /* @Override
-    public void searchMeals(String query) {
-        mealAPI.getSearchMeal(query).enqueue(new Callback<MealList>() {
-            @Override
-            public void onResponse(Call<MealList> call, Response<MealList> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    List<MainMeal> meals = response.body().getMeals();
-                    if (meals != null && !meals.isEmpty()) {
-                        view.showMeals(meals);
-                    } else {
-                        view.showError("No results found.");
-                    }
-                } else {
-                    view.showError("Error fetching data.");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<MealList> call, Throwable t) {
-                view.showError(t.getMessage());
-            }
-        });
-    }*/
 
     @Override
     public void searchMeals(String query) {
@@ -158,30 +135,3 @@ public class SearchPresenter implements SearchContract.Presenter {
 
 }
 
-
-
-/* if (response.isSuccessful() && response.body() != null) {
-                    // Extract the list of meals from the MealList object
-                    List<MainMeal> meals = response.body().getMeals();
-                    view.showMeals(meals);
-                } else {
-                    view.showError("No results found.");
-                }*/
- /*@Override
-    public void searchMeals(String query) {
-        mealAPI.getSearchMeal(query).enqueue(new Callback<MealList>() {
-            @Override
-            public void onResponse(Call<MealList> call, Response<MealList> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    view.showMeals(response.body().getMeals());
-                } else {
-                    view.showError("No results found.");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<MealList> call, Throwable t) {
-                view.showError(t.getMessage());
-            }
-        });
-    }*/

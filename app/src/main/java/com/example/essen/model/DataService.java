@@ -22,18 +22,6 @@ public class DataService {
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
     }
 
-   /* public void getUserData(FirebaseUser user, final GetDataCallback callback) {
-        db.collection("users").document(user.getUid())
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        callback.onSuccess(documentSnapshot.getData());
-                    } else {
-                        callback.onFailure("No data found");
-                    }
-                })
-                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
-    }*/
 
     public interface SaveCallback {
         void onSuccess();
@@ -41,9 +29,5 @@ public class DataService {
         void onFailure(String message);
     }
 
-   /* public interface GetDataCallback {
-        void onSuccess(Map<String, Object> data);
-        void onFailure(String message);
-    }*/
 }
 

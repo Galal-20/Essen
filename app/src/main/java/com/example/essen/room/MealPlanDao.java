@@ -26,10 +26,3 @@ public interface MealPlanDao {
 
 }
 
-
-/*
-@Query("SELECT * FROM meal_plans")
-List<MealPlanEntity> getAllMealPlans();*/
-/*@Query("SELECT * FROM meal_plans WHERE firestoreId = :firestoreId LIMIT 1")
-    MealPlanEntity getMealPlanByFirestoreId(String firestoreId);*/ /* @Query("DELETE FROM meal_plans")
-    void clearAllMealPlans();*/

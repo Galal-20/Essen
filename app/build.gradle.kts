@@ -13,6 +13,7 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+        multiDexEnabled = true
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -27,8 +28,10 @@ android {
         }
     }
     compileOptions {
+
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+
     }
     buildFeatures {
         viewBinding = true
@@ -75,5 +78,6 @@ dependencies {
 
     implementation("com.github.mhdmoh:swipe-button:1.0.3")
     implementation("com.airbnb.android:lottie:6.1.0")
+    implementation("com.kizitonwose.calendar:view:2.5.4")
 
 }

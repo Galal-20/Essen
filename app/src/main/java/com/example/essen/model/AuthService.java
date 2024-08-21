@@ -58,37 +58,6 @@ public class AuthService {
     }
 
 
-  /* public void signUp(String fullName, String email, String password, final AuthCallback callback) {
-       firebaseAuth.createUserWithEmailAndPassword(email, password)
-               .addOnCompleteListener(task -> {
-                   if (task.isSuccessful()) {
-                       FirebaseUser user = firebaseAuth.getCurrentUser();
-                       if (user != null) {
-                           // Save user data to Firestore
-                           DataService dataService = new DataService(user.getUid());
-                           Map<String, Object> userData = new HashMap<>();
-                           userData.put("fullName", fullName);
-                           userData.put("email", email);
-
-                           dataService.saveUserData(user, userData, new DataService.SaveCallback() {
-                               @Override
-                               public void onSuccess() {
-                                   callback.onSuccess(user);
-                               }
-
-                               @Override
-                               public void onFailure(String message) {
-                                   callback.onFailure(message);
-                               }
-                           });
-                       } else {
-                           callback.onFailure("User creation failed");
-                       }
-                   } else {
-                       callback.onFailure(task.getException().getMessage());
-                   }
-               });
-   }*/
 
     public void signUp(String fullName, String email, String password, final AuthCallback callback) {
         firebaseAuth.createUserWithEmailAndPassword(email, password)
@@ -213,14 +182,3 @@ public class AuthService {
 }
 
 
- /* public void signUp(String fullName, String email, String password, final AuthCallback callback) {
-        firebaseAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        FirebaseUser user = firebaseAuth.getCurrentUser();
-                        callback.onSuccess(user);
-                    } else {
-                        callback.onFailure(task.getException().getMessage());
-                    }
-                });
-    }*/

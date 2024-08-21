@@ -29,7 +29,6 @@ import com.example.essen.Activities.MainActivity.MainActivity;
 import com.example.essen.R;
 import com.example.essen.Util.NetworkChangeReceiver;
 import com.example.essen.Util.SecurePreferences;
-import com.example.essen.room.AppDatabase;
 import com.google.android.material.snackbar.Snackbar;
 
 public class Login_Screen extends AppCompatActivity implements AuthViewLogin {
@@ -48,9 +47,8 @@ public class Login_Screen extends AppCompatActivity implements AuthViewLogin {
     private static final String PREFS_NAME = "MyPrefsFile";
     private static final String SERURE_KEY = "password_key_09@0";
     private static final int RC_SIGN_IN = 9001;
-    private ProgressBar progressBar; // Declare ProgressBar
+    private ProgressBar progressBar;
     private boolean isPasswordVisible = false;
-    private AppDatabase appDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,10 +60,7 @@ public class Login_Screen extends AppCompatActivity implements AuthViewLogin {
         presenter = new LoginPresenter(this, this);
         HidePassword();
         SharedPreferences();
-
-
     }
-
 
     private void applyFadeInAnimation() {
         Animation fadeIn = new AlphaAnimation(0, 1);
@@ -152,7 +147,6 @@ public class Login_Screen extends AppCompatActivity implements AuthViewLogin {
     public void showLoginSuccess(String message) {
         progressBar.setVisibility(View.GONE);
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-
         SecurePreferences securePreferences = new SecurePreferences(this, PREFS_NAME, SERURE_KEY, true);
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();

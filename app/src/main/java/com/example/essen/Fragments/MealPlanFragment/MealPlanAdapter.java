@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -70,31 +71,49 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.MealPl
         holder.mealTypeTextView.setText(mealPlan.getMealType());
 
         holder.deleteButton.setOnClickListener(v -> {
-            Completable.fromAction(() -> appDatabase.mealPlanDao().delete(mealPlan))
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(() -> {
-                        mealPlans.remove(position);
-                        notifyItemRemoved(position);
-                        Toast.makeText(context, "Meal plan deleted from Room", Toast.LENGTH_SHORT).show();
-                        notifyItemRangeChanged(position, mealPlans.size());
-                        if (currentUser != null) {
-                            FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-                            firestore.collection("users").document(currentUser.getUid())
-                                    .collection("mealPlans").document(mealPlan.getStrMeal())
-                                    .delete()
-                                    .addOnSuccessListener(aVoid -> Toast.makeText(context, "Meal plan deleted from Firestore", Toast.LENGTH_SHORT).show())
-                                    .addOnFailureListener(e -> {
-                                        Log.e("DeleteError", "Error deleting meal plan from Firestore: " + e.getMessage());
-                                        Toast.makeText(context, "Error deleting meal plan from Firestore", Toast.LENGTH_SHORT).show();
-                                    });
-                        } else {
-                            Toast.makeText(context, "User not logged in", Toast.LENGTH_SHORT).show();
-                        }
-                    }, throwable -> {
-                        Log.e("DeleteError", "Error deleting meal plan: " + throwable.getMessage());
-                        Toast.makeText(context, "Error deleting meal plan: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
-                    });
+            View dialogView = LayoutInflater.from(context).inflate(R.layout.custom_dialog, null);
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setView(dialogView);
+            Button yesButton = dialogView.findViewById(R.id.cancel_button);
+            Button cancelButton = dialogView.findViewById(R.id.cancel_Ok);
+            AlertDialog dialog = builder.create();
+            yesButton.setOnClickListener(view -> {
+                Completable.fromAction(() -> appDatabase.mealPlanDao().delete(mealPlan))
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(() -> {
+                            mealPlans.remove(position);
+                            notifyItemRemoved(position);
+                            Toast.makeText(context, "Meal plan deleted from Room", Toast.LENGTH_SHORT).show();
+                            notifyItemRangeChanged(position, mealPlans.size());
+                            if (currentUser != null) {
+                                FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+                                firestore.collection("users").document(currentUser.getUid())
+                                        .collection("mealPlans").document(mealPlan.getStrMeal())
+                                        .delete()
+                                        .addOnSuccessListener(aVoid -> Toast.makeText(context, "Meal plan deleted from Firestore", Toast.LENGTH_SHORT).show())
+                                        .addOnFailureListener(e -> {
+                                            Log.e("DeleteError", "Error deleting meal plan from Firestore: " + e.getMessage());
+                                            Toast.makeText(context, "Error deleting meal plan from Firestore", Toast.LENGTH_SHORT).show();
+                                        });
+                            } else {
+                                Toast.makeText(context, "User not logged in", Toast.LENGTH_SHORT).show();
+                            }
+                        }, throwable -> {
+                            Log.e("DeleteError", "Error deleting meal plan: " + throwable.getMessage());
+                            Toast.makeText(context, "Error deleting meal plan: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        });
+                dialog.dismiss();
+            });
+
+            cancelButton.setOnClickListener(view -> {
+                dialog.dismiss();
+                Toast.makeText(context, "Meal plan Not deleted from Firestore or Room", Toast.LENGTH_SHORT).show();
+            });
+
+            dialog.show();
+
+
         });
 
         holder.itemView.setOnClickListener(v -> {
@@ -137,7 +156,7 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.MealPl
         intent.setData(CalendarContract.Events.CONTENT_URI);
         intent.putExtra(CalendarContract.Events.TITLE, mealPlan.getStrMeal());
         intent.putExtra(CalendarContract.Events.DESCRIPTION, mealPlan.getStrInstructions());
-        intent.putExtra(CalendarContract.Events.EVENT_LOCATION, mealPlan.getStrArea()); // Set area as location
+        intent.putExtra(CalendarContract.Events.EVENT_LOCATION, mealPlan.getStrArea());
         intent.putExtra(CalendarContract.Events.ALL_DAY, false);
         intent.putExtra(CalendarContract.Events.HAS_ALARM, true);
 
@@ -172,89 +191,3 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.MealPl
     }
 }
 
-
-/*private void showDeleteDialog(MealPlanEntity mealPlan, int position) {
-        new AlertDialog.Builder(context)
-                .setTitle("Delete Meal Plan")
-                .setMessage("Are you sure you want to delete this meal plan?")
-                .setPositiveButton("Yes", (dialog, which) -> deleteMealPlan(mealPlan, position))
-                .setNegativeButton("No", null)
-                .show();
-    }
-
-    private void deleteMealPlan(MealPlanEntity mealPlan, int position) {
-        try {
-            new Thread(() -> {
-                Log.d("DeleteDebug", "Attempting to delete from Room database.");
-                appDatabase.mealPlanDao().delete(mealPlan);
-                ((Activity) context).runOnUiThread(() -> {
-                    mealPlans.remove(position);
-                    notifyItemRemoved(position);
-                    notifyItemRangeChanged(position, mealPlans.size());
-                    Log.d("DeleteDebug", "Meal plan removed from UI.");
-                });
-            }).start();
-            if (currentUser != null) {
-                FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-                firestore.collection("users").document(currentUser.getUid())
-                        .collection("mealPlans").document(mealPlan.getStrMeal())
-                        .delete()
-                        .addOnSuccessListener(aVoid -> Toast.makeText(context, "Meal plan deleted from Firestore", Toast.LENGTH_SHORT).show())
-                        .addOnFailureListener(e -> Toast.makeText(context, "Error deleting meal plan", Toast.LENGTH_SHORT).show());
-            } else {
-                Toast.makeText(context, "User not logged in", Toast.LENGTH_SHORT).show();
-            }
-        } catch (Exception e) {
-            Log.e("DeleteError", "Error deleting meal plan from Room: " + e.getMessage());
-            Toast.makeText(context, "Error deleting meal plan: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-
-    }*/
-
-/*
-* @SuppressLint("QueryPermissionsNeeded")
-    private void findCalendarEvents(String mealName) {
-        ContentResolver cr = context.getContentResolver();
-        Uri uri = CalendarContract.Events.CONTENT_URI;
-
-        String[] projection = new String[]{
-                CalendarContract.Events._ID,
-                CalendarContract.Events.TITLE,
-                CalendarContract.Events.DTSTART,
-                CalendarContract.Events.DTEND,
-                CalendarContract.Events.EVENT_LOCATION,
-                CalendarContract.Events.DESCRIPTION
-        };
-
-        String selection = "(" + CalendarContract.Events.TITLE + " LIKE ?)";
-        String[] selectionArgs = new String[]{"%" + mealName + "%"};
-
-        Cursor cursor = cr.query(uri, projection, selection, selectionArgs, null);
-
-        if (cursor != null && cursor.moveToFirst()) {
-            StringBuilder events = new StringBuilder();
-            do {
-                long eventID = cursor.getLong(0);
-                String title = cursor.getString(1);
-                long startTime = cursor.getLong(2);
-                long endTime = cursor.getLong(3);
-                String location = cursor.getString(4);
-                String description = cursor.getString(5);
-
-                events.append("Event ID: ").append(eventID)
-                        .append("\nTitle: ").append(title)
-                        .append("\nStart Time: ").append(startTime)
-                        .append("\nEnd Time: ").append(endTime)
-                        .append("\nLocation: ").append(location)
-                        .append("\nDescription: ").append(description)
-                        .append("\n\n");
-
-            } while (cursor.moveToNext());
-            cursor.close();
-
-            Toast.makeText(context, events.toString(), Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(context, "No events found for " + mealName, Toast.LENGTH_SHORT).show();
-        }
-    }
-* */

@@ -11,7 +11,6 @@ public interface CategoryContract {
 
         void showError(String message);
 
-        void showSuccess(String message);
     }
 
     interface presenter {

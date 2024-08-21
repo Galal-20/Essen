@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,6 +32,7 @@ public class SearchFragment extends Fragment implements SearchContract.View {
     Button searchCountryButton;
     Button searchIngredientButton;
     Button searchCategoryButton;
+    private Button lastClickedButton = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,12 +78,15 @@ public class SearchFragment extends Fragment implements SearchContract.View {
                 searchRunnable = () -> {
                     String query = newText.trim();
                     if (query.isEmpty()) {
+                        searchCountryButton.setBackgroundColor(getResources().getColor(R.color.white));
+                        searchIngredientButton.setBackgroundColor(getResources().getColor(R.color.white));
+                        searchCategoryButton.setBackgroundColor(getResources().getColor(R.color.white));
                         clearResults();
                     } else {
                         presenter.searchMeals(query);
                     }
                 };
-                handler.postDelayed(searchRunnable, 500);
+                handler.postDelayed(searchRunnable, 100);
                 return false;
             }
         });
@@ -90,8 +95,15 @@ public class SearchFragment extends Fragment implements SearchContract.View {
             String query = searchView.getQuery().toString().trim();
             if (!query.isEmpty()) {
                 Log.d("SearchButtonClick", "Button clicked: " + v.getId() + ", Query: " + query);
-                resetButtonBackgrounds();
-                v.setBackgroundColor(getResources().getColor(R.color.selected_button_color));
+
+                if (lastClickedButton != null && lastClickedButton != v) {
+                    lastClickedButton.setBackgroundColor(getResources().getColor(R.color.white)); //
+                }
+
+                v.setBackgroundColor(getResources().getColor(R.color.green));
+
+                lastClickedButton = (Button) v;
+
 
                 if (v == searchCountryButton) {
                     Log.d("SearchButtonClick", "Searching by country");
@@ -103,6 +115,8 @@ public class SearchFragment extends Fragment implements SearchContract.View {
                     Log.d("SearchButtonClick", "Searching by category");
                     presenter.searchMealsByCategory(query);
                 }
+            } else {
+                Toast.makeText(getContext(), "Please enter a search query", Toast.LENGTH_SHORT).show();
             }
         };
         searchCountryButton.setOnClickListener(searchButtonClickListener);
@@ -113,11 +127,6 @@ public class SearchFragment extends Fragment implements SearchContract.View {
     }
 
 
-    private void resetButtonBackgrounds() {
-        searchCountryButton.setBackgroundResource(R.drawable.button_border);
-        searchIngredientButton.setBackgroundResource(R.drawable.button_border);
-        searchCategoryButton.setBackgroundResource(R.drawable.button_border);
-    }
 
     private void clearResults() {
         adapter.setMealList(new ArrayList<>());
@@ -137,83 +146,3 @@ public class SearchFragment extends Fragment implements SearchContract.View {
         clearResults();
     }
 }
-
-
- /* searchCountryButton.setOnClickListener(v -> presenter.searchMealsByCountry(searchView.getQuery().toString()));
-        searchIngredientButton.setOnClickListener(v -> presenter.searchMealsByIngredient(searchView.getQuery().toString()));
-        searchCategoryButton.setOnClickListener(v -> presenter.searchMealsByCategory(searchView.getQuery().toString()));*/
-
-/*searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                presenter.searchMeals(query);
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                presenter.searchMeals(newText);
-                return false;
-            }
-        });*/
-
-/* searchCountryButton.setOnClickListener(v -> {
-            String query = searchView.getQuery().toString();
-            if (!query.isEmpty()) {
-                presenter.searchMealsByCountry(query);
-            }
-        });
-
-        searchIngredientButton.setOnClickListener(v -> {
-            String query = searchView.getQuery().toString();
-            if (!query.isEmpty()) {
-                presenter.searchMealsByIngredient(query);
-            }
-        });
-
-        searchCategoryButton.setOnClickListener(v -> {
-            String query = searchView.getQuery().toString();
-            if (!query.isEmpty()) {
-                presenter.searchMealsByCategory(query);
-            }
-        });*/
-
-/* searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                if (!query.isEmpty()) {
-                    presenter.searchMeals(query);
-                }
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                if (newText.isEmpty()) {
-                    clearResults();
-                } else {
-                    presenter.searchMeals(newText);
-                }
-                return false;
-            }
-        });*/
- /*searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                query = query.trim();
-                if (!query.isEmpty()) {
-                    presenter.searchMeals(query);
-                }
-                return false;
-            }
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                newText = newText.trim();
-                if (newText.isEmpty()) {
-                    clearResults();
-                } else {
-                    presenter.searchMeals(newText);
-                }
-                return false;
-            }
-        });*/

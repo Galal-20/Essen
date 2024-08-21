@@ -34,7 +34,7 @@ public class CategoryMeal extends AppCompatActivity implements CategoryContract.
 
         categoryMealsRecyclerView = findViewById(R.id.rvMeals);
         text_title = findViewById(R.id.text_title);
-        categoryMealsRecyclerView.setLayoutManager(new GridLayoutManager(this, 1)); // 2 columns
+        categoryMealsRecyclerView.setLayoutManager(new GridLayoutManager(this, 1));
 
         categoryMealsAdapter = new CategoryMealsAdapter(this);
         categoryMealsRecyclerView.setAdapter(categoryMealsAdapter);
@@ -55,16 +55,10 @@ public class CategoryMeal extends AppCompatActivity implements CategoryContract.
         categoryMealsAdapter.setMealsList(mealList);
         text_title.setText(name_of_title);
 
-
     }
 
     @Override
     public void showError(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void showSuccess(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 

@@ -56,7 +56,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     private MainMeal randomMeal;
     private ProgressBar progressBar;
     private ImageView settings;
-    private boolean isGuest; // Flag to check if the user is a guest
+    private boolean isGuest;
 
 
 
@@ -161,11 +161,6 @@ public class HomeFragment extends Fragment implements HomeContract.View {
                 .into(imageView);
         swipeRefreshLayout.setRefreshing(false);
         showLoading(false);
-       /* if (isAdded() && getView() != null && imageView != null) {
-
-        } else {
-            //showError("Cannot load image.");
-        }*/
     }
 
     @Override
@@ -222,7 +217,6 @@ public class HomeFragment extends Fragment implements HomeContract.View {
 
             builder.setNegativeButton("Still Guest", (dialog, which) -> {
                 dialog.dismiss();
-                //startActivity(new Intent(getContext(), MainActivity.class));
 
             });
             AlertDialog alertDialog = builder.create();

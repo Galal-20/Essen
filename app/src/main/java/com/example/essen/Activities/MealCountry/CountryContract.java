@@ -1,4 +1,3 @@
-// CountryContract.java
 package com.example.essen.Activities.MealCountry;
 
 import com.example.essen.pojo.MainMeal;
