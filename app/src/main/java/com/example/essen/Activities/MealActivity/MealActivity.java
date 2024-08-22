@@ -126,16 +126,16 @@ public class MealActivity extends AppCompatActivity implements MealView {
         favoriteButton.setOnClickListener(v -> {
             if (isGuest) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("Please login to save your mael.");
-                builder.setMessage("Are you want to join with us?");
+                builder.setTitle(R.string.Please_login_to_save_your_mael);
+                builder.setMessage(R.string.Are_you_want_to_join_with_us);
 
-                builder.setPositiveButton("Go to login", (dialog, which) -> {
+                builder.setPositiveButton(R.string.Go_to_login, (dialog, which) -> {
                     startActivity(new Intent(getApplicationContext(), Login_Screen.class));
                     finish();
                     dialog.dismiss();
                 });
 
-                builder.setNegativeButton("Still Guest", (dialog, which) -> {
+                builder.setNegativeButton(R.string.Still_Guest, (dialog, which) -> {
                     dialog.dismiss();
                 });
                 AlertDialog alertDialog = builder.create();
@@ -156,16 +156,16 @@ public class MealActivity extends AppCompatActivity implements MealView {
         makePlanButton.setOnClickListener(v -> {
             if (isGuest) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("Please login to Make plan.");
-                builder.setMessage("Are you want to join with us?");
+                builder.setTitle(R.string.Please_login_to_Make_plan);
+                builder.setMessage(R.string.Are_you_want_to_join_with_us);
 
-                builder.setPositiveButton("Go to login", (dialog, which) -> {
+                builder.setPositiveButton(R.string.Go_to_login, (dialog, which) -> {
                     startActivity(new Intent(getApplicationContext(), Login_Screen.class));
                     finish();
                     dialog.dismiss();
                 });
 
-                builder.setNegativeButton("Still Guest", (dialog, which) -> {
+                builder.setNegativeButton(R.string.Still_Guest, (dialog, which) -> {
                     dialog.dismiss();
                 });
                 AlertDialog alertDialog = builder.create();

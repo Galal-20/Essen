@@ -63,6 +63,29 @@
     <string name="food_name">اسم الوجبه</string>
     <string name="Please_fill_all_fields">من فضلك اكمل البيانات</string>
     <string name="Reset_link_sent_to_email"> لينك اعاده التعيين تم ارساله الي الايميل الخاص بك</string>
+    <string name="contact_us_info">البريد الإلكتروني: samuel.nelson@altostrat.com\nالهاتف: +201110008899</string>
+    <string name="_2024_2025_essen">إيسن 2024-2025.</string>
+    <string name="settings">الإعدادات</string>
+    <string name="contact_us_app_info">اتصل بنا، معلومات التطبيق</string>
+    <string name="app_language">لغة التطبيق</string>
+    <string name="english">الإنجليزية</string>
+    <string name="arabic">العربية</string>
+    <string name="contact_us">اتصل بنا</string>
+    <string name="app_info">معلومات التطبيق</string>
+    <string name="version">الإصدار 1.1.0</string>
+    <string name="selecet_your_language">اختر لغتك</string>
+    <string name="help">مساعدة</string>
+    <string name="Still_Guest">ما زلت ضيفًا</string>
+    <string name="Go_to_login">اذهب إلى تسجيل الدخول</string>
+    <string name="Are_you_want_to_join_with_us">هل تريد الانضمام إلينا؟</string>
+    <string name="Please_login_to_access_Setting">يرجى تسجيل الدخول للوصول إلى الإعدادات.</string>
+    <string name="find_your_favorites">اعثر على المفضلات لديك</string>
+    <string name="No_Internet_connection">لا يوجد اتصال بالإنترنت</string>
+    <string name="Connected_to_the_Internet">متصل بالإنترنت</string>
+    <string name="Please_login_to_show_meal_plan">يرجى تسجيل الدخول لعرض خطة الوجبات.</string>
+    <string name="Please_login_to_access_your_favorites">يرجى تسجيل الدخول للوصول إلى المفضلات الخاصة بك.</string>
+    <string name="Please_login_to_save_your_mael">يرجى تسجيل الدخول لحفظ وجبتك</string>
+    <string name="Please_login_to_Make_plan">يرجى تسجيل الدخول لإنشاء خطة</string>
 
 
 </resources>

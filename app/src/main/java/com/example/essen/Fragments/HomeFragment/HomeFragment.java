@@ -226,16 +226,16 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     public void GoToProfile() {
         if (isGuest) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setTitle("Please login to access Setting.");
-            builder.setMessage("Are you want to join with us?");
+            builder.setTitle(R.string.Please_login_to_access_Setting);
+            builder.setMessage(R.string.Are_you_want_to_join_with_us);
 
-            builder.setPositiveButton("Go to login", (dialog, which) -> {
+            builder.setPositiveButton(R.string.Go_to_login, (dialog, which) -> {
                 startActivity(new Intent(getContext(), Login_Screen.class));
                 getActivity().finish();
                 dialog.dismiss();
             });
 
-            builder.setNegativeButton("Still Guest", (dialog, which) -> {
+            builder.setNegativeButton(R.string.Still_Guest, (dialog, which) -> {
                 dialog.dismiss();
 
             });

@@ -73,4 +73,19 @@
     <string name="contact_us">Contact us</string>
     <string name="app_info">App info</string>
     <string name="version">Version 1.1.0</string>
+    <string name="selecet_your_language">Selecet your language</string>
+    <string name="help">Help</string>
+    <string name="Still_Guest">Still Guest</string>
+    <string name="Go_to_login">Go to login</string>
+    <string name="Are_you_want_to_join_with_us">Are you want to join with us?</string>
+    <string name="Please_login_to_access_Setting">Please login to access Setting.</string>
+    <string name="find_your_favorites">Find your favorites</string>
+    <string name="Please_login_to_save_your_mael">Please login to save your mael</string>
+    <string name="Please_login_to_Make_plan">Please login to Make plan</string>
+    <string name="No_Internet_connection">No Internet connection</string>
+    <string name="Connected_to_the_Internet">Connected to the Internet</string>
+    <string name="Please_login_to_show_meal_plan">Please login to show meal plan.</string>
+    <string name="Please_login_to_access_your_favorites">Please login to access your favorites
+        .</string>
+
 </resources>
