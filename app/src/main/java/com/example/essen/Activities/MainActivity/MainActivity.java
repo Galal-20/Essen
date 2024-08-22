@@ -102,16 +102,16 @@ public class MainActivity extends AppCompatActivity implements NetworkChangeRece
             } else if (itemId == R.id.favMenu) {
                 if (isGuest) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle("Please login to access your favorites.");
-                    builder.setMessage("Are you want to join with us?");
+                    builder.setTitle(R.string.Please_login_to_access_your_favorites);
+                    builder.setMessage(R.string.Are_you_want_to_join_with_us);
 
-                    builder.setPositiveButton("Go to login", (dialog, which) -> {
+                    builder.setPositiveButton(R.string.Go_to_login, (dialog, which) -> {
                         startActivity(new Intent(getApplicationContext(), Login_Screen.class));
                         finish();
                         dialog.dismiss();
                     });
 
-                    builder.setNegativeButton("Still Guest", (dialog, which) -> {
+                    builder.setNegativeButton(R.string.Still_Guest, (dialog, which) -> {
                         dialog.dismiss();
                         replaceFragment(new HomeFragment());
                     });
@@ -129,16 +129,16 @@ public class MainActivity extends AppCompatActivity implements NetworkChangeRece
             } else if (itemId == R.id.meal_plan) {
                 if (isGuest) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle("Please login to show profile.");
-                    builder.setMessage("Are you want to join with us?");
+                    builder.setTitle(R.string.Please_login_to_show_meal_plan);
+                    builder.setMessage(R.string.Are_you_want_to_join_with_us);
 
-                    builder.setPositiveButton("Go to login", (dialog, which) -> {
+                    builder.setPositiveButton(R.string.Go_to_login, (dialog, which) -> {
                         startActivity(new Intent(getApplicationContext(), Login_Screen.class));
                         finish();
                         dialog.dismiss();
                     });
 
-                    builder.setNegativeButton("Still Guest", (dialog, which) -> {
+                    builder.setNegativeButton(R.string.Still_Guest, (dialog, which) -> {
                         dialog.dismiss();
                         startActivity(new Intent(this, MainActivity.class));
                         finish();

@@ -5,6 +5,9 @@
         <item name="android:statusBarColor">@android:color/white</item>
         <!-- Ensure the status bar icons are dark to be visible on the white background -->
         <item name="android:windowLightStatusBar">true</item>
+
+        <item name="android:colorPrimary">@color/gray</item>
+        <item name="android:colorPrimaryDark">@color/gray</item>
     </style>
 
     <style name="Theme.Essen" parent="Base.Theme.Essen" />

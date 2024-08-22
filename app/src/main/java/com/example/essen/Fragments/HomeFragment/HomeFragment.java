@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.example.essen.Activities.AuthActivities.Login.Login_Screen;
 import com.example.essen.Activities.CategoryMealActivity.CategoryMeal;
@@ -57,6 +59,9 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     private ProgressBar progressBar;
     private ImageView settings;
     private boolean isGuest;
+    LottieAnimationView lottieAnimationView;
+    Runnable runnable;
+    private Handler handler;
 
 
 
@@ -76,13 +81,15 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         categoryRecyclerView = view.findViewById(R.id.recycleC);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         progressBar = view.findViewById(R.id.progressBar);
-        settings = view.findViewById(R.id.settings);
+        lottieAnimationView = view.findViewById(R.id.settings);
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefsFile", MODE_PRIVATE);
         isGuest = sharedPreferences.getBoolean("isGuest", true);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         showLoading(true);
+
+        handler = new Handler();
 
 
         if (isInternetAvailable()) {
@@ -98,6 +105,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
 
         swipeRefreshLayout.setOnRefreshListener(() -> {
             showLoading(true);
+            lottieAnimationView.playAnimation();
             presenter.getRandomMeal();
             presenter.getPopularMeals();
             presenter.getCategories();
@@ -131,7 +139,19 @@ public class HomeFragment extends Fragment implements HomeContract.View {
             }
         });
 
-        settings.setOnClickListener(v -> GoToProfile());
+        lottieAnimationView.setAnimation(R.raw.options);
+        lottieAnimationView.playAnimation();
+        lottieAnimationView.setOnClickListener(v -> {
+            lottieAnimationView.playAnimation();
+            runnable = () -> {
+                GoToProfile();
+            };
+
+            handler.postDelayed(runnable, 1200);
+
+
+        });
+        //settings.setOnClickListener(v -> GoToProfile());
 
         return view;
     }
@@ -206,16 +226,16 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     public void GoToProfile() {
         if (isGuest) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setTitle("Please login to access Setting.");
-            builder.setMessage("Are you want to join with us?");
+            builder.setTitle(R.string.Please_login_to_access_Setting);
+            builder.setMessage(R.string.Are_you_want_to_join_with_us);
 
-            builder.setPositiveButton("Go to login", (dialog, which) -> {
+            builder.setPositiveButton(R.string.Go_to_login, (dialog, which) -> {
                 startActivity(new Intent(getContext(), Login_Screen.class));
                 getActivity().finish();
                 dialog.dismiss();
             });
 
-            builder.setNegativeButton("Still Guest", (dialog, which) -> {
+            builder.setNegativeButton(R.string.Still_Guest, (dialog, which) -> {
                 dialog.dismiss();
 
             });

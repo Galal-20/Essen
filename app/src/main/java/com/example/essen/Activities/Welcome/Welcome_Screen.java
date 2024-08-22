@@ -40,7 +40,7 @@ public class Welcome_Screen extends AppCompatActivity {
             navigateToMainActivity();
         }
 
-        lottieAnimationView.setAnimation(R.raw.animation_food);
+        lottieAnimationView.setAnimation(R.raw.gray);
         lottieAnimationView.playAnimation();
 
 

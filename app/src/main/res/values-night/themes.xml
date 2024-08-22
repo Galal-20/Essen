@@ -4,7 +4,16 @@
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
         <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:colorPrimary">@color/gray</item>
+        <item name="android:colorPrimaryDark">@color/gray</item>
+
+
     </style>
 
     <style name="Theme.Essen" parent="Theme.Material3.Light.NoActionBar" />
+
+    <style name="Base.Widget.AppCompat.RatingBar.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@color/gray</item>
+
+    </style>
 </resources>
