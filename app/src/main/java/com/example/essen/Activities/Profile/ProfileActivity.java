@@ -7,13 +7,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.Spinner;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.essen.Activities.MainActivity.MainActivity;
@@ -22,6 +21,7 @@ import com.example.essen.R;
 import com.example.essen.Util.SecurePreferences;
 import com.example.essen.model.AuthService;
 import com.example.essen.room.AppDatabase;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -33,9 +33,7 @@ public class ProfileActivity extends AppCompatActivity {
     private static final String PREFS_NAME = "MyPrefsFile";
     ImageView imageView;
     SwipeRefreshLayout swipeRefreshLayout;
-    String savedLanguage;
     private AuthService authService;
-    private Spinner languageSpinner;
     private ImageView imageBack;
     private TextView userTitle;
     private TextView userEmail;
@@ -48,61 +46,76 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
         imageView = findViewById(R.id.log_out);
-        languageSpinner = findViewById(R.id.language_spinner);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         imageBack = findViewById(R.id.image_back);
         userTitle = findViewById(R.id.UserNameValue);
         userEmail = findViewById(R.id.Email_profile_value);
 
+        ConstraintLayout constraintLang = findViewById(R.id.constraint_lang);
+        constraintLang.setOnClickListener(v -> showCustomBottomSheet());
+
+
+        ConstraintLayout constraintinfo = findViewById(R.id.constraint_info);
+        constraintinfo.setOnClickListener(v -> showCustomBottomSheetInfo());
+
         firebaseAuth = FirebaseAuth.getInstance();
         authService = new AuthService(this);
-
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if (currentUser != null) {
             userTitle.setText(currentUser.getDisplayName());
             userEmail.setText(currentUser.getEmail());
         }
-
         swipeRefreshLayout.setOnRefreshListener(() -> swipeRefreshLayout.setRefreshing(false));
-
         imageView.setOnClickListener(v -> signOut());
         imageBack.setOnClickListener(v -> {
             startActivity(new Intent(this, MainActivity.class));
             finish();
         });
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                this, R.array.languages_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        languageSpinner.setAdapter(adapter);
 
+    }
+
+    private void showCustomBottomSheetInfo() {
+        View view = getLayoutInflater().inflate(R.layout.bottom_sheet_help, null);
+        BottomSheetDialog dialog = new BottomSheetDialog(this);
+        dialog.setContentView(view);
+
+        dialog.show();
+    }
+
+
+    private void showCustomBottomSheet() {
+        View view = getLayoutInflater().inflate(R.layout.bottom_sheet_language, null);
+
+        BottomSheetDialog dialog = new BottomSheetDialog(this);
+        dialog.setContentView(view);
+
+        RadioButton radioEnglish = view.findViewById(R.id.radio_english);
+        RadioButton radioArabic = view.findViewById(R.id.radio_arabic);
+
+        // get current selected language from SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        savedLanguage = sharedPreferences.getString("selectedLanguage", "Select Language");
+        String selectedLanguage = sharedPreferences.getString("selectedLanguage", "en");
 
-        if (savedLanguage.equals("English")) {
-            languageSpinner.setSelection(adapter.getPosition("English"));
-        } else if (savedLanguage.equals("Arabic")) {
-            languageSpinner.setSelection(adapter.getPosition("Arabic"));
-        } else {
-            languageSpinner.setSelection(adapter.getPosition("System"));
+        if ("en".equals(selectedLanguage)) {
+            radioEnglish.setChecked(true);
+        } else if ("ar".equals(selectedLanguage)) {
+            radioArabic.setChecked(true);
         }
 
-        languageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedLanguage = (String) parent.getItemAtPosition(position);
-                if (selectedLanguage.equals("English")) {
-                    setLocale("en");
-                } else if (selectedLanguage.equals("Arabic")) {
-                    setLocale("ar");
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
+        radioEnglish.setOnClickListener(v -> {
+            dialog.dismiss();
+            setLocale("en");
         });
+
+        radioArabic.setOnClickListener(v -> {
+            dialog.dismiss();
+            setLocale("ar");
+        });
+
+        dialog.show();
     }
+
 
     public void Hide_status_Bar() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -167,3 +180,36 @@ public class ProfileActivity extends AppCompatActivity {
 
 
 
+
+
+ /*ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                this, R.array.languages_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        languageSpinner.setAdapter(adapter);
+
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        savedLanguage = sharedPreferences.getString("selectedLanguage", "Select Language");
+
+        if (savedLanguage.equals("English")) {
+            languageSpinner.setSelection(adapter.getPosition("English"));
+        } else if (savedLanguage.equals("Arabic")) {
+            languageSpinner.setSelection(adapter.getPosition("Arabic"));
+        } else {
+            languageSpinner.setSelection(adapter.getPosition("System"));
+        }
+
+        languageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedLanguage = (String) parent.getItemAtPosition(position);
+                if (selectedLanguage.equals("English")) {
+                    setLocale("en");
+                } else if (selectedLanguage.equals("Arabic")) {
+                    setLocale("ar");
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });*/
