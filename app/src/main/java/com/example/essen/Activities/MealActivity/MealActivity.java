@@ -271,12 +271,13 @@ public class MealActivity extends AppCompatActivity implements MealView {
                 Toast.makeText(MealActivity.this, "The data is empty", Toast.LENGTH_SHORT).show();
             } else {
                 new Thread(() -> {
-                    int count = appDatabase.mealPlanDao().isMealInMealPlan(mealName);
+                    int count = appDatabase.mealPlanDao().isMealInMealPlan(mealName, dayName);
                     if (count > 0) {
                         runOnUiThread(() -> showMessage("Meal already in Meal Plan!"));
                     } else {
                         try {
                             MealPlanEntity mealPlanEntity = createMealPlanEntity();
+                            mealPlanEntity.setDayName(dayName);
                             appDatabase.mealPlanDao().insert(mealPlanEntity);
 
                             if (user != null) {
@@ -285,6 +286,11 @@ public class MealActivity extends AppCompatActivity implements MealView {
                                         .set(mealPlanEntity)
                                         .addOnSuccessListener(aVoid -> runOnUiThread(() -> showMessage("Plan saved successfully and to Firestore!")))
                                         .addOnFailureListener(e -> runOnUiThread(() -> showMessage("Error saving to Firestore: " + e.getMessage())));
+                                /*firestore.collection("users").document(user.getUid())
+                                        .collection("mealPlansDay").document(mealName)
+                                        .set(mealPlanEntity)
+                                        .addOnSuccessListener(aVoid -> runOnUiThread(() -> showMessage("Plan saved successfully and to Firestore!")))
+                                        .addOnFailureListener(e -> runOnUiThread(() -> showMessage("Error saving to Firestore: " + e.getMessage())));*/
                             }
                         } catch (Exception e) {
                             runOnUiThread(() -> Toast.makeText(MealActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
@@ -295,7 +301,6 @@ public class MealActivity extends AppCompatActivity implements MealView {
                 bottomSheetDialog.dismiss();
             }
         });
-
 
         bottomSheetDialog.setContentView(bottomSheetView);
         bottomSheetDialog.show();

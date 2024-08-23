@@ -25,31 +25,93 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MealPlanFragment extends Fragment {
 
     private RecyclerView mealPlanRecyclerView;
+    private RecyclerView calendarRecyclerView;
+    private CalendarAdapter calendarAdapter;
     private MealPlanAdapter mealPlanAdapter;
     private AppDatabase appDatabase;
     private FirebaseFirestore firestore;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser currentUse;
+    private String selectedDay;
+    private ExecutorService executorService;
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        executorService = Executors.newSingleThreadExecutor();
+
         View view = inflater.inflate(R.layout.fragment_meal_plan, container, false);
 
         mealPlanRecyclerView = view.findViewById(R.id.food_recycler_view);
+        calendarRecyclerView = view.findViewById(R.id.calendar_recycler_view);
+
         mealPlanRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
                 LinearLayoutManager.HORIZONTAL, false));
+
+        calendarRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+
 
         appDatabase = AppDatabase.getDatabase(getContext());
         firestore = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
         currentUse = firebaseAuth.getCurrentUser();
+
+
+        setupCalendar();
+
+
         listenForMealPlanUpdates();
+
         return view;
     }
+
+    private void setupCalendar() {
+        List<String> daysOfWeek = getDaysOfWeek();
+        calendarAdapter = new CalendarAdapter(daysOfWeek, day -> {
+            selectedDay = day;
+            loadMealsForDay(day);
+        }, appDatabase, executorService);
+        calendarRecyclerView.setAdapter(calendarAdapter);
+    }
+
+    private List<String> getDaysOfWeek() {
+        List<String> days = new ArrayList<>();
+        days.add("Monday");
+        days.add("Tuesday");
+        days.add("Wednesday");
+        days.add("Thursday");
+        days.add("Friday");
+        days.add("Saturday");
+        days.add("Sunday");
+        return days;
+    }
+
+    private void loadMealsForDay(String day) {
+        if (day == null) {
+            return;
+        }
+
+        executorService.execute(() -> {
+            List<MealPlanEntity> mealsForDay = appDatabase.mealPlanDao().getMealsForDay(day);
+            requireActivity().runOnUiThread(() -> {
+                if (mealPlanAdapter == null) {
+                    mealPlanAdapter = new MealPlanAdapter(mealsForDay, appDatabase, getContext());
+                    mealPlanRecyclerView.setAdapter(mealPlanAdapter);
+                } else {
+                    mealPlanAdapter.updateMealPlans(mealsForDay);
+                }
+            });
+        });
+
+    }
+
 
     private void listenForMealPlanUpdates() {
         if (currentUse != null) {
@@ -60,7 +122,6 @@ public class MealPlanFragment extends Fragment {
                             showMessage("Error fetching updates: " + e.getMessage());
                             return;
                         }
-
                         if (snapshots != null) {
                             List<MealPlanEntity> mealPlans = new ArrayList<>();
                             for (DocumentSnapshot document : snapshots.getDocuments()) {
@@ -68,7 +129,8 @@ public class MealPlanFragment extends Fragment {
 
                                 // Update Room database
                                 new Thread(() -> {
-                                    int count = appDatabase.mealPlanDao().isMealInMealPlan(mealPlan.getStrMeal());
+                                    int count =
+                                            appDatabase.mealPlanDao().isMealInMealPlan(mealPlan.getStrMeal(), mealPlan.getDayName());
                                     if (count == 0) {
                                         appDatabase.mealPlanDao().insert(mealPlan);
                                     }
@@ -79,7 +141,8 @@ public class MealPlanFragment extends Fragment {
 
                             // Update UI
                             if (mealPlanAdapter == null) {
-                                mealPlanAdapter = new MealPlanAdapter(mealPlans, appDatabase, getContext());
+                                mealPlanAdapter = new MealPlanAdapter(mealPlans, appDatabase,
+                                        getContext());
                                 mealPlanRecyclerView.setAdapter(mealPlanAdapter);
                             } else {
                                 mealPlanAdapter.updateMealPlans(mealPlans);
@@ -90,9 +153,6 @@ public class MealPlanFragment extends Fragment {
                     });
         }
     }
-
-
-
 
     private void loadMealPlansFromRoom() {
         if (!isConnectedToInternet()) {
@@ -134,7 +194,33 @@ public class MealPlanFragment extends Fragment {
             Log.e("MealPlanFragment", "Root view is null, cannot show Snackbar");
         }
     }
+
+
 }
 
 
 
+    /* new Thread(() -> {
+                                List<MealPlanEntity> allMeals = appDatabase.mealPlanDao().getAllMealPlans();
+                                for (MealPlanEntity meal : allMeals) {
+                                    if (!mealPlans.contains(meal)) {
+                                        appDatabase.mealPlanDao().delete(meal);
+                                    }
+                                }
+                            }).start();*/
+
+ /*private void loadMealsForCurrentWeek() {
+        String startDay = "Monday";
+        String endDay = "Sunday";
+
+        executorService.execute(() -> {
+            List<MealPlanEntity> mealsForWeek = appDatabase.mealPlanDao().getMealsForWeek(startDay, endDay);
+            requireActivity().runOnUiThread(() -> updateAdapter(mealsForWeek));
+        });
+    }*/
+
+   /* @Override
+    public void onDestroy() {
+        super.onDestroy();
+        executorService.shutdown();
+    }*/
