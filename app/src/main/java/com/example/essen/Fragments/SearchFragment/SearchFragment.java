@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.essen.R;
+import com.example.essen.Util.NetworkChangeReceiver;
 import com.example.essen.pojo.MainMeal;
 
 import java.util.ArrayList;
@@ -94,10 +95,14 @@ public class SearchFragment extends Fragment implements SearchContract.View {
         View.OnClickListener searchButtonClickListener = v -> {
             String query = searchView.getQuery().toString().trim();
             if (!query.isEmpty()) {
+                if (!NetworkChangeReceiver.isConnectedToInternet(getContext())) {
+                    Toast.makeText(getContext(), "No internet connection available", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Log.d("SearchButtonClick", "Button clicked: " + v.getId() + ", Query: " + query);
 
                 if (lastClickedButton != null && lastClickedButton != v) {
-                    lastClickedButton.setBackgroundColor(getResources().getColor(R.color.white)); //
+                    lastClickedButton.setBackgroundColor(getResources().getColor(R.color.white));
                 }
 
                 v.setBackgroundColor(getResources().getColor(R.color.green));
