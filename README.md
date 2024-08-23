@@ -25,13 +25,9 @@
 <ul>
   <li>Firebase: Authentication and firebase store</li>
 <li>Retrofit</li>
-<li>converter to gson</li>
 <li>Glide</li>
-<li>Swiperefresh</li>
 <li>Room database </li>
-<li>Youtubeplayer</li>
 <li>Lottie animation</li>
-<li>SwipeButton</li>
 
 </li>
 </ul>
