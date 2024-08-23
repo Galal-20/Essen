@@ -45,13 +45,19 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.MealPl
     private FirebaseAuth firebaseAuth;
     private FirebaseUser currentUser;
 
-    public MealPlanAdapter(List<MealPlanEntity> mealPlans, AppDatabase appDatabase, Context context) {
+
+    public MealPlanAdapter(
+            List<MealPlanEntity> mealPlans,
+            AppDatabase appDatabase,
+            Context context) {
         this.mealPlans = mealPlans;
         this.appDatabase = appDatabase;
         this.context = context;
         this.firebaseAuth = FirebaseAuth.getInstance();
         this.currentUser = firebaseAuth.getCurrentUser();
+
     }
+
 
     @NonNull
     @Override
@@ -78,20 +84,27 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.MealPl
             Button cancelButton = dialogView.findViewById(R.id.cancel_Ok);
             AlertDialog dialog = builder.create();
             yesButton.setOnClickListener(view -> {
-                Completable.fromAction(() -> appDatabase.mealPlanDao().delete(mealPlan))
+                Completable.fromAction(() ->
+                                appDatabase.mealPlanDao().delete(mealPlan))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(() -> {
-                            mealPlans.remove(position);
-                            notifyItemRemoved(position);
-                            Toast.makeText(context, "Meal plan deleted from Room", Toast.LENGTH_SHORT).show();
-                            notifyItemRangeChanged(position, mealPlans.size());
+                            if (position >= 0) {
+                                mealPlans.remove(position);
+                                notifyItemRemoved(position);
+                                notifyItemRangeChanged(position, mealPlans.size());
+
+                                Toast.makeText(context, "Meal plan deleted from Room", Toast.LENGTH_SHORT).show();
+                            }
+
                             if (currentUser != null) {
                                 FirebaseFirestore firestore = FirebaseFirestore.getInstance();
                                 firestore.collection("users").document(currentUser.getUid())
-                                        .collection("mealPlans").document(mealPlan.getStrMeal())
+                                        .collection("mealPlans").document(mealPlan.getStrMeal() + "_" + mealPlan.getDayName())
                                         .delete()
-                                        .addOnSuccessListener(aVoid -> Toast.makeText(context, "Meal plan deleted from Firestore", Toast.LENGTH_SHORT).show())
+                                        .addOnSuccessListener(aVoid -> {
+                                            Toast.makeText(context, "Meal plan deleted from Firestore", Toast.LENGTH_SHORT).show();
+                                        })
                                         .addOnFailureListener(e -> {
                                             Log.e("DeleteError", "Error deleting meal plan from Firestore: " + e.getMessage());
                                             Toast.makeText(context, "Error deleting meal plan from Firestore", Toast.LENGTH_SHORT).show();
@@ -99,6 +112,19 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.MealPl
                             } else {
                                 Toast.makeText(context, "User not logged in", Toast.LENGTH_SHORT).show();
                             }
+
+                            Completable.fromAction(() ->
+                                            appDatabase.mealPlanDao().deleteMealFromDay(mealPlan.getDayName(), mealPlan.getStrMeal()))
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(() -> {
+                                        Toast.makeText(context, "Meal plan deleted from specific day", Toast.LENGTH_SHORT).show();
+                                    }, throwable -> {
+                                        Log.e("DeleteError", "Error deleting meal from day: " + throwable.getMessage());
+                                        Toast.makeText(context, "Error deleting meal from day: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                                    });
+
+
                         }, throwable -> {
                             Log.e("DeleteError", "Error deleting meal plan: " + throwable.getMessage());
                             Toast.makeText(context, "Error deleting meal plan: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
@@ -191,3 +217,11 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.MealPl
     }
 }
 
+
+
+
+
+/* mealPlans.remove(position);
+                            notifyItemRemoved(position);
+                            Toast.makeText(context, "Meal plan deleted from Room", Toast.LENGTH_SHORT).show();
+                            notifyItemRangeChanged(position, mealPlans.size());*/

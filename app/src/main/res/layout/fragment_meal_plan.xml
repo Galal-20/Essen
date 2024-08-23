@@ -6,7 +6,6 @@
     android:background="@color/white"
     tools:context=".Fragments.MealPlanFragment.MealPlanFragment">
 
-
     <androidx.cardview.widget.CardView
         android:id="@+id/card_country"
         android:layout_width="match_parent"
@@ -21,9 +20,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             tools:ignore="UseCompoundDrawables">
 
             <ImageView
@@ -38,24 +34,159 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:fontFamily="@font/poppins_bold"
                 android:layout_marginStart="@dimen/_85sdp"
+                android:fontFamily="@font/poppins_bold"
                 android:text="@string/meal_plan"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
 
-
     </androidx.cardview.widget.CardView>
 
+    <ImageView
+        android:id="@+id/back"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="20dp"
+        android:src="@drawable/ic_arrow_back"
+        app:layout_constraintBottom_toBottomOf="@id/text_week"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/text_week"
+
+        />
+
+    <ImageView
+        android:id="@+id/next"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="20dp"
+        android:src="@drawable/ic_arrow_next"
+        app:layout_constraintBottom_toBottomOf="@id/text_week"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/text_week" />
+
+    <TextView
+        android:id="@+id/text_week"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/poppins_bold"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@id/next"
+        app:layout_constraintStart_toEndOf="@id/back"
+        app:layout_constraintTop_toBottomOf="@id/card_country" />
+
+    <!--<TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/text_s"
+        android:text="@string/write_specific_date"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/calendar_recycler_view"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="15dp"
+        android:textSize="20sp"
+        android:fontFamily="@font/poppins_extra_light_italic"
+        />
+
+    <EditText
+        android:id="@+id/edit_text_year"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_margin="20dp"
+        android:background="@drawable/ed"
+        android:backgroundTint="#CCCCCC"
+        android:fontFamily="@font/poppins_extra_light_italic"
+        android:hint="@string/year"
+        android:gravity="center"
+        android:inputType="text"
+        android:paddingStart="10dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/cardview_dark_background"
+        app:layout_constraintEnd_toEndOf="@+id/text_s"
+        app:layout_constraintStart_toStartOf="@id/text_s"
+        app:layout_constraintTop_toBottomOf="@id/text_s"
+        app:layout_constraintWidth_percent=".8"
+        tools:ignore="TextFields" />
+
+    <EditText
+        android:id="@+id/edit_text_month"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_margin="20dp"
+        android:background="@drawable/ed"
+        android:backgroundTint="#CCCCCC"
+        android:fontFamily="@font/poppins_extra_light_italic"
+        android:hint="@string/month"
+        android:gravity="center"
+        android:inputType="text"
+        android:paddingStart="10dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/cardview_dark_background"
+        app:layout_constraintStart_toEndOf="@id/edit_text_year"
+        app:layout_constraintTop_toBottomOf="@id/text_s"
+        app:layout_constraintWidth_percent=".8"
+        tools:ignore="TextFields" />
+
+    <EditText
+        android:id="@+id/edit_text_day"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_margin="20dp"
+        android:background="@drawable/ed"
+        android:backgroundTint="#CCCCCC"
+        android:fontFamily="@font/poppins_extra_light_italic"
+        android:hint="@string/day"
+        android:gravity="center"
+        android:inputType="text"
+        android:paddingStart="10dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/cardview_dark_background"
+        app:layout_constraintStart_toEndOf="@id/edit_text_month"
+        app:layout_constraintTop_toBottomOf="@id/text_s"
+        app:layout_constraintWidth_percent=".8"
+        tools:ignore="TextFields" />-->
+
+    <!--<Button
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        app:layout_constraintWidth_percent=".8"
+        android:id="@+id/go"
+        android:text="@string/go"
+        android:textAllCaps="false"
+        android:layout_marginStart="20dp"
+        android:fontFamily="@font/poppins_bold"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="@id/edit_text_year"
+        app:layout_constraintEnd_toEndOf="@id/edit_text_day"
+        app:layout_constraintTop_toBottomOf="@id/edit_text_month"
+        app:layout_constraintVertical_bias="0.5"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:backgroundTint="@color/cardview_light_background"
+        />-->
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/calendar_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_week"
+        tools:listitem="@layout/calendar_item" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/card_country"
-        app:layout_constraintStart_toStartOf="@id/card_country"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/card_country">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -63,14 +194,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:layout_marginBottom="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/card_country"
-            app:layout_constraintStart_toStartOf="@id/card_country"
-            app:layout_constraintTop_toBottomOf="@id/card_country"
-            tools:listitem="@layout/meal_plan_item" />
+            android:layout_marginBottom="16dp" />
 
     </ScrollView>
 
-
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
