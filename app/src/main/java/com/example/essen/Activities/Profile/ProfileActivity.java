@@ -181,17 +181,16 @@ public class ProfileActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    // Apply locale before activity initialization
     private void applyLocale() {
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        String selectedLanguage = sharedPreferences.getString("selectedLanguage", "ar");
+        String selectedLanguage = sharedPreferences.getString("selectedLanguage", "en");
         updateLocale(this, selectedLanguage);
     }
 
     @Override
     protected void attachBaseContext(Context newBase) {
         SharedPreferences sharedPreferences = newBase.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        String selectedLanguage = sharedPreferences.getString("selectedLanguage", "ar");
+        String selectedLanguage = sharedPreferences.getString("selectedLanguage", "en");
         Context context = updateLocale(newBase, selectedLanguage);
         super.attachBaseContext(context);
     }
