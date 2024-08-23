@@ -87,5 +87,11 @@
     <string name="Please_login_to_show_meal_plan">Please login to show meal plan.</string>
     <string name="Please_login_to_access_your_favorites">Please login to access your favorites
         .</string>
+    <string name="yyyy_mm_dd">YYYY-MM-DD</string>
+    <string name="write_specific_date">Write specific date:</string>
+    <string name="go">Go</string>
+    <string name="month">Month</string>
+    <string name="year">Year</string>
+    <string name="day">Day</string>
 
 </resources>

@@ -17,11 +17,10 @@ import java.util.concurrent.ExecutorService;
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.CalendarViewHolder> {
 
     private List<String> daysOfWeek;
-    private int selectedPosition = -1;
+    static int selectedPosition = -1;
     private OnDayClickListener onDayClickListener;
     private AppDatabase appDatabase;
     private ExecutorService executorService;
-
 
     public CalendarAdapter(List<String> daysOfWeek, OnDayClickListener onDayClickListener,
                            AppDatabase appDatabase, ExecutorService executorService) {
@@ -29,6 +28,11 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         this.onDayClickListener = onDayClickListener;
         this.appDatabase = appDatabase;
         this.executorService = executorService;
+    }
+
+    public void updateData(List<String> newDaysOfWeek) {
+        this.daysOfWeek = newDaysOfWeek;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -47,30 +51,53 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         return daysOfWeek.size();
     }
 
+    // Interface to handle click events on calendar items
     public interface OnDayClickListener {
-        void onDayClick(String day);
+        void onDayClick(String item);
     }
 
     public class CalendarViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView dayText;
+        private TextView dayTextView;
 
         public CalendarViewHolder(View itemView) {
             super(itemView);
-            dayText = itemView.findViewById(R.id.calendar_day_text);
+            dayTextView = itemView.findViewById(R.id.calendar_day_text);
         }
 
         public void bind(String day, int position) {
-            dayText.setText(day);
+            dayTextView.setText(day);
+
+            // Set the background color based on whether the item is selected
+            if (selectedPosition == position) {
+                itemView.setBackgroundColor(Color.GREEN);
+            } else {
+                itemView.setBackgroundColor(Color.WHITE);
+            }
+
             itemView.setOnClickListener(v -> {
-                selectedPosition = position;
-                notifyDataSetChanged();
+                // Update the selected position
+                int previousPosition = selectedPosition;
+                selectedPosition = getAdapterPosition();
+
+                // Notify the adapter to refresh the views for the old and new selected positions
+                notifyItemChanged(previousPosition);
+                notifyItemChanged(selectedPosition);
+
+                // Call the onDayClickListener callback
                 if (onDayClickListener != null) {
                     onDayClickListener.onDayClick(day);
                 }
             });
+        }
+    }
+}
 
-            /*itemView.setOnLongClickListener(v -> {
+
+
+
+
+ /*itemView.setOnLongClickListener(v -> {
                 if (appDatabase != null) {
                     // Delete meals for the selected day
                     executorService.execute(() -> {
@@ -84,15 +111,3 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
                 }
                 return true;
             });*/
-
-            if (position == selectedPosition) {
-                itemView.setBackgroundColor(Color.GREEN);
-            } else {
-                itemView.setBackgroundColor(Color.WHITE);
-            }
-        }
-    }
-}
-
-
-

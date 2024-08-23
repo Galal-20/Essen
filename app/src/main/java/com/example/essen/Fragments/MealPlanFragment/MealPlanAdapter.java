@@ -100,7 +100,7 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.MealPl
                             if (currentUser != null) {
                                 FirebaseFirestore firestore = FirebaseFirestore.getInstance();
                                 firestore.collection("users").document(currentUser.getUid())
-                                        .collection("mealPlans").document(mealPlan.getStrMeal())
+                                        .collection("mealPlans").document(mealPlan.getStrMeal() + "_" + mealPlan.getDayName())
                                         .delete()
                                         .addOnSuccessListener(aVoid -> {
                                             Toast.makeText(context, "Meal plan deleted from Firestore", Toast.LENGTH_SHORT).show();

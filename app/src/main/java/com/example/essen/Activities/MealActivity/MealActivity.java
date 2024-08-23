@@ -282,15 +282,10 @@ public class MealActivity extends AppCompatActivity implements MealView {
 
                             if (user != null) {
                                 firestore.collection("users").document(user.getUid())
-                                        .collection("mealPlans").document(mealName)
+                                        .collection("mealPlans").document(mealName + "_" + dayName)
                                         .set(mealPlanEntity)
                                         .addOnSuccessListener(aVoid -> runOnUiThread(() -> showMessage("Plan saved successfully and to Firestore!")))
                                         .addOnFailureListener(e -> runOnUiThread(() -> showMessage("Error saving to Firestore: " + e.getMessage())));
-                                /*firestore.collection("users").document(user.getUid())
-                                        .collection("mealPlansDay").document(mealName)
-                                        .set(mealPlanEntity)
-                                        .addOnSuccessListener(aVoid -> runOnUiThread(() -> showMessage("Plan saved successfully and to Firestore!")))
-                                        .addOnFailureListener(e -> runOnUiThread(() -> showMessage("Error saving to Firestore: " + e.getMessage())));*/
                             }
                         } catch (Exception e) {
                             runOnUiThread(() -> Toast.makeText(MealActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());

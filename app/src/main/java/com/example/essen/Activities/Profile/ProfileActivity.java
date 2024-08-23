@@ -18,7 +18,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.essen.Activities.MainActivity.MainActivity;
 import com.example.essen.Activities.Welcome.Welcome_Screen;
 import com.example.essen.R;
-import com.example.essen.Util.SecurePreferences;
 import com.example.essen.model.AuthService;
 import com.example.essen.room.AppDatabase;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -39,40 +38,15 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView userEmail;
     private FirebaseAuth firebaseAuth;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Hide_status_Bar();
-        setContentView(R.layout.activity_profile);
+    private static Context updateLocale(Context context, String languageCode) {
+        Locale locale = new Locale(languageCode);
+        Locale.setDefault(locale);
 
-        imageView = findViewById(R.id.log_out);
-        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
-        imageBack = findViewById(R.id.image_back);
-        userTitle = findViewById(R.id.UserNameValue);
-        userEmail = findViewById(R.id.Email_profile_value);
+        android.content.res.Configuration config = context.getResources().getConfiguration();
+        config.setLocale(locale);
+        config.setLayoutDirection(locale);
 
-        ConstraintLayout constraintLang = findViewById(R.id.constraint_lang);
-        constraintLang.setOnClickListener(v -> showCustomBottomSheet());
-
-
-        ConstraintLayout constraintinfo = findViewById(R.id.constraint_info);
-        constraintinfo.setOnClickListener(v -> showCustomBottomSheetInfo());
-
-        firebaseAuth = FirebaseAuth.getInstance();
-        authService = new AuthService(this);
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-        if (currentUser != null) {
-            userTitle.setText(currentUser.getDisplayName());
-            userEmail.setText(currentUser.getEmail());
-        }
-        swipeRefreshLayout.setOnRefreshListener(() -> swipeRefreshLayout.setRefreshing(false));
-        imageView.setOnClickListener(v -> signOut());
-        imageBack.setOnClickListener(v -> {
-            startActivity(new Intent(this, MainActivity.class));
-            finish();
-        });
-
-
+        return context.createConfigurationContext(config);
     }
 
     private void showCustomBottomSheetInfo() {
@@ -127,6 +101,8 @@ public class ProfileActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
     }
+
+
     public void signOut() {
         authService.signOut(this, new AuthService.AuthCallback() {
             @Override
@@ -145,6 +121,7 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
+
     private void clearLocalFavorites() {
         // Clear favorite data from local database if needed
         AppDatabase database = AppDatabase.getDatabase(this);
@@ -153,8 +130,83 @@ public class ProfileActivity extends AppCompatActivity {
         }).start();
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        applyLocale();
+        super.onCreate(savedInstanceState);
+        Hide_status_Bar();
+        setContentView(R.layout.activity_profile);
 
+
+        imageView = findViewById(R.id.log_out);
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        imageBack = findViewById(R.id.image_back);
+        userTitle = findViewById(R.id.UserNameValue);
+        userEmail = findViewById(R.id.Email_profile_value);
+
+        ConstraintLayout constraintLang = findViewById(R.id.constraint_lang);
+        constraintLang.setOnClickListener(v -> showCustomBottomSheet());
+
+
+        ConstraintLayout constraintinfo = findViewById(R.id.constraint_info);
+        constraintinfo.setOnClickListener(v -> showCustomBottomSheetInfo());
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        authService = new AuthService(this);
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        if (currentUser != null) {
+            userTitle.setText(currentUser.getDisplayName());
+            userEmail.setText(currentUser.getEmail());
+        }
+        swipeRefreshLayout.setOnRefreshListener(() -> swipeRefreshLayout.setRefreshing(false));
+        imageView.setOnClickListener(v -> signOut());
+        imageBack.setOnClickListener(v -> {
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+        });
+
+
+    }
+
+    // Updated setLocale method to change language and restart activity
     private void setLocale(String languageCode) {
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("selectedLanguage", languageCode);
+        editor.apply();
+
+        // Restart activity to apply language change
+        Intent intent = getIntent();
+        finish();
+        startActivity(intent);
+    }
+
+    // Apply locale before activity initialization
+    private void applyLocale() {
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        String selectedLanguage = sharedPreferences.getString("selectedLanguage", "ar");
+        updateLocale(this, selectedLanguage);
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        SharedPreferences sharedPreferences = newBase.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        String selectedLanguage = sharedPreferences.getString("selectedLanguage", "ar");
+        Context context = updateLocale(newBase, selectedLanguage);
+        super.attachBaseContext(context);
+    }
+
+
+    private void showMessage(String message) {
+        Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_SHORT).show();
+    }
+}
+
+
+
+
+
+  /* private void setLocale(String languageCode) {
         Locale locale = new Locale(languageCode);
         Locale.setDefault(locale);
         android.content.res.Configuration config = new android.content.res.Configuration();
@@ -171,16 +223,7 @@ public class ProfileActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
-    }
-
-    private void showMessage(String message) {
-        Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_SHORT).show();
-    }
-}
-
-
-
-
+    }*/
 
  /*ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this, R.array.languages_array, android.R.layout.simple_spinner_item);
