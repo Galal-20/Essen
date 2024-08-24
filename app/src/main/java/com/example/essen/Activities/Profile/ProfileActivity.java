@@ -123,10 +123,10 @@ public class ProfileActivity extends AppCompatActivity {
 
 
     private void clearLocalFavorites() {
-        // Clear favorite data from local database if needed
         AppDatabase database = AppDatabase.getDatabase(this);
         new Thread(() -> {
-            database.mealDao().deleteAllFavorites(); // Assuming you have a method to delete all favorites
+            database.mealDao().deleteAllFavorites();
+            database.mealPlanDao().deleteAllMealPlan();
         }).start();
     }
 

@@ -49,8 +49,8 @@ public interface MealPlanDao {
     List<MealPlanEntity> getMealsForSpecificDate(int year, int month, int day);
 
 
-
-
+    @Query("DELETE FROM meal_plans")
+    void deleteAllMealPlan();
 
 }
 
