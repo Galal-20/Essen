@@ -1,5 +1,7 @@
 package com.example.essen.Fragments.SearchFragment;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -20,6 +22,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.essen.R;
 import com.example.essen.Util.NetworkChangeReceiver;
 import com.example.essen.pojo.MainMeal;
+import com.example.essen.repository.MealRepositoryImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,10 +38,15 @@ public class SearchFragment extends Fragment implements SearchContract.View {
     Button searchCategoryButton;
     private Button lastClickedButton = null;
 
+    private SharedPreferences sharedPreferences;
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new SearchPresenter(this);
+        sharedPreferences = getActivity().getSharedPreferences("MyPrefsFile", Context.MODE_PRIVATE);
+        MealRepositoryImpl repository = new MealRepositoryImpl(sharedPreferences);
+        presenter = new SearchPresenter(this, repository);
     }
 
     @Nullable

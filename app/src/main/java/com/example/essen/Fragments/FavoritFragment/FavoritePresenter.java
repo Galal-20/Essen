@@ -4,15 +4,16 @@ import android.app.Application;
 
 import androidx.lifecycle.LiveData;
 
+import com.example.essen.repository.MealRepositoryImpl;
 import com.example.essen.room.MealEntity;
 
 import java.util.List;
 
 public class FavoritePresenter {
-    private final MealRepository mealRepository;
+    private final MealRepositoryImpl mealRepository;
 
     public FavoritePresenter(Application application) {
-        mealRepository = new MealRepository(application);
+        mealRepository = new MealRepositoryImpl(application);
     }
 
     public LiveData<List<MealEntity>> getFavoriteMeals() {
@@ -20,9 +21,3 @@ public class FavoritePresenter {
     }
 
 }
-
-  /*private void loadFavoriteMeals() {
-        // LiveData will automatically update the observer
-    }*/
-
-//loadFavoriteMeals();

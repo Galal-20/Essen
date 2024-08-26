@@ -252,6 +252,7 @@ public class MealActivity extends AppCompatActivity implements MealView {
                 .inflate(R.layout.buttom_sheet, null);
 
         datePicker = bottomSheetView.findViewById(R.id.date_picker);
+        datePicker.setMinDate(System.currentTimeMillis());
         mealTypeGroup = bottomSheetView.findViewById(R.id.meal_type_group);
         saveButton = bottomSheetView.findViewById(R.id.btn_save);
 

@@ -1,5 +1,6 @@
 package com.example.essen.Fragments.CountriesFragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.essen.R;
 import com.example.essen.pojo.MainMeal;
+import com.example.essen.repository.MealRepositoryImpl;
 import com.example.essen.retrofit.MealAPI;
 import com.example.essen.retrofit.RetrofitInstance;
 
@@ -29,7 +31,7 @@ public class CountriesFragment extends Fragment implements CountriesContract.Vie
         super.onCreate(savedInstanceState);
 
         MealAPI mealAPI = RetrofitInstance.getApi();
-        presenter = new CountriesPresenter(this, mealAPI, getContext());
+        presenter = new CountriesPresenter(this, new MealRepositoryImpl(getContext().getSharedPreferences("MyPrefsFile", Context.MODE_PRIVATE)));
     }
 
     @Override

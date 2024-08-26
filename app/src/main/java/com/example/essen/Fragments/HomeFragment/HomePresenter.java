@@ -1,24 +1,88 @@
 package com.example.essen.Fragments.HomeFragment;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.util.Log;
-
-import com.example.essen.pojo.Category;
 import com.example.essen.pojo.CategoryList;
 import com.example.essen.pojo.MainMeal;
 import com.example.essen.pojo.MealList;
-import com.example.essen.retrofit.RetrofitInstance;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.example.essen.repository.MealRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+
+public class HomePresenter implements HomeContract.Presenter {
+
+    private HomeContract.View view;
+    private MealRepository mealRepository;
+
+    public HomePresenter(HomeContract.View view, MealRepository mealRepository) {
+        this.view = view;
+        this.mealRepository = mealRepository;
+    }
+
+    @Override
+    public void getRandomMeal() {
+        mealRepository.getRandomMeal(new Callback<MealList>() {
+            @Override
+            public void onResponse(Call<MealList> call, Response<MealList> response) {
+                if (response.isSuccessful() && response.body() != null && !response.body().getMeals().isEmpty()) {
+                    MainMeal randomMeal = response.body().getMeals().get(0);
+                    view.showRandomMeal(randomMeal);
+                } else {
+                    view.showError("Failed to fetch random meal");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MealList> call, Throwable t) {
+                view.showError(t.getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void getPopularMeals() {
+        mealRepository.getPopularMeals(new Callback<List<MainMeal>>() {
+            @Override
+            public void onResponse(Call<List<MainMeal>> call, Response<List<MainMeal>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    view.showPopularMeals(response.body());
+                } else {
+                    view.showError("Failed to fetch popular meals");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<MainMeal>> call, Throwable t) {
+                view.showError(t.getMessage());
+            }
+        });
+
+    }
+
+    @Override
+    public void getCategories() {
+        mealRepository.getCategories(new Callback<CategoryList>() {
+            @Override
+            public void onResponse(Call<CategoryList> call, Response<CategoryList> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    view.showCategories(response.body().getCategories());
+                } else {
+                    view.showError("Failed to fetch categories");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CategoryList> call, Throwable t) {
+                view.showError(t.getMessage());
+            }
+        });
+    }
+}
+
+/*
 public class HomePresenter implements HomeContract.Presenter {
     private HomeContract.View view;
     Context context;
@@ -53,13 +117,11 @@ public class HomePresenter implements HomeContract.Presenter {
                     editor.apply();
                     Log.d("RandomMeals", "Saved to cache: " + new Gson().toJson(randomMeal));
                 } else {
-                    //view.showError("Data not response");
                 }
             }
 
             @Override
             public void onFailure(Call<MealList> call, Throwable t) {
-                //view.showError("Check network");
             }
         });
     }
@@ -97,7 +159,6 @@ public class HomePresenter implements HomeContract.Presenter {
 
                 @Override
                 public void onFailure(Call<MealList> call, Throwable t) {
-                    //view.showError("Check network");
                 }
             });
         }
@@ -127,7 +188,6 @@ public class HomePresenter implements HomeContract.Presenter {
 
             @Override
             public void onFailure(Call<CategoryList> call, Throwable t) {
-                //view.showError("Data not response");
 
             }
         });
@@ -135,3 +195,4 @@ public class HomePresenter implements HomeContract.Presenter {
 }
 
 
+*/

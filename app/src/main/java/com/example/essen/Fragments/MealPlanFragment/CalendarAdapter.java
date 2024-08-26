@@ -51,7 +51,6 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         return daysOfWeek.size();
     }
 
-    // Interface to handle click events on calendar items
     public interface OnDayClickListener {
         void onDayClick(String item);
     }
@@ -68,7 +67,6 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         public void bind(String day, int position) {
             dayTextView.setText(day);
 
-            // Set the background color based on whether the item is selected
             if (selectedPosition == position) {
                 itemView.setBackgroundColor(Color.GREEN);
             } else {
@@ -76,15 +74,12 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
             }
 
             itemView.setOnClickListener(v -> {
-                // Update the selected position
                 int previousPosition = selectedPosition;
                 selectedPosition = getAdapterPosition();
 
-                // Notify the adapter to refresh the views for the old and new selected positions
                 notifyItemChanged(previousPosition);
                 notifyItemChanged(selectedPosition);
 
-                // Call the onDayClickListener callback
                 if (onDayClickListener != null) {
                     onDayClickListener.onDayClick(day);
                 }
@@ -96,18 +91,3 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
 
 
 
-
- /*itemView.setOnLongClickListener(v -> {
-                if (appDatabase != null) {
-                    // Delete meals for the selected day
-                    executorService.execute(() -> {
-                        appDatabase.mealPlanDao().deleteMealFromDay(day);
-                        itemView.post(() -> {
-                            if (onDayClickListener != null) {
-                                onDayClickListener.onDayClick(day);
-                            }
-                        });
-                    });
-                }
-                return true;
-            });*/

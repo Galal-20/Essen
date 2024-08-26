@@ -1,22 +1,9 @@
 package com.example.essen.Fragments.CountriesFragment;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.util.Base64;
-import android.widget.Toast;
-
-import com.example.essen.pojo.Countries;
 import com.example.essen.pojo.MainMeal;
-import com.example.essen.retrofit.MealAPI;
-import com.google.gson.Gson;
+import com.example.essen.repository.MealRepository;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.List;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -25,13 +12,36 @@ import retrofit2.Response;
 public class CountriesPresenter implements CountriesContract.Presenter {
 
     private CountriesContract.View view;
-    private MealAPI mealAPI;
-    private Context context;
+    private MealRepository mealRepository;
 
-    public CountriesPresenter(CountriesContract.View view, MealAPI mealAPI, Context context) {
+    public CountriesPresenter(CountriesContract.View view, MealRepository mealRepository) {
+        this.view = view;
+        this.mealRepository = mealRepository;
+    }
+
+
+    @Override
+    public void getCountries() {
+        mealRepository.getCountries(new Callback<List<MainMeal>>() {
+            @Override
+            public void onResponse(Call<List<MainMeal>> call, Response<List<MainMeal>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    view.showCountries(response.body());
+                } else {
+                    view.showError("Failed to load countries");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<MainMeal>> call, Throwable t) {
+                view.showError(t.getMessage());
+            }
+        });
+    }
+}
+   /* public CountriesPresenter(CountriesContract.View view, MealAPI mealAPI) {
         this.view = view;
         this.mealAPI = mealAPI;
-        this.context = context;
     }
 
     public void getCountries() {
@@ -99,3 +109,4 @@ public class CountriesPresenter implements CountriesContract.Presenter {
         return null;
     }
 }
+*/

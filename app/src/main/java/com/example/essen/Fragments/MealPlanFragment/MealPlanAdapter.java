@@ -219,9 +219,3 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.MealPl
 
 
 
-
-
-/* mealPlans.remove(position);
-                            notifyItemRemoved(position);
-                            Toast.makeText(context, "Meal plan deleted from Room", Toast.LENGTH_SHORT).show();
-                            notifyItemRangeChanged(position, mealPlans.size());*/

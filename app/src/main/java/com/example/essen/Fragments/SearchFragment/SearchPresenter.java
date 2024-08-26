@@ -1,14 +1,10 @@
 package com.example.essen.Fragments.SearchFragment;
 
-import android.content.Context;
 
 import com.example.essen.pojo.MainMeal;
 import com.example.essen.pojo.MealList;
-import com.example.essen.retrofit.MealAPI;
-import com.example.essen.retrofit.RetrofitInstance;
+import com.example.essen.repository.MealRepository;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.List;
 
 import retrofit2.Call;
@@ -16,9 +12,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SearchPresenter implements SearchContract.Presenter {
-    private final SearchContract.View view;
+   /* private final SearchContract.View view;
     private final MealAPI mealAPI;
-    private Context context;
 
     public SearchPresenter(SearchContract.View view) {
         this.view = view;
@@ -130,8 +125,89 @@ public class SearchPresenter implements SearchContract.Presenter {
                 view.showError(t.getMessage());
             }
         });
+    }*/
+
+    private final SearchContract.View view;
+    private MealRepository mealRepository;
+
+    public SearchPresenter(SearchContract.View view, MealRepository mealRepository) {
+        this.view = view;
+        this.mealRepository = mealRepository;
+    }
+
+    @Override
+    public void searchMeals(String query) {
+        mealRepository.searchMeals(query).enqueue(new Callback<MealList>() {
+            @Override
+            public void onResponse(Call<MealList> call, Response<MealList> response) {
+                handleResponse(response);
+            }
+
+            @Override
+            public void onFailure(Call<MealList> call, Throwable t) {
+                view.showError(t.getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void searchMealsByCountry(String country) {
+        mealRepository.searchMealsByCountry(country).enqueue(new Callback<MealList>() {
+            @Override
+            public void onResponse(Call<MealList> call, Response<MealList> response) {
+                handleResponse(response);
+            }
+            @Override
+            public void onFailure(Call<MealList> call, Throwable t) {
+                view.showError(t.getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void searchMealsByIngredient(String ingredient) {
+        mealRepository.searchMealsByIngredient(ingredient).enqueue(new Callback<MealList>() {
+            @Override
+            public void onResponse(Call<MealList> call, Response<MealList> response) {
+                handleResponse(response);
+            }
+
+            @Override
+            public void onFailure(Call<MealList> call, Throwable t) {
+                view.showError(t.getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void searchMealsByCategory(String category) {
+        mealRepository.searchMealsByCategory(category).enqueue(new Callback<MealList>() {
+            @Override
+            public void onResponse(Call<MealList> call, Response<MealList> response) {
+                handleResponse(response);
+            }
+
+            @Override
+            public void onFailure(Call<MealList> call, Throwable t) {
+                view.showError(t.getMessage());
+            }
+        });
+    }
+
+    private void handleResponse(Response<MealList> response) {
+        if (response.isSuccessful() && response.body() != null) {
+            List<MainMeal> meals = response.body().getMeals();
+            if (meals != null && !meals.isEmpty()) {
+                view.showMeals(meals);
+            } else {
+                view.showError("No results found.");
+            }
+        } else {
+            view.showError("Error fetching data.");
+        }
     }
 
 
 }
+
 

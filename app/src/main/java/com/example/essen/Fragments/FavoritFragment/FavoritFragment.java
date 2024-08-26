@@ -277,29 +277,7 @@ public class FavoritFragment extends Fragment implements FavoriteAdapter.OnDelet
         dialog.show();
     }
 
-    /*private void deleteFavorite(String mealName) {
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-        new Thread(() -> {
-            try {
-                appDatabase.mealDao().deleteMeal(mealName);
-            }catch (Exception e){
 
-            }
-            if (currentUser != null) {
-                firestore.collection("users").document(currentUser.getUid())
-                        .collection("favorites").document(mealName)
-                        .delete()
-                        .addOnSuccessListener(aVoid -> {
-                            fetchUserFavorites(); // Refresh favorites after deletion
-                            Snackbar.make(recyclerView, "Meal removed from favorites!", Snackbar.LENGTH_SHORT).show();
-                        })
-                        .addOnFailureListener(e -> Snackbar.make(recyclerView, "Error removing from Firestore: " + e.getMessage(), Snackbar.LENGTH_SHORT).show());
-            } else {
-                Snackbar.make(recyclerView, "User not logged in, unable to remove from Firestore.", Snackbar.LENGTH_SHORT).show();
-            }
-        }).start();
-
-    }*/
 
     private void deleteFavorite(String mealName) {
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
@@ -351,6 +329,31 @@ public class FavoritFragment extends Fragment implements FavoriteAdapter.OnDelet
         requireActivity().runOnUiThread(() -> showCustomDialog(mealName));
     }
 }
+
+
+ /*private void deleteFavorite(String mealName) {
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        new Thread(() -> {
+            try {
+                appDatabase.mealDao().deleteMeal(mealName);
+            }catch (Exception e){
+
+            }
+            if (currentUser != null) {
+                firestore.collection("users").document(currentUser.getUid())
+                        .collection("favorites").document(mealName)
+                        .delete()
+                        .addOnSuccessListener(aVoid -> {
+                            fetchUserFavorites(); // Refresh favorites after deletion
+                            Snackbar.make(recyclerView, "Meal removed from favorites!", Snackbar.LENGTH_SHORT).show();
+                        })
+                        .addOnFailureListener(e -> Snackbar.make(recyclerView, "Error removing from Firestore: " + e.getMessage(), Snackbar.LENGTH_SHORT).show());
+            } else {
+                Snackbar.make(recyclerView, "User not logged in, unable to remove from Firestore.", Snackbar.LENGTH_SHORT).show();
+            }
+        }).start();
+
+    }*/
 
 
 /* yesButton.setOnClickListener(view -> {

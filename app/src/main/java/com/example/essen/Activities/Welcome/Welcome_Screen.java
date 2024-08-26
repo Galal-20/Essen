@@ -16,9 +16,11 @@ import com.example.essen.Activities.AuthActivities.Login.Login_Screen;
 import com.example.essen.Activities.AuthActivities.SignUp.SignUp_Screen;
 import com.example.essen.Activities.MainActivity.MainActivity;
 import com.example.essen.R;
+import com.example.essen.repository.MealRepository;
+import com.example.essen.repository.MealRepositoryImpl;
 import com.example.swipebutton_library.SwipeButton;
 
-public class Welcome_Screen extends AppCompatActivity {
+public class Welcome_Screen extends AppCompatActivity implements WelcomeContract.View {
     private static final String PREFS_NAME = "MyPrefsFile";
 
     TextView textWelcome;
@@ -26,6 +28,10 @@ public class Welcome_Screen extends AppCompatActivity {
     SwipeButton buttonLoginWelcome;
     SwipeButton swipeButton;
     LottieAnimationView lottieAnimationView;
+
+
+    private Welcome_Presenter presenter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,12 +42,17 @@ public class Welcome_Screen extends AppCompatActivity {
 
 
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        MealRepository mealRepository = new MealRepositoryImpl(sharedPreferences);
+        presenter = new Welcome_Presenter(this, mealRepository);
         if (sharedPreferences.getBoolean("isLoggedIn", false)) {
             navigateToMainActivity();
         }
 
         lottieAnimationView.setAnimation(R.raw.gray);
         lottieAnimationView.playAnimation();
+
+
+        presenter.checkLoginStatus();
 
 
         swipeButton.setOnActiveListener(() -> Guest(null));
@@ -94,9 +105,21 @@ public class Welcome_Screen extends AppCompatActivity {
         finish();
     }
 
-    private void navigateToMainActivity() {
+    public void navigateToMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public void navigateToSignUp() {
+        startActivity(new Intent(this, SignUp_Screen.class));
+        finish();
+    }
+
+    @Override
+    public void navigateToLogin() {
+        startActivity(new Intent(this, Login_Screen.class));
         finish();
     }
 
@@ -107,10 +130,8 @@ public class Welcome_Screen extends AppCompatActivity {
     public void Guest(View view) {
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        //editor.putBoolean("isLoggedIn", true);
         editor.putBoolean("isGuest", true);
         editor.apply();
-
         navToMain();
     }
 }

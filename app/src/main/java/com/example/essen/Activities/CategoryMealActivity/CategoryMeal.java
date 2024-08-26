@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.essen.R;
 import com.example.essen.pojo.MealX;
+import com.example.essen.repository.MealRepository;
+import com.example.essen.repository.MealRepositoryImpl;
 
 import java.util.List;
 
@@ -39,7 +41,9 @@ public class CategoryMeal extends AppCompatActivity implements CategoryContract.
         categoryMealsAdapter = new CategoryMealsAdapter(this);
         categoryMealsRecyclerView.setAdapter(categoryMealsAdapter);
 
-        presenter = new CategoryPresenter(this);
+        MealRepository mealRepository = new MealRepositoryImpl(getApplication());
+        presenter = new CategoryPresenter(this, mealRepository);
+
         String categoryName = getIntent().getStringExtra(CATEGORY_NAME);
         name_of_title = getIntent().getStringExtra(CATEGORY_NAME);
 

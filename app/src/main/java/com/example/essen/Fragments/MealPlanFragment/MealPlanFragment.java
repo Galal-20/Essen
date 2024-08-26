@@ -16,12 +16,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.essen.R;
+import com.example.essen.repository.MealRepository;
+import com.example.essen.repository.MealRepositoryImpl;
 import com.example.essen.room.AppDatabase;
 import com.example.essen.room.MealPlanEntity;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class MealPlanFragment extends Fragment {
+public class MealPlanFragment extends Fragment implements MealPlanContract.View {
 
     private RecyclerView mealPlanRecyclerView;
     private RecyclerView calendarRecyclerView;
@@ -43,10 +44,11 @@ public class MealPlanFragment extends Fragment {
     private ExecutorService executorService;
     TextView textView;
     private String currentMode = "Days of week";
-   /* EditText editYear;
-    EditText editMonth;
-    EditText editDay;
-    Button go;*/
+
+    private MealRepository mealRepository;
+    private MealPlanContract.Presenter presenter;
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -56,12 +58,6 @@ public class MealPlanFragment extends Fragment {
 
         mealPlanRecyclerView = view.findViewById(R.id.food_recycler_view);
         calendarRecyclerView = view.findViewById(R.id.calendar_recycler_view);
-       /* editYear = view.findViewById(R.id.edit_text_year);
-        editMonth = view.findViewById(R.id.edit_text_month);
-        editDay = view.findViewById(R.id.edit_text_day);
-        go = view.findViewById(R.id.go);*/
-
-
         textView = view.findViewById(R.id.text_week);
 
         mealPlanRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
@@ -69,6 +65,10 @@ public class MealPlanFragment extends Fragment {
 
         calendarRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
+        presenter = new MealPlanPresenter(this, new MealRepositoryImpl(
+                AppDatabase.getDatabase(getContext()), FirebaseFirestore.getInstance(),
+                FirebaseAuth.getInstance().getCurrentUser()
+        ));
         view.findViewById(R.id.next).setOnClickListener(v -> onNextClicked());
         view.findViewById(R.id.back).setOnClickListener(v -> onBackClicked());
 
@@ -78,47 +78,23 @@ public class MealPlanFragment extends Fragment {
         firebaseAuth = FirebaseAuth.getInstance();
         currentUse = firebaseAuth.getCurrentUser();
 
-       /* go.setOnClickListener(v -> {
-            String yearStr = editYear.getText().toString().trim();
-            String monthStr = editMonth.getText().toString().trim();
-            String dayStr = editDay.getText().toString().trim();
-
-            if (yearStr.isEmpty() || monthStr.isEmpty() || dayStr.isEmpty()) {
-                Toast.makeText(getContext(), "Please enter a valid date", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            int year = Integer.parseInt(yearStr);
-            int month = Integer.parseInt(monthStr);
-            int day = Integer.parseInt(dayStr);
-
-            loadMealsForSpecificDate(year, month, day);
-        });*/
-
-
-
-
         setupCalendar();
 
-
-        listenForMealPlanUpdates();
+        if (!isConnectedToInternet()) {
+            Toast.makeText(requireContext(), "No internet connection", Toast.LENGTH_SHORT).show();
+            new Thread(() -> {
+                List<MealPlanEntity> mealPlans = appDatabase.mealPlanDao().getAllMealPlans();
+                getActivity().runOnUiThread(() -> {
+                    updateAdapter(mealPlans);
+                });
+            }).start();
+        } else {
+            presenter.listenForMealPlanUpdates();
+        }
 
         return view;
     }
 
-   /* private void loadMealsForSpecificDate(int year, int month, int day) {
-        executorService.execute(() -> {
-            List<MealPlanEntity> mealsForSpecificDate = appDatabase.mealPlanDao().getMealsForSpecificDate(year, month, day);
-            requireActivity().runOnUiThread(() -> {
-                if (mealPlanAdapter == null) {
-                    mealPlanAdapter = new MealPlanAdapter(mealsForSpecificDate, appDatabase, getContext());
-                    mealPlanRecyclerView.setAdapter(mealPlanAdapter);
-                } else {
-                    mealPlanAdapter.updateMealPlans(mealsForSpecificDate);
-                }
-            });
-        });
-    }*/
 
 
 
@@ -126,16 +102,16 @@ public class MealPlanFragment extends Fragment {
         calendarAdapter = new CalendarAdapter(getCalendarData(currentMode), item -> {
             if (currentMode.equals("months")) {
                 int month = getMonthNumber(item) - 1;
-                loadMealsForMonth(month);
+                presenter.loadMealsForMonth(month);
             } else if (currentMode.equals("Days of week")) {
                 selectedDay = item;
-                loadMealsForDay(selectedDay);
+                presenter.loadMealsForDay(selectedDay);
             } else if (currentMode.equals("years")) {
-                loadMealsForYear(Integer.parseInt(item));
+                presenter.loadMealsForYear(Integer.parseInt(item));
             } else if (currentMode.equals("Days")) {
-                loadMealsForDayNumber(Integer.parseInt(item));
+                presenter.loadMealsForDayNumber(Integer.parseInt(item));
             }
-        }, appDatabase, executorService);
+        }, AppDatabase.getDatabase(getContext()), executorService);
         calendarRecyclerView.setAdapter(calendarAdapter);
 
         updateCalendarData();
@@ -200,7 +176,7 @@ public class MealPlanFragment extends Fragment {
                 data.add("December");
                 break;
             case "years":
-                for (int i = 2000; i <= 2099; i++) {
+                for (int i = 2024; i <= 2099; i++) {
                     data.add(String.valueOf(i));
                 }
                 break;
@@ -282,120 +258,37 @@ public class MealPlanFragment extends Fragment {
     }
 
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.onDestroy();
+    }
 
-    private void loadMealsForDay(String day) {
-        if (day == null) {
-            return;
+
+   /* private void listenForMealPlanUpdates() {
+
+        if (currentUse != null){
+            mealRepository.addMealPlanUpdateListener(new MealPlanUpdateListener() {
+                @Override
+                public void onMealPlansUpdated(List<MealPlanEntity> mealPlans) {
+                    requireActivity().runOnUiThread(() -> updateAdapter(mealPlans));
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    showMessage("Error fetching updates: " + e.getMessage());
+                }
+            });
+        }else {
+            loadMealPlansFromRoom();
         }
-        executorService.execute(() -> {
-            List<MealPlanEntity> mealsForDay = appDatabase.mealPlanDao().getMealsForDay(day);
-            requireActivity().runOnUiThread(() -> {
-                if (mealPlanAdapter == null) {
-                    mealPlanAdapter = new MealPlanAdapter(mealsForDay, appDatabase, getContext());
-                    mealPlanRecyclerView.setAdapter(mealPlanAdapter);
-                } else {
-                    mealPlanAdapter.updateMealPlans(mealsForDay);
-                }
-            });
-        });
+    }*/
 
-    }
-
-    private void loadMealsForMonth(int month) {
-        Log.d("MealPlanFragment", "Loading meals for month: " + month);
-        executorService.execute(() -> {
-            List<MealPlanEntity> mealsForMonth = appDatabase.mealPlanDao().getMealsForMonth(month);
-            Log.d("MealPlanFragment", "Meals retrieved: " + mealsForMonth);
-            requireActivity().runOnUiThread(() -> {
-                Log.d("MealPlanFragment", "Number of meals retrieved: " + mealsForMonth.size());
-                if (mealPlanAdapter == null) {
-                    mealPlanAdapter = new MealPlanAdapter(mealsForMonth, appDatabase, getContext());
-                    mealPlanRecyclerView.setAdapter(mealPlanAdapter);
-                } else {
-                    mealPlanAdapter.updateMealPlans(mealsForMonth);
-                }
-            });
-        });
-    }
-
-    private void loadMealsForYear(int year) {
-        executorService.execute(() -> {
-            List<MealPlanEntity> mealsForYear = appDatabase.mealPlanDao().getMealsForYear(year);
-            requireActivity().runOnUiThread(() -> {
-                if (mealPlanAdapter == null) {
-                    mealPlanAdapter = new MealPlanAdapter(mealsForYear, appDatabase, getContext());
-                    mealPlanRecyclerView.setAdapter(mealPlanAdapter);
-                } else {
-                    mealPlanAdapter.updateMealPlans(mealsForYear);
-                }
-            });
-        });
-    }
-
-    private void loadMealsForDayNumber(int dayNumber) {
-        executorService.execute(() -> {
-            List<MealPlanEntity> mealsForDayNumber = appDatabase.mealPlanDao().getMealsForDayNumber(dayNumber);
-            requireActivity().runOnUiThread(() -> {
-                if (mealPlanAdapter == null) {
-                    mealPlanAdapter = new MealPlanAdapter(mealsForDayNumber, appDatabase, getContext());
-                    mealPlanRecyclerView.setAdapter(mealPlanAdapter);
-                } else {
-                    mealPlanAdapter.updateMealPlans(mealsForDayNumber);
-                }
-            });
-        });
-    }
-
-
-
-    private void listenForMealPlanUpdates() {
-        if (calendarAdapter != null) {
-            calendarAdapter.selectedPosition = -1;
-            calendarAdapter.notifyDataSetChanged();
-        }
-        if (currentUse != null) {
-            firestore.collection("users").document(currentUse.getUid())
-                    .collection("mealPlans")
-                    .addSnapshotListener((snapshots, e) -> {
-                        if (e != null) {
-                            showMessage("Error fetching updates: " + e.getMessage());
-                            return;
-                        }
-                        if (snapshots != null) {
-                            List<MealPlanEntity> mealPlans = new ArrayList<>();
-                            for (DocumentSnapshot document : snapshots.getDocuments()) {
-                                MealPlanEntity mealPlan = document.toObject(MealPlanEntity.class);
-
-                                new Thread(() -> {
-                                    int count =
-                                            appDatabase.mealPlanDao().isMealInMealPlan(mealPlan.getStrMeal(), mealPlan.getDayName());
-                                    if (count == 0) {
-                                        appDatabase.mealPlanDao().insert(mealPlan);
-                                    }
-                                }).start();
-
-                                mealPlans.add(mealPlan);
-                            }
-
-                            if (mealPlanAdapter == null) {
-                                mealPlanAdapter = new MealPlanAdapter(mealPlans, appDatabase,
-                                        getContext());
-                                mealPlanRecyclerView.setAdapter(mealPlanAdapter);
-                            } else {
-                                mealPlanAdapter.updateMealPlans(mealPlans);
-                            }
-                        } else {
-                            loadMealPlansFromRoom();
-                        }
-                    });
-        }
-    }
 
     private void loadMealPlansFromRoom() {
         if (!isConnectedToInternet()) {
             new Thread(() -> {
                 List<MealPlanEntity> mealPlans = appDatabase.mealPlanDao().getAllMealPlans();
-
                 getActivity().runOnUiThread(() -> {
                     updateAdapter(mealPlans);
                 });
@@ -408,7 +301,7 @@ public class MealPlanFragment extends Fragment {
 
     private void updateAdapter(List<MealPlanEntity> mealPlans) {
         if (mealPlanAdapter == null) {
-            mealPlanAdapter = new MealPlanAdapter(mealPlans, appDatabase, getContext());
+            mealPlanAdapter = new MealPlanAdapter(mealPlans, AppDatabase.getDatabase(getContext()), getContext());
             mealPlanRecyclerView.setAdapter(mealPlanAdapter);
         } else {
             mealPlanAdapter.updateMealPlans(mealPlans);
@@ -430,7 +323,18 @@ public class MealPlanFragment extends Fragment {
         }
     }
 
-    public void showMealForSpecificDay(View view) {
+    @Override
+    public void showMeals(List<MealPlanEntity> meals) {
+        if (mealPlanAdapter == null) {
+            mealPlanAdapter = new MealPlanAdapter(meals, AppDatabase.getDatabase(getContext()), getContext());
+            mealPlanRecyclerView.setAdapter(mealPlanAdapter);
+        } else {
+            mealPlanAdapter.updateMealPlans(meals);
+        }
+    }
+
+    @Override
+    public void showError(String message) {
 
     }
 }

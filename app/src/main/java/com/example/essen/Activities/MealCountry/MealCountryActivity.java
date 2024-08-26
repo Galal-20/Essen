@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.essen.R;
 import com.example.essen.pojo.MainMeal;
+import com.example.essen.repository.MealRepositoryImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +37,9 @@ public class MealCountryActivity extends AppCompatActivity implements CountryCon
         mealAdapter = new MealAdapter(this, new ArrayList<>(), presenter);
         recyclerView.setAdapter(mealAdapter);
 
-        presenter = new MealCountryPresenter(this);
+        MealRepositoryImpl mealRepository = new MealRepositoryImpl(getApplication());
+
+        presenter = new MealCountryPresenter(this, mealRepository);
 
         String countryName = getIntent().getStringExtra("country_name");
         if (countryName != null) {

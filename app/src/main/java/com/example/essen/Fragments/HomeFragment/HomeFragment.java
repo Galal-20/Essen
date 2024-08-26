@@ -33,6 +33,7 @@ import com.example.essen.Activities.Profile.ProfileActivity;
 import com.example.essen.R;
 import com.example.essen.pojo.Category;
 import com.example.essen.pojo.MainMeal;
+import com.example.essen.repository.MealRepositoryImpl;
 
 import java.util.List;
 
@@ -63,12 +64,16 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     Runnable runnable;
     private Handler handler;
 
+    private SharedPreferences sharedPreferences;
+
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new HomePresenter(this, getContext());
+        sharedPreferences = getActivity().getSharedPreferences("MyPrefsFile", Context.MODE_PRIVATE);
+        MealRepositoryImpl repository = new MealRepositoryImpl(sharedPreferences);
+        presenter = new HomePresenter(this, repository);
     }
 
     @Override
@@ -151,7 +156,6 @@ public class HomeFragment extends Fragment implements HomeContract.View {
 
 
         });
-        //settings.setOnClickListener(v -> GoToProfile());
 
         return view;
     }
